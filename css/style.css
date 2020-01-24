@@ -3,13 +3,13 @@
 	margin: 0;
 }
 .darkness{
-	width: 100vw;
+	width: 100%;
 	height: 100vh;
 	position: absolute;
 	top: 0;
 	left: 0;
 	background-color: rgb(54, 60, 77, 0.7)
-;
+	;
 	z-index: 3;
 	transition: .5s ease;
 	opacity: 0;
@@ -33,10 +33,15 @@
 		width: 100%;
 		display: block;
 		background-color: #F6F6F9;
+		position: relative;
+	}
+
+	#main-wrapper header{
+		background-image: url(../img/main-background.jpg);
+		margin-bottom: 120px;
 	}
 
 	header{
-		background-image: url(../img/main-background.jpg);
 		width: 100%;
 		background-size: cover;
 		background-position: center center;
@@ -48,7 +53,6 @@
 		padding: 15px;
 		max-height: 990px;
 		max-width: 2048px;
-		margin-bottom: 120px;
 	}
 
 	header .logo{
@@ -60,7 +64,7 @@
 	header .logo a{
 		display: block;
 		position: absolute;
-		left: 50%;
+		left: 40%;
 		transform: translate(-50%, 0);
 		height: 100%;
 	}
@@ -289,6 +293,10 @@
 		color: #363c4d;
 		font-family: Proxima Nova Rg;
 	}
+	#start .actions .text h1 u{
+		text-decoration: none;
+		border-bottom: 2px solid #698cc8;
+	}
 	#start .actions p{
 		font-size: 1em;
 		color: #444b61;
@@ -337,7 +345,7 @@
 		border-radius: 40px;
 		transition: .3s ease;
 	}
-	#auth .exit{
+	.exit{
 		position: absolute;
 		top: 20px;
 		right: 20px;
@@ -345,7 +353,7 @@
 		height: 25px;
 		cursor: pointer;
 	}
-	#auth .exit span{
+	.exit span{
 		display: block;
 		width: 100%;
 		height: 1px;
@@ -355,13 +363,13 @@
 		transform: translate(0, -50%);
 		transition: .3s ease;
 	}
-	#auth .exit span:nth-child(1){
+	.exit span:nth-child(1){
 		transform: rotate(45deg);
 	}
-	#auth .exit span:nth-child(2){
+	.exit span:nth-child(2){
 		transform: rotate(-45deg);
 	}
-	#auth .exit:hover span{
+	.exit:hover span{
 		background-color: black;
 	}
 
@@ -404,7 +412,7 @@
 		border: none;
 		border-radius: 15px;
 		color: #363c4d;
-		opacity: 0.6;
+		opacity: 0.7;
 		transition: .3s ease;
 	}
 	#auth form input:focus, #auth form input.filled{
@@ -573,22 +581,27 @@
 		height: 50px;
 		border-radius: 15px;
 		border: none;
-		opacity: 0.6;
+		opacity: 0.7;
 		margin-top: 15px;
 		box-sizing: border-box;
-		padding: 20px;
+		padding: 23px;
 		font-size: 1em;
 		font-family: Proxima Nova Lt;
 		font-weight: 600;
 		color: #363c4d;
-		opacity: 0.6;
 		transition: .3s ease;
 	}
-	header form input:focus, header form input.filled{
+	header form input::placeholder{
+		color: rgba(54,60,77, 0.7);
+	}
+	header form input:focus, header form input.filled, header form input:focus::placeholder, header form input.filled::placeholder{
 		outline: none;
 		opacity: 1;
-		color: white;
-		color: #363c4d;
+		color: rgba(54,60,77, 1);
+	}
+	header form input.error{
+		color: #30394C;
+		opacity: 1;
 	}
 
 	header form .agreement{
@@ -665,6 +678,440 @@
 		color: white;
 	}
 
+	#success, #error{
+		display: none;
+		opacity: 0;
+		position: absolute;
+		top: 50vh;
+		left: 50vw;
+		transform: translate(-50%, -50%);
+		background-color: #f6f6f9;
+		width: 300px;
+		height: 431px;
+		border-radius: 40px;
+		transition: .3s ease;
+	}
+	#success img, #error img{
+		margin-top: 50px;
+		margin-left: 50%;
+		transform: translate(-50%, 0);
+	}
+	#success h1, #error h1{
+		font-size: 2em;
+		font-family: Proxima Nova Th;
+		color: #444b61;
+		text-align: center;
+		padding-top: 10px;
+	}
+	#success p, #error p{
+		font-size: 1em;
+		font-family: Proxima Nova Lt;
+		width: 90%;
+		margin-left: 50%;
+		transform: translate(-50%, 0);
+		margin-top: 20px;
+		color: #444b61;
+		text-align: center;
+	}
+
+	/* --------------------------- UCP ------------------------------ */
+
+	#ucp-wrapper{
+		width: 100%;
+		display: block;
+		background-color: #F6F6F9;
+		position: relative;
+	}
+	#ucp-wrapper header{
+		background-image: url(../img/UCP-background.png);
+		background-position: center bottom;
+		background-size: cover;
+		max-height: 2000px;
+	}
+	#ucp-wrapper header .dropdown-burger span{
+		background-color: #363c4d;
+	}
+	#ucp-wrapper .text{
+		width: 100%;
+		margin-top: 110px;
+	}
+	#ucp-wrapper .text h1{
+		color: #363c4d;
+		font-size: 2em;
+		font-family: Proxima Nova Th;
+	}
+	#ucp-wrapper .text .stats{
+		background-color: white;
+		border-radius: 20px;
+		width: 310px;
+		margin-left: 50%;
+		transform: translate(-50%, 0);
+		height: 455px;
+		margin-top: 65px;
+		box-sizing: border-box;
+		padding: 20px;
+		overflow: hidden;
+		position: relative;
+	}
+	#ucp-wrapper .text .stats h1{
+		font-size: 1.8em;
+		text-align: left;
+	}
+
+	#ucp-wrapper .text .stats .pages-nav{
+		display: flex;
+		flex-wrap: wrap;
+		margin-top: 20px;
+	}
+	#ucp-wrapper .text .stats .pages-nav li{
+		color: #aeaeae;
+		font-family: Proxima Nova Lt;
+		font-weight: 300;
+		list-style: none;
+		margin-right: 5px;
+		cursor: pointer;
+		transition: .3s ease;
+		border-bottom: 1px solid white;
+		font-size: 15px;
+	}
+	#ucp-wrapper .text .stats .pages-nav li.active{
+		color: #2bb673;
+		border-bottom: 1px solid #2bb673;
+	}
+	#ucp-wrapper .text .stats .pages .page{
+		display: none;
+	}
+	#ucp-wrapper .text .stats .pages .page.current{
+		display: block;
+		color: black;
+	}
+
+	/* UCP Main page */
+
+	#ucp-wrapper .text .stats .pages .main-page ul{
+		display: flex;
+		flex-wrap: wrap;
+		margin-top: 15px;
+		color: #444b61;
+		font-family: Proxima Nova Rg;
+	}
+	#ucp-wrapper .text .stats .pages .main-page ul h2{
+		font-size: 12px;
+		font-weight: 400;
+	}
+	#ucp-wrapper .text .stats .pages .main-page ul li{
+		font-size: 15px;
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+	}
+
+	/* UCP Property page */
+
+	#ucp-wrapper .text .stats .pages .property-page ul{
+		display: flex;
+		flex-wrap: wrap;
+		width: 100%;
+		color: #444b61;
+		font-family: Proxima Nova Rg;
+		margin-top: 25px;
+	}
+	#ucp-wrapper .text .stats .pages .property-page ul span{
+		display: block;
+		width: 100%;
+		text-align: left;
+		font-size: 0.8em;
+		margin-bottom: 5px;
+	}
+	#ucp-wrapper .text .stats .pages .property-page ul .empty{
+		font-size: 0.9em;
+	}
+
+	/* UCP Payments page */
+
+	#ucp-wrapper .text .stats .pages .payments-page .sort p{
+		display: flex;
+		flex-wrap: wrap;
+		color: #444b61;
+		font-family: Proxima Nova Rg;
+		font-size: 0.7em;
+		margin-bottom: 0;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .sort p span{
+		margin: 0 5px;
+		cursor: pointer;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .sort p span:nth-child(1){
+		margin-left: 10px;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .sort p span:not(.enabled){
+		color: #a8a8a8;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .slider{
+		margin-top: 10px;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .slide{
+		list-style: none;
+		transition: .3s ease;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .slide ul li{
+		font-family: Proxima Nova Rg;
+		font-size: 0.7em;
+		text-align: left;
+		list-style: none;
+		margin-top: 2px;
+		color: #3F4A62;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .slide ul li .sum{
+		color: #2bb673;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .prev{
+		width: 5px;
+		height: 5px;
+		border-bottom: 2px solid #698cc8;
+		border-left: 2px solid #698cc8;
+		transform: rotate(45deg);
+		position: absolute;
+		bottom: 30px;
+		left: 130px;
+		cursor: pointer;
+		transition: .3s ease;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .prev.disabled{
+		opacity: 0.3;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .next{
+		width: 5px;
+		height: 5px;
+		border-bottom: 2px solid #698cc8;
+		border-right: 2px solid #698cc8;
+		transform: rotate(-45deg);
+		position: absolute;
+		bottom: 30px;
+		left: 175px;
+		cursor: pointer;
+		transition: .3s ease;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .next.disabled{
+		opacity: 0.3;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .current{
+		margin: 0;
+		position: absolute;
+		bottom: 23px;
+		left: 50%;
+		transform: translate(-50%, 0);
+		color: #698cc8;
+		font-family: Proxima Nova Rg;
+		font-size: 1em;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .slider > a{
+		display: none;
+	}
+
+	/* UCP Leaders page */
+
+	#ucp-wrapper .text .stats .pages .leaders-page .slider{
+		margin-top: 20px;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .slide{
+		display: flex;
+		flex-wrap: wrap;
+		transition: .3s ease;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .slide .h{
+		width: 100%;
+		display: flex;
+		font-family: "Proxima Nova Rg";
+		color: #444b61;
+		font-size: 0.7em;
+		margin-bottom: 5px;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .slide .h .nick{
+		width: 100px;
+		text-align: left;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .slide .h .organization{
+		width: 80px;
+		text-align: left;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .slide ul li{
+		list-style: none;
+		display: flex;
+		font-family: "Proxima Nova Rg";
+		color: #444b61;
+		font-size: 0.7em;
+		justify-content: space-between;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .slide ul li .nick{
+		width: 70px;
+		text-align: left;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .slide ul li .nick.online{
+		color: #2bb673;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .slide ul li .organization{
+		width: 140px;
+		text-align: center;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .prev{
+		width: 5px;
+		height: 5px;
+		border-bottom: 2px solid #698cc8;
+		border-left: 2px solid #698cc8;
+		transform: rotate(45deg);
+		position: absolute;
+		bottom: 30px;
+		left: 130px;
+		cursor: pointer;
+		transition: .3s ease;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .prev.disabled{
+		opacity: 0.3;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .next{
+		width: 5px;
+		height: 5px;
+		border-bottom: 2px solid #698cc8;
+		border-right: 2px solid #698cc8;
+		transform: rotate(-45deg);
+		position: absolute;
+		bottom: 30px;
+		left: 170px;
+		cursor: pointer;
+		transition: .3s ease;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .next.disabled{
+		opacity: 0.3;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .current{
+		margin: 0;
+		position: absolute;
+		bottom: 23px;
+		left: 50%;
+		transform: translate(-50%, 0);
+		color: #698cc8;
+		font-family: Proxima Nova Rg;
+		font-size: 1em;
+	}
+
+	/* UCP buttons */
+
+	#ucp-wrapper .text .stats > .help{
+		display: none;
+	}
+
+	/* UCP Skins */
+
+	#ucp-wrapper .text .skin{
+		width: 310px;
+		height: 500px;
+		margin-left: 50%;
+		transform: translate(-50%, 0);
+		background-color: white;
+		border-radius: 20px;
+		margin-top: 70px;
+		box-sizing: border-box;
+		padding: 20px;
+	}
+	#ucp-wrapper .text .skin .slide{
+		transition: .3s ease;
+		display: flex;
+		flex-wrap: wrap;
+	}
+	#ucp-wrapper .text .skin h1{
+		text-align: left;
+		color: #363c4d;
+		font-family: Proxima Nova Th;
+		font-size: 2em;
+		width: 100%;
+	}
+	#ucp-wrapper .text .skin p{
+		font-family: Proxima Nova Rg;
+		font-size: 1.1em;
+		color: #363c4d;
+		text-align: left;
+		margin: 0;
+		margin-top: 10px;
+		width: 100%;
+	}
+	#ucp-wrapper .text .skin img{
+		position: absolute;
+		top: 55%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		z-index: -1;
+	}
+	#ucp-wrapper .text .skin .prev{
+		width: 15px;
+		height: 15px;
+		border-bottom: 4px solid #698cc8;
+		border-left: 4px solid #698cc8;
+		position: absolute;
+		top: 50%;
+		transform: translate(0, -50%) rotate(45deg);
+		left: 40px;
+		cursor: pointer;
+		transition: .3s ease;
+	}
+	#ucp-wrapper .text .skin .prev.disabled{
+		opacity: 0.3;
+	}
+	#ucp-wrapper .text .skin .next{
+		width: 15px;
+		height: 15px;
+		border-bottom: 4px solid #698cc8;
+		border-right: 4px solid #698cc8;
+		position: absolute;
+		top: 50%;
+		transform: translate(0, -50%) rotate(-45deg);
+		right: 40px;
+		cursor: pointer;
+		transition: .3s ease;
+	}
+	#ucp-wrapper .text .skin .next.disabled{
+		opacity: 0.3;
+	}
+
+	/* UCP help buttons */
+
+	#ucp-wrapper .help{
+		margin-top: 55px;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		width: 222px;
+		margin-left: 50%;
+		transform: translate(-50%, 0);
+	}
+	#ucp-wrapper .help a{
+		display: block;
+		border: 2px solid #558DCB;
+		color: #558DCB;
+		width: 222px;
+		height: 50px;
+		font-family: Proxima Nova Rg;
+		font-weight: 700;
+		line-height: 50px;
+		text-align: center;
+		text-decoration: none;
+		border-radius: 15px;
+		margin-top: 35px;
+		transition: .3s ease;
+	}
+	#ucp-wrapper .help a:hover{
+		background-color: #558DCB;
+		color: white;
+	}
+	#ucp-wrapper .help a:nth-child(3){
+		border: 2px solid #30394C;
+		color: #30394C;
+	}
+	#ucp-wrapper .help a:nth-child(3):hover{
+		background-color: #30394C;
+		color: white;
+	}
+
 }
 
 @media screen and (min-width: 425px){
@@ -708,6 +1155,131 @@
 	}
 	header form input{
 		width: 300px;
+	}
+
+	#success{
+		width: 400px;
+	}
+	#success img{
+		margin-top: 70px;
+	}
+	#success h1{
+		margin-top: 20px;
+	}
+	#success p{
+		width: 75%;
+		margin-top: 30px;
+	}
+
+	/* --------------------------- UCP ------------------------------ */
+
+	#ucp-wrapper .text .stats{
+		width: 400px;
+		height: 550px;
+		padding: 20px;
+	}
+
+	#ucp-wrapper .text .stats .pages-nav li{
+		display: block;
+		text-align: center;
+		line-height: 25px;
+		margin-right: 20px;
+	}
+	#ucp-wrapper .text .stats .pages-nav li.active{
+		font-size: 18px;
+	}
+
+	/* UCP Main page */
+
+	#ucp-wrapper .text .stats .pages .main-page ul{
+		margin-top: 20px;
+	}
+	#ucp-wrapper .text .stats .pages .main-page ul h2{
+		font-size: 0.9em;
+		margin-bottom: 5px;
+	}
+	#ucp-wrapper .text .stats .pages .main-page ul li{
+		font-size: 1.1em;
+	}
+
+	/* UCP Property page */
+
+	#ucp-wrapper .text .stats .pages .property-page ul{
+		margin-top: 35px;
+	}
+	#ucp-wrapper .text .stats .pages .property-page ul span{
+		font-size: 0.9em;
+	}
+	#ucp-wrapper .text .stats .pages .property-page ul .empty{
+		font-size: 1.1em;
+	}
+
+	/* UCP Payments page */
+
+	#ucp-wrapper .text .stats .pages .payments-page .sort p{
+		font-size: 0.9em;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .slider{
+		margin-top: 15px;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .slide ul li{
+		font-size: 0.9em;
+		margin-top: 3px;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .prev{
+		width: 7px;
+		height: 7px;
+		left: 170px;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .next{
+		width: 7px;
+		height: 7px;
+		left: 220px;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .current{
+		font-size: 1.2em;
+	}
+
+	/* UCP Leaders page */
+
+	#ucp-wrapper .text .stats .pages .leaders-page .slide .h{
+		font-size: 0.9em;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .slide .h .nick{
+		width: 130px;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .slide .h .organization{
+		width: 100px;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .slide ul li{
+		font-size: 1em;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .slide ul li .nick{
+		width: 100px;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .slide ul li .organization{
+		width: 160px;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .prev{
+		width: 7px;
+		height: 7px;
+		left: 170px;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .next{
+		width: 7px;
+		height: 7px;
+		left: 220px;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .current{
+		font-size: 1.2em;
+	}
+
+	/* UCP Skins */
+
+	#ucp-wrapper .text .skin{
+		width: 400px;
+		height: 600px;
+		padding: 40px;
 	}
 
 }
@@ -824,6 +1396,71 @@
 		width: 254px;
 		height: 66px;
 		font-size: 1.1em;
+		margin-top: 10px;
+	}
+
+	#success, #error{
+		width: 515px;
+		height: 350px;
+	}
+	#success img, #error img{
+		margin-top: 50px;
+	}
+	#success h1, #error h1{
+		margin-top: 10px;
+		font-size: 28px;
+	}
+	#success p, #error p{
+		margin-top: 20px;
+	}
+
+	/* --------------------------- UCP ------------------------------ */
+
+	#ucp-wrapper .text .stats{
+		width: 500px;
+		height: 600px;
+		padding: 40px;
+	}
+
+	#ucp-wrapper .text .stats .pages-nav li{
+		margin-right: 20px;
+	}
+	#ucp-wrapper .text .stats .pages-nav li.active{
+		font-size: 20px;
+	}
+
+	/* UCP Payments page */
+
+	#ucp-wrapper .text .stats .pages .payments-page .slide ul li{
+		font-size: 1em;
+		margin-top: 2px;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .prev{
+		left: 220px;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .next{
+		left: 270px;
+	}
+
+	/* UCP Leaders page */
+
+	#ucp-wrapper .text .stats .pages .leaders-page .slide .h .nick{
+		width: 170px;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .slide .h .organization{
+		width: 130px;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .slide ul li .nick{
+		width: 110px;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .slide ul li .organization{
+		width: 220px;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .prev{
+		left: 220px;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .next{
+		left: 270px;
 	}
 
 }
@@ -879,6 +1516,9 @@
 	}
 	header .nav .navbar-menu .navbar-item:hover a{
 		color: #ccc;
+	}
+	header .nav .navbar-menu .navbar-item.active a{
+		border-bottom: 2px solid rgba(255, 255, 255, 0.5);
 	}
 
 	header .nav .navbar .navbar-personal a{
@@ -960,10 +1600,10 @@
 		font-size: 36px;
 	}
 	#online .people-online span{
-	font-family: 'Proxima Nova Lt';
-	color: #00B770;
-	font-size: 18px;
-	margin-top: 5px;
+		font-family: 'Proxima Nova Lt';
+		color: #00B770;
+		font-size: 18px;
+		margin-top: 5px;
 	}
 
 	#about{
@@ -1013,7 +1653,7 @@
 		margin-bottom: 250px;
 	}
 	#start .actions li{
-		height: 200px;
+		height: 230px;
 	}
 	#start .actions li .number{
 		width: 40px;
@@ -1026,9 +1666,9 @@
 		position: absolute;
 		top: 30px;
 		left: -130px;
-		width: 100px;
-		height: 200px;
-		border-radius: 100px 0 0 100px;
+		width: 115px;
+		height: 230px;
+		border-radius: 115px 0 0 115px;
 		border: 2px solid #698cc8;
 		border-right: 2px solid #f6f6f9;
 		opacity: 0.5;
@@ -1038,12 +1678,18 @@
 		position: absolute;
 		top: 60px;
 		right: -130px;
-		width: 100px;
-		height: 200px;
-		border-radius: 0 100px 100px 0;
+		width: 115px;
+		height: 230px;
+		border-radius: 0 115px 115px 0;
 		border: 2px solid #698cc8;
 		border-left: none;
 		opacity: 0.5;
+	}
+	#start .actions p{
+		font-size: 1.1em;
+	}
+	#start .actions a{
+		margin-top: 20px;
 	}
 
 	#start .bg{
@@ -1102,21 +1748,117 @@
 		font-size: 2em;
 	}
 	#donate-wrapper header .text p{
-		font-size: 1em;
+		font-size: 1.1em;
+	}
+	header .text .image-pig{
+		margin-bottom: 30px;
 	}
 	header form input{
 		margin-top: 30px;
 		font-size: 1.2em;
 	}
-	header form .agreement p{
+	#donate-wrapper header form .agreement p{
+		font-size: 1em;
 		padding-left: 15px;
+	}
+
+	#success, #error{
+		width: 703px;
+		height: 478px;
+	}
+	#success img{
+		width: 150px;
+		margin-top: 80px;
+	}
+	#error img{
+		width: 200px;
+		margin-top: 80px;
+	}
+	#success h1, #error h1{
+		margin-top: 30px;
+		font-size: 28px;
+	}
+	#success p, #error p{
+		margin-top: 20px;
+		font-size: 1.1em;
+		width: 60%;
+	}
+
+	/* --------------------------- UCP ------------------------------ */
+	
+	#ucp-wrapper header{
+		margin-bottom: 0;
+	}
+	#ucp-wrapper header .nav .navbar-menu .navbar-item a{
+		color: #363c4d;
+	}
+	#ucp-wrapper header .nav .navbar-menu .navbar-item a:hover{
+		color: #7E8495;
+	}
+	#ucp-wrapper header .navbar-personal a{
+		background-color: #558DCB;
+		color: white;
+	}
+	#ucp-wrapper header .navbar-personal a:hover{
+		background-color: #558DCB;
+		color: white;
+	}
+	#ucp-wrapper .text{
+		width: auto;
+		display: grid;
+		grid-template-columns: 500px 400px;
+		grid-column-gap: 30px;
+		grid-template-rows: 75px 500px 130px;
+		grid-template-areas:
+		"heading heading"
+		"stats skin"
+		"stats help"
+		;
+	}
+	#ucp-wrapper .text > h1{
+		grid-area: heading;
+		margin-top: 0;
+	}
+	#ucp-wrapper .text .stats{
+		grid-area: stats;
+		height: 100%;
+		width: 100%;
+		margin: 0;
+		transform: translate(0, 0);
+	}
+	#ucp-wrapper .text .skin{
+		grid-area: skin;
+		height: 100%;
+		width: 100%;
+		margin: 0;
+		transform: translate(0, 0);
+	}
+	#ucp-wrapper .text > .help{
+		grid-area: help;
+		margin-top: 0;
+	}
+	#ucp-wrapper .text .stats .pages .main-page > .help{
+		width: 420px;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		margin-top: 10px;
+		position: absolute;
+		bottom: 40px;
+		left: 0;
+	}
+	#ucp-wrapper .text .stats .pages .main-page > .help a{
+		margin-top: 0;
+		width: 200px;
+	}
+	#ucp-wrapper .text > .help a:nth-child(1), #ucp-wrapper .text > .help a:nth-child(2){
+		display: none;
 	}
 
 }
 
 @media screen and (min-width: 1440px){
 
-	
 	header{
 		margin-left: 50%;
 		transform: translate(-50%, 0);
@@ -1166,6 +1908,133 @@
 	#donate-wrapper header .text{
 		margin-top: 210px;
 		margin-bottom: 210px;
+	}
+
+	/* --------------------------- UCP ------------------------------ */
+
+	#ucp-wrapper .text{
+		grid-template-columns: 600px 400px;
+		grid-column-gap: 45px;
+		grid-template-rows: 75px 610px 160px;
+		grid-template-areas:
+		"heading heading"
+		"stats skin"
+		"stats help"
+		;
+	}
+	#ucp-wrapper .text .stats{
+		padding: 55px;
+	}
+	#ucp-wrapper .text .stats .pages .main-page > .help{
+		bottom: 50px;
+		width: 100%;
+		box-sizing: border-box;
+		padding: 0 55px;
+	}
+	#ucp-wrapper .text > .help{
+		margin-top: 20px;
+	}
+	#ucp-wrapper .text .stats h1{
+		font-size: 36px;
+	}
+	#ucp-wrapper .text .stats .pages-nav{
+		margin-top: 45px;
+	}
+	#ucp-wrapper .text .stats .pages-nav li{
+		font-size: 18px;
+		line-height: 24px;
+		margin-right: 25px;
+	}
+	#ucp-wrapper .text .stats .pages-nav li.active{
+		font-size: 24px;
+	}
+	#ucp-wrapper .text .stats .pages .main-page ul h2{
+		font-size: 14px;
+	}
+	#ucp-wrapper .text .stats .pages .main-page ul li{
+		font-size: 18px;
+	}
+
+	#ucp-wrapper .text .stats .pages .property-page ul span{
+		font-size: 14px;
+	}
+	#ucp-wrapper .text .stats .pages .property-page ul .empty{
+		font-size: 18px;
+	}
+
+	#ucp-wrapper .text .stats .pages .payments-page .sort p{
+		font-size: 14px;
+		margin-top: 40px;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .slide ul li{
+		font-size: 18px;
+		line-height: 24px;
+		margin-top: 0;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .prev{
+		left: 270px;
+		bottom: 97px;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .current{
+		bottom: 90px;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .next{
+		left: 320px;
+		bottom: 97px;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .slider > a{
+		display: block;
+		position: absolute;
+		width: 222px;
+		height: 50px;
+		border: 2px solid #558DCB;
+		background-color: rgba(0, 0, 0, 0.0);
+		border-radius: 15px;
+		left: 50%;
+		transform: translate(-50%, 0);
+		bottom: 20px;
+		color: #558DCB;
+		cursor: pointer;
+		transition: .3s ease;
+		font-size: 16px;
+		font-family: Proxima Nova Rg;
+		font-weight: 700;
+		text-decoration: none;
+		line-height: 50px;
+	}
+	#ucp-wrapper .text .stats .pages .payments-page .slider > a:hover{
+		background-color: #558DCB;
+		color: white;
+	}
+
+
+	#ucp-wrapper .text .stats .pages .leaders-page .slide .h .nick{
+		width: 220px;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .slide .h .organization{
+		width: 160px;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .slide ul li{
+		font-size: 18px;
+		margin-top: 0;
+		line-height: 24px;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .slide ul li .nick{
+		width: 130px;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .slide ul li .organization{
+		width: 275px;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .prev{
+		left: 270px;
+		bottom: 57px;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .current{
+		bottom: 50px;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .next{
+		left: 320px;
+		bottom: 57px;
 	}
 
 }
