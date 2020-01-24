@@ -12,10 +12,10 @@ class engine
 		array(
 			"name" => "#1",
 			"ip" => "194.61.44.20:8904",
-			"db_hostname" => "ip",
-			"db_username" => "user",
+			"db_hostname" => "localhost",
+			"db_username" => "root",
 			"db_password" => "password",
-			"db_database" => "database",
+			"db_database" => "players",
 			"unitpay_link" => "https://unitpay.ru/",
 			"unitpay_secret_key" => "key"
 		)
@@ -151,9 +151,9 @@ class engine
 		<span></span>
 		</div>
 		<ul class="dropdown-menu">
-		<li class="dropdown-item"><a href="main.html">Главная</a></li>
+		<li class="dropdown-item"><a href="main.php">Главная</a></li>
 		<li class="dropdown-item"><a href="#">Ставки BoxBet</a></li>
-		<li class="dropdown-item"><a href="billing.php">Донат</a></li>
+		<li class="dropdown-item"><a href="donate.php">Донат</a></li>
 		<li class="dropdown-item"><a href="#">Gregtech FM</a></li>
 		<li class="dropdown-item"><a href="#">Форум</a></li>
 		<li class="dropdown-item lc"><a href="#" onclick="DropdownToggle(this); setTimeout(() => {Auth();}, 550);">Личный кабинет</a></li>
@@ -161,9 +161,14 @@ class engine
 		</div>
 		<div class="navbar">
 		<ul class="navbar-menu">
-		<li class="navbar-item"><a href="main.html">Главная</a></li>
+		<li class="navbar-item ';
+		// Делаем активным пункт в навбаре в зависиммости от страницы,добавляя класс active
+		if($page == "MAIN") $this->body .= 'active';
+		$this->body .= '"><a href="main.php">Главная</a></li>
 		<li class="navbar-item"><a href="#">Ставки BoxBet</a></li>
-		<li class="navbar-item"><a href="billing.php">Донат</a></li>
+		<li class="navbar-item ';
+		if($page == "DONATE") $this->body .= 'active';
+		$this->body .= '"><a href="donate.php">Донат</a></li>
 		<li class="navbar-item"><a href="#">Gregtech FM</a></li>
 		<li class="navbar-item"><a href="#">Форум</a></li>
 		</ul>
@@ -208,291 +213,283 @@ class engine
 			<p>Первый игровой мод был на основе Gamer, разработка длилась с 22 сентября 2012 года по июнь месяц 2014 года. Развитие сервера было очень стремительным, уже за 2 месяца после открытия сервер имел онлайн 50+, что не могло радовать основателей сервера. Над модом трудились 2 человека, это Юра Чемериский и Влад Мальцев. Влад Мальцев, второй разработчик игрового мода GreenTech RolePlay который присоеденился к проекту весной 2013 года.</p>
 			<p>После чего все 3 основателя добились онлайна в 110/110 человек. Сервер имел множество проблем, после чего потерял свой онлайн до 3-5 человек в день. Через некоторое время он снова открылся, с новым игровым модом, но долго на этой основе сервер не проработал из за лагов, и слетов аккаунтов.</p>
 			<p>Был передан в другие руки, после чего была опять смена мода на старый. И потом опять же на новый, после исправления всех лагов и багов, мод наконец то начал быть играбельным. Мод стремительно развивался, а сам проект помалу загибался. Сервер закрывался несколько раз, но недавно был восстановлен, и сейчас продолжает свою работу. Игровой мод сильно изменился, и стал более качественным</p>
-				</div>
-				</div>
-				</div>
-				<div id="start">
-				<ul class="actions">
-				<li class="game">
-				<span class="number">1</span>
-				<div class="text">
-				<h1>Скачать <u>игру</u></h1>
-				<p>Бессознательное, на первый взгляд, самопроизвольно. Субтехника, в том числе, вразнобой отталкивает стимул. Показательный пример – арпеджированная фактура сонорна. Код просветляет стресс</p>
-				</div>
-				<a href="">Скачать GTA Criminal Russia</a>
-				</li>
-				<li class="multiplayer">
-				<span class="number">2</span>
-				<div class="text">
-				<h1>Скачать <u>мультиплеер</u></h1>
-				<p>Бессознательное, на первый взгляд, самопроизвольно. Субтехника, в том числе, вразнобой отталкивает стимул. Показательный пример – арпеджированная фактура сонорна. Код просветляет стресс</p>
-				</div>
-				<a href="">Скачать CR-MP 0.3e</a>
-				</li>
-				<li class="modes">
-				<span class="number">3</span>
-				<div class="text">
-				<h1>Скачать <u>пакет модификаций</u></h1>
-				<p>Наши исследования позволяют сделать вывод о том, что сознание символизирует латентный онтогенез речи</p>
-				</div>
-				<a href="">Скачать мод-пак</a>
-				</li>
-				<li class="connect">
-				<span class="number">4</span>
-				<div class="text">
-				<h1>Скачать <u>пакет модификаций</u></h1>
-				<p>Запустите клиент CR-MP (с ярлыка или через Пуск). Введите никнейм в поле “Nick_Name” (Это будет имя вашего персонажа на сервере), Нажмите *оранжевая галочка* и вставьте наш IP-адрес: 194.61.44.20:8904 . Выберите сервер и нажмите *зелёная стрелочка*</p>
-				</div>
-				<a href="">Смотреть видео-урок</a>
-				</li>
-				</ul>
-				<div class="bg">
-				<img src="../img/start-background.png" alt="background">
-				</div>
-				</div>
-				';
+			</div>
+			</div>
+			</div>
+			<div id="start">
+			<ul class="actions">
+			<li class="game">
+			<span class="number">1</span>
+			<div class="text">
+			<h1>Скачать <u>игру</u></h1>
+			<p>Бессознательное, на первый взгляд, самопроизвольно. Субтехника, в том числе, вразнобой отталкивает стимул. Показательный пример – арпеджированная фактура сонорна. Код просветляет стресс</p>
+			</div>
+			<a href="">Скачать GTA Criminal Russia</a>
+			</li>
+			<li class="multiplayer">
+			<span class="number">2</span>
+			<div class="text">
+			<h1>Скачать <u>мультиплеер</u></h1>
+			<p>Бессознательное, на первый взгляд, самопроизвольно. Субтехника, в том числе, вразнобой отталкивает стимул. Показательный пример – арпеджированная фактура сонорна. Код просветляет стресс</p>
+			</div>
+			<a href="">Скачать CR-MP 0.3e</a>
+			</li>
+			<li class="modes">
+			<span class="number">3</span>
+			<div class="text">
+			<h1>Скачать <u>пакет модификаций</u></h1>
+			<p>Наши исследования позволяют сделать вывод о том, что сознание символизирует латентный онтогенез речи</p>
+			</div>
+			<a href="">Скачать мод-пак</a>
+			</li>
+			<li class="connect">
+			<span class="number">4</span>
+			<div class="text">
+			<h1>Скачать <u>пакет модификаций</u></h1>
+			<p>Запустите клиент CR-MP (с ярлыка или через Пуск). Введите никнейм в поле “Nick_Name” (Это будет имя вашего персонажа на сервере), Нажмите *оранжевая галочка* и вставьте наш IP-адрес: 194.61.44.20:8904 . Выберите сервер и нажмите *зелёная стрелочка*</p>
+			</div>
+			<a href="">Смотреть видео-урок</a>
+			</li>
+			</ul>
+			<div class="bg">
+			<img src="../img/start-background.png" alt="background">
+			</div>
+			</div>
+			';
 		}
 		
-		if($page == "BILLING")
+		if($page == "DONATE")
 		{
-			$this->add_to_template('
-				<section class="sa-text-area">
-				<center>
-				<div class="main-block">
-				<div class="main-block-sub" style="width: 70%;">
-				<p class="block-title">Пополнить счет</p>
-				');
-			$username = "";
-			$form = true;
-			$error = "";
-			
-			if(isset($_POST['srv']) && isset($_POST['username']) && isset($_POST['sum']))
-			{
-				$server_id = strval($_POST['srv']) - 1;
-				$username = $_POST['username'];
-				$sum = strval($_POST['sum']);
-				
-				//if($server_id >= 0 && $server_id < $this->server_count)
-				if($server_id == 0)
-				{
-					if(strlen($username) > 0)
-					{
-						if(strlen($username) >= 3 && strlen($username) <= 20)
-						{
-							if($sum > 0 && $sum < 10000)
-							{
-								if(preg_match("#^[aA-zZ0-9\-_\]\[\$\=\(\)\@\.]+$#", $username))
-								{
-									$this->db_connect($server_id);
-									
-									$username = $this->db->real_escape_string($username);
-									
-									$response = $this->db->query("SELECT * FROM players WHERE Names = '".$username."'");
-									
-									if($response->num_rows)
-									{
-										$form = false;
-										
-										$this->add_to_template('
-											<form class="billing-form" action="'.$this->server_data[$server_id]['unitpay_link'].'" method="post">
-											<p>
-											<b>Проверьте указанные данные</b><br/>
-											сервер: GreenTech RolePlay #'.($server_id + 1).'<br/>
-											никнейм: '.$username.'<br/>
-											к оплате: '.$sum.' RUB<br/>
-											будет зачислено: '.($sum * $this->donate_multiplier).' ДО '.(($this->donate_multiplier > 1) ? "<font color=\"red\">(акция \"x".$this->donate_multiplier." донат\")</font>" : "").'<br/>
-											<br/>
-											<b>Вы хотите перейти к оплате?</b>
-											</p>
-											<input type="hidden" name="desc" value="Покупка внутриигровой валюты на сервере GreenTech RolePlay #'.($server_id + 1).' для аккаунта '.$username.'" />
-											<input type="hidden" name="account" value="'.$username.'" />
-											<input type="hidden" name="sum" value="'.$sum.'" />
-											<button type="submit" class="btn btn-primary">Оплатить</button>
-											</form>
-											');
-									}
-									else
-									{
-										$error = "игрок с таким никнеймом не существует";
-									}
-								}
-								else
-								{
-									$error = "в никнейме недопустимые символы";
-								}
-							}
-							else
-							{
-								$error = "допустимая сумма платежа: от 1 до 10.000 рублей";
-							}
-						}
-						else
-						{
-							$error = "допустимая длина никнейма: 3-20 символов";
-						}
-					}
-					else
-					{
-						$error = "введите никнейм";
-					}
-				}
-				else
-				{
-					$error = "некорректный сервер";
-				}
-			}
-			
-			if($form)
-			{
-				$server_id = -1;
-				$servers = "";
-				
-				if(isset($_POST['srv']))
-				{
-					$server_id = strval($_POST['srv']);
-				}
-				else
-				{
-					if(isset($_GET['srv']))
-					{
-						$server_id = strval($_GET['srv']);
-					}
-					else
-					{
-						if(isset($_SESSION['auth']) && $_SESSION['auth'] == "YES")
-						{
-							$server_id = strval($_SESSION['srv']) + 1;
-						}
-					}
-				}
-				
-				//for($i = 0; $i < $this->server_count; $i++)
-				for($i = 0; $i < 1; $i++)
-				{
-					$servers .= '<option value="'.($i + 1).'" '.($server_id - 1 == $i ? "selected" : "").'>GreenTech RolePlay #'.($i + 1).'</option>';
-				}
-				
-				$this->add_to_template('<form class="billing-form" method="post">');
-				
-				if($error != "")
-				{
-					$this->add_to_template('<div class="alert alert-danger" role="alert"><b>Ошибка: </b>'.$error.'</div>');
-				}
-				else if($this->donate_multiplier > 1)
-				{
-					$this->add_to_template('<div class="alert alert-warning" role="alert"><b>Акция: </b>x'.$this->donate_multiplier.' донат</div>');
-				}
-				
-				$this->add_to_template('
-					<div class="form-group row">
-					<label for="server-select">Сервер</label>
-					<select class="form-control" name="srv" id="server-select">
-					'.$servers.'
-					</select>
-					</div>
-					');
-				
-				if($server_id == 0)
-				{
-					//$username = "";
-					
-					if(isset($_POST['username']))
-					{
-						$username = $_POST['username'];
-					}
-					else
-					{
-						if(isset($_GET['name']))
-						{
-							$username = $_GET['name'];
-						}
-						else
-						{
-							if(isset($_SESSION['auth']) && $_SESSION['auth'] == "YES")
-							{
-								$username = $_SESSION['name'];
-							}
-						}
-					}
-				}
-				
-				$this->add_to_template('
-					<div class="form-group row">
-					<label for="username-input">Никнейм</label>
-					<input class="form-control" type="text" name="username" value="'.$username.'" placeholder="Введите никнейм" id="username-input">
-					</div>
-					');
-				
-				$sum = 50;
-				
-				if(isset($_POST['sum']))
-				{
-					$sum = strval($_POST['sum']);
-				}
-				else
-				{
-					if(isset($_GET['sum']))
-					{
-						$sum = strval($_GET['sum']);
-					}
-				}
-				
-				$this->add_to_template('
-					<div class="form-group row">
-					<label for="sum-input">Сумма</label>
-					<input class="form-control" type="number" value="'.$sum.'" name="sum" id="sum-input">
-					</div>
-					');
-				
-				$this->add_to_template('
-					<div class="form-group row">
-					<label class="form-check-label">
-					<input type="checkbox" class="form-check-input" required>
-					Я прочитал и принял <a href="agreement.php">пользовательское соглашение</a>
-					</label>
-					</div>
-					');
-				
-				$this->add_to_template('
-					<button type="submit" class="btn btn-primary">Продолжить</button>
-					');
-				
-				$this->add_to_template('</form>');
-			}
-			
-			$this->add_to_template('
-				</div>
-				</div>
-				</center>
-				</section>
-				');
-		}
-		
-		if($page == "BILLING_SUCCESS")
-		{
-			$this->add_to_template('
-				<section class="sa-text-area">
-				<center>
-				<div class="main-block">
-				<div class="main-block-sub" style="width: 70%;">
-				<p class="block-title">Пополнить счет</p>
-				');
+			// Добавляем начало формы, то есть только статичный html
+			$this->body .= '
+			<div class="text">
+			<div class="image-pig">
+			<img src="../img/pig.png" alt="pig_money">
+			</div>
+			<h1>Пополнение средств</h1>
+			<p>Основная идея социально–политических взглядов К.Маркса была в том, что созерцание традиционно понимает под собой либерализм. Александрийская школа экстремально иллюстрирует авторитаризм, изменяя привычную реальность</p>
+			<form action="donate.php" method="POST">
+			<input type="text" name="username" placeholder="Ник" oninput="CheckInput(this);">
+			<input type="text" name="sum" placeholder="Сумма (Руб)" oninput="CheckInput(this);">
+			<div class="agreement">
+			<label class="confirm">
+			<input type="checkbox">
+			<span class="visible" onclick="Tick(this);">
+			<span class="tick"></span>
+			</span>
+			</label>
+			<p>Я изучил и принял <a href="#">пользовательское соглашение</a></p>
+			</div>
+			<button type="submit">Продолжить</button>
+			</form>
+			</div>
+			</header>
+			';
 
-			$this->add_to_template('
-				<div class="alert alert-success" role="alert">
-				<h4 class="alert-heading">Успешно!</h4>
-				<p>На указанный аккаунт была зачислена указанная сумма. Номер платежа UnitPay #'.$_GET['paymentId'].'.</p>
-				</div>
-				');
+			$username = '';				// Имя донатера
+			$error = [];					// Массив с ошибками
 			
-			$this->add_to_template('
-				</div>
-				</div>
-				</center>
-				</section>
-				');
+			// Проверяем функцию страницы: если if срабатывает, значит пльзователь отправил форму, обрабатываем ее. Если if не срабатывает, значит пользователь зашел на страницу в первый раз и ему нужно показать форму
+			if(isset($_POST['username']) && isset($_POST['sum'])){
+				$username = $_POST['username'];						// Инициализация имени пользователя из формы
+				$sum = strval($_POST['sum']);							// Инициализация суммы доната из формы
+
+				// Проверяем никнейм на длину символов
+				if(strlen($username) <= 3 || strlen($username) >= 20) $error[] = "Допустимая длина никнейма: 3-20 символов";
+				// Проверяем никнейм на соддержание запрещенных символов
+				if(!preg_match("#^[aA-zZ0-9\-_\]\[\$\=\(\)\@\.]+$#", $username)) $error[] = "В никнейме недопустимые символы";
+				// Проверяем сумму на соответствие максимальной и минимальной сумме доната
+				if($sum < 0 || $sum > 10000) $error[] = "Допустимая сумма платежа: от 1 до 10.000 рублей";
+			}
+			if(isset($_POST['username']) && isset($_POST['sum']) && !$error){
+				// Делаем донат
+				// Подклюяаемся к БД (0 это номер сервера, он у нас один)
+				$this->db_connect(0);
+
+				// Валидация строки username для SQL
+				$username = $this->db->real_escape_string($username);
+
+				// Из БД выбираем всех пользователей, у которых логин соответствует введенному
+				$response = $this->db->query("SELECT * FROM players WHERE Names = '".$username."'");
+
+				// Если нашли пользователей с таким же логином, переходим на страницу оплаты
+				if($response->num_rows){
+
+					// Редирект на страницу оплаты
+					header('Location: https://google.com');
+
+					// // Showing special page to confirm data 
+					// $this->add_to_template('
+					// <form class="billing-form" action="'.$this->server_data[$server_id]['unitpay_link'].'" method="post">
+					// <p>
+					// <b>Проверьте указанные данные</b><br/>
+					// сервер: GreenTech RolePlay #'.($server_id + 1).'<br/>
+					// никнейм: '.$username.'<br/>
+					// к оплате: '.$sum.' RUB<br/>
+					// будет зачислено: '.($sum * $this->donate_multiplier).' ДО '.(($this->donate_multiplier > 1) ? "<font color=\"red\">(акция \"x".$this->donate_multiplier." донат\")</font>" : "").'<br/>
+					// <br/>
+					// <b>Вы хотите перейти к оплате?</b>
+					// </p>
+					// <input type="hidden" name="desc" value="Покупка внутриигровой валюты на сервере GreenTech RolePlay #'.($server_id + 1).' для аккаунта '.$username.'" />
+					// <input type="hidden" name="account" value="'.$username.'" />
+					// <input type="hidden" name="sum" value="'.$sum.'" />
+					// <button type="submit" class="btn btn-primary">Оплатить</button>
+					// </form>
+					// ');
+				}
+			}
+
+		// 	if($form)
+		// 	{
+		// 		$server_id = -1;
+		// 		$servers = "";
+
+		// 		if(isset($_POST['srv']))
+		// 		{
+		// 			$server_id = strval($_POST['srv']);
+		// 		}
+		// 		else
+		// 		{
+		// 			if(isset($_GET['srv']))
+		// 			{
+		// 				$server_id = strval($_GET['srv']);
+		// 			}
+		// 			else
+		// 			{
+		// 				if(isset($_SESSION['auth']) && $_SESSION['auth'] == "YES")
+		// 				{
+		// 					$server_id = strval($_SESSION['srv']) + 1;
+		// 				}
+		// 			}
+		// 		}
+
+		// 		//for($i = 0; $i < $this->server_count; $i++)
+		// 		for($i = 0; $i < 1; $i++)
+		// 		{
+		// 			$servers .= '<option value="'.($i + 1).'" '.($server_id - 1 == $i ? "selected" : "").'>GreenTech RolePlay #'.($i + 1).'</option>';
+		// 		}
+
+		// 		$this->add_to_template('<form class="billing-form" method="post">');
+
+		// 		if($error != "")
+		// 		{
+		// 			$this->add_to_template('<div class="alert alert-danger" role="alert"><b>Ошибка: </b>'.$error.'</div>');
+		// 		}
+		// 		else if($this->donate_multiplier > 1)
+		// 		{
+		// 			$this->add_to_template('<div class="alert alert-warning" role="alert"><b>Акция: </b>x'.$this->donate_multiplier.' донат</div>');
+		// 		}
+
+		// 		$this->add_to_template('
+		// 			<div class="form-group row">
+		// 			<label for="server-select">Сервер</label>
+		// 			<select class="form-control" name="srv" id="server-select">
+		// 			'.$servers.'
+		// 			</select>
+		// 			</div>
+		// 			');
+
+		// 		if($server_id == 0)
+		// 		{
+		// 			//$username = "";
+
+		// 			if(isset($_POST['username']))
+		// 			{
+		// 				$username = $_POST['username'];
+		// 			}
+		// 			else
+		// 			{
+		// 				if(isset($_GET['name']))
+		// 				{
+		// 					$username = $_GET['name'];
+		// 				}
+		// 				else
+		// 				{
+		// 					if(isset($_SESSION['auth']) && $_SESSION['auth'] == "YES")
+		// 					{
+		// 						$username = $_SESSION['name'];
+		// 					}
+		// 				}
+		// 			}
+		// 		}
+
+		// 		$this->add_to_template('
+		// 			<div class="form-group row">
+		// 			<label for="username-input">Никнейм</label>
+		// 			<input class="form-control" type="text" name="username" value="'.$username.'" placeholder="Введите никнейм" id="username-input">
+		// 			</div>
+		// 			');
+
+		// 		$sum = 50;
+
+		// 		if(isset($_POST['sum']))
+		// 		{
+		// 			$sum = strval($_POST['sum']);
+		// 		}
+		// 		else
+		// 		{
+		// 			if(isset($_GET['sum']))
+		// 			{
+		// 				$sum = strval($_GET['sum']);
+		// 			}
+		// 		}
+
+		// 		$this->add_to_template('
+		// 			<div class="form-group row">
+		// 			<label for="sum-input">Сумма</label>
+		// 			<input class="form-control" type="number" value="'.$sum.'" name="sum" id="sum-input">
+		// 			</div>
+		// 			');
+
+		// 		$this->add_to_template('
+		// 			<div class="form-group row">
+		// 			<label class="form-check-label">
+		// 			<input type="checkbox" class="form-check-input" required>
+		// 			Я прочитал и принял <a href="agreement.php">пользовательское соглашение</a>
+		// 			</label>
+		// 			</div>
+		// 			');
+
+		// 		$this->add_to_template('
+		// 			<button type="submit" class="btn btn-primary">Продолжить</button>
+		// 			');
+
+		// 		$this->add_to_template('</form>');
+		// 	}
+
+		// 	$this->add_to_template('
+		// 		</div>
+		// 		</div>
+		// 		</center>
+		// 		</section>
+		// 		');
+		// }
+
+		// if($page == "BILLING_SUCCESS")
+		// {
+		// 	$this->add_to_template('
+		// 		<section class="sa-text-area">
+		// 		<center>
+		// 		<div class="main-block">
+		// 		<div class="main-block-sub" style="width: 70%;">
+		// 		<p class="block-title">Пополнить счет</p>
+		// 		');
+
+		// 	$this->add_to_template('
+		// 		<div class="alert alert-success" role="alert">
+		// 		<h4 class="alert-heading">Успешно!</h4>
+		// 		<p>На указанный аккаунт была зачислена указанная сумма. Номер платежа UnitPay #'.$_GET['paymentId'].'.</p>
+		// 		</div>
+		// 		');
+
+		// 	$this->add_to_template('
+		// 		</div>
+		// 		</div>
+		// 		</center>
+		// 		</section>
+		// 		');
 		}
-		
+
 		if($page == "BILLING_ERROR")
 		{
 			$this->add_to_template('
@@ -509,7 +506,7 @@ class engine
 				<p>При оплате произошла ошибка, обратитесь к администрации с указанными данными: '.$_GET['account'].':'.$_GET['paymentId'].'</p>
 				</div>
 				');
-			
+
 			$this->add_to_template('
 				</div>
 				</div>
@@ -517,7 +514,7 @@ class engine
 				</section>
 				');
 		}
-		
+
 		if($page == "AGREEMENT")
 		{
 			$this->add_to_template('
@@ -551,7 +548,7 @@ class engine
 				<p>- Администрация проекта имеет право на удаление предоставленных Вам донат-услуг и/или на запрет их использования.</p>
 				</div>
 				');
-			
+
 			$this->add_to_template('
 				</div>
 				</div>
@@ -559,7 +556,7 @@ class engine
 				</section>
 				');
 		}
-		
+
 		if($page == "UCP")
 		{
 			$this->add_to_template('
@@ -567,30 +564,30 @@ class engine
 				<center>
 				<div class="main-block">
 				');
-			
+
 			if(isset($_SESSION['auth']) && $_SESSION['auth'] == "YES")
 			{
 				$this->add_to_template('<div class="main-block-sub-ucp">');
 				$this->add_to_template('<p class="block-title" style="margin-bottom: 10px;">Личный кабинет</p>');
-				
+
 				if(isset($_GET['a']))
 				{
 					if($_GET['a'] == "admin" && isset($_GET['p']))
 					{
 						$server_id = $_SESSION['srv'];
-						
+
 						$this->db_connect($server_id);
-						
+
 						$response = $this->db->query("SELECT * FROM players WHERE Names = '".$_SESSION['name']."'");
-						
+
 						if($response->num_rows)
 						{
 							$data = $response->fetch_assoc();
-							
+
 							if($data['Admin'] > 0)
 							{
 								$this->add_to_template('<h4>Панель администратора (сервер №'.($server_id + 1).')</h4>');
-								
+
 								$this->add_to_template('<div class="ucp-block-left" style="padding: 10px;">');
 
 								$this->add_to_template('
@@ -598,17 +595,17 @@ class engine
 									<form method="post" action="ucp.php" class="ucp-menu-btn-exit"><input style="margin-bottom: 2px;" type="submit" name="page_main" class="btn btn-danger btn-sm btn-block" value="Назад в UCP"/></form>
 									</div>
 									');
-								
+
 								$this->add_to_template('<div class="ucp-menu-pages">');
-								
+
 								$this->add_to_template('
 									<a href="ucp.php?a=admin&p=main" style="margin-bottom: 2px;" class="btn btn-primary btn-sm btn-block">Главное</a>
 									<a href="ucp.php?a=admin&p=ucplogs" style="margin-bottom: 2px;" class="btn btn-primary btn-sm btn-block">История UCP</a>
 									<a href="ucp.php?a=admin&p=players" style="margin-bottom: 2px;" class="btn btn-primary btn-sm btn-block">Игроки</a>
 									');
-								
+
 								$this->add_to_template('</div>');
-								
+
 								$this->add_to_template('<br/>');
 								$this->add_to_template('</div>');
 
@@ -634,28 +631,28 @@ class engine
 									case 'ucplogs':
 									{
 										$this->add_to_template('<h5><b>История UCP</b></h5>');
-										
+
 										$this->add_to_template('<table class="table" width="100%" style="font-size: 10pt;">');
 										$this->add_to_template('<tr><td><b>ip</b></td><td style="text-align: center;"><b>никнейм</b></td><td style="text-align: center;"><b>дата</b></td><td style="text-align: right;"><b>действие</b></td></tr>');
-										
+
 										$start_id = 0;
-										
+
 										if(isset($_GET['s']))
 										{
 											$start_id = strval($_GET['s']);
 										}
-										
+
 										$response = $this->db->query('SELECT * FROM `ucp_log` ORDER BY `id` DESC LIMIT '.($start_id * 30).',30');
-										
+
 										if($response)
 										{
 											for($i = 0; $i < $response->num_rows; $i++)
 											{
 												$log_data = $response->fetch_assoc();
-												
+
 												$action_name = "неизвестно";
 												$action_data = json_decode($log_data['params']);
-												
+
 												for($a = 0; $a < sizeof($this->ucp_log_action_names); $a++)
 												{
 													if($log_data['action'] == $this->ucp_log_action_names[$a][0])
@@ -663,23 +660,23 @@ class engine
 														$action_name = $this->ucp_log_action_names[$a][1];
 													}
 												}
-												
+
 												$this->add_to_template('<tr><td>'.$log_data['ip'].'</td><td style="text-align: center;">'.$action_data[2].'</td><td style="text-align: center;">'.date("d.m.Y H:m:s", $log_data['ts']).'</td><td style="text-align: right;">'.$action_name.' <a href="ucp.php?a=admin&p=ucplogdata&i='.$log_data['id'].'" class="btn-primary btn-sm">подробнее</a></td></tr>');
 											}
 										}
-										
+
 										$this->add_to_template('</table>');
-										
+
 										$this->add_to_template('<table style="border: none;" width="100%">');
 										$this->add_to_template('<tr>');
-										
+
 										if($start_id > 0)
 										{
 											$this->add_to_template('<td style="padding: 5px; text-align: left;"><b><a class="btn btn-primary btn-sm" href="ucp.php?a=admin&p=ucplogs&s='.($start_id - 1).'">назад</a></b></td>');
 										}
-										
+
 										$this->add_to_template('<td style="padding: 5px; text-align: right;"><b><a class="btn btn-primary btn-sm" href="ucp.php?a=admin&p=ucplogs&s='.($start_id + 1).'">вперед</a></b></td>');
-										
+
 										$this->add_to_template('</tr>');
 										$this->add_to_template('</table>');
 
@@ -692,14 +689,14 @@ class engine
 											$this->add_to_template('<h5><b>История UCP</b></h5>');
 
 											$response = $this->db->query('SELECT * FROM `ucp_log` WHERE `id` = \''.strval($_GET['i']).'\'');
-											
+
 											if($response)
 											{
 												$log_data = $response->fetch_assoc();
-												
+
 												$action_name = "неизвестно";
 												$action_data = json_decode($log_data['params']);
-												
+
 												for($a = 0; $a < sizeof($this->ucp_log_action_names); $a++)
 												{
 													if($log_data['action'] == $this->ucp_log_action_names[$a][0])
@@ -707,7 +704,7 @@ class engine
 														$action_name = $this->ucp_log_action_names[$a][1];
 													}
 												}
-												
+
 												$this->add_to_template('
 													<table class="table" width="100%" style="border-left: 1px solid #eeeeee; font-size: 10pt;">
 													<tr><td><a href="ucp.php?a=admin&p=ucplogs" class="btn-primary btn-sm">назад</a></td><td style="text-align: right;"></td></tr>
@@ -718,7 +715,7 @@ class engine
 													');
 											}
 										}
-										
+
 										break;
 									}
 									case 'players':
@@ -727,7 +724,7 @@ class engine
 
 										$this->add_to_template('<p>Данный раздел предназначен для управления игроками, находящиеся на сервере. Получение списка игроков может занять до 30 секунд</p>');
 										$this->add_to_template('<p><a class="btn btn-primary btn-sm" href="ucp.php?a=admin&p=plist">Получить список игроков</a></p>');
-										
+
 										break;
 									}
 									case 'plist':
@@ -735,15 +732,15 @@ class engine
 										$this->add_to_template('<h5><b>Список игроков</b></h5>');
 
 										$players = $this->rcon($server_id, "players");
-										
+
 										if($players === false)
 										{
 											$this->add_to_template('<div class="alert alert-danger" role="alert"><strong>Ошибка: </strong>не удалось получить список игроков, возможно сервер недоступен</div>');
 										}
-										
+
 										$this->add_to_template('<table class="table" width="100%" style="font-size: 10pt;">');
 										$this->add_to_template('<tr><td><b>ID</b></td><td style="text-align: center;"><b>никнейм</b></td><td style="text-align: center;"><b>IP</b></td><td style="text-align: right;"><b>действия</b></td></tr>');
-										
+
 										for($i = 0; $i < count($players); $i++)
 										{
 											$players[$i] = str_ireplace("\n", "", $players[$i]);
@@ -753,28 +750,28 @@ class engine
 											$players[$i] = str_ireplace("   ", " ", $players[$i]);
 											$players[$i] = str_ireplace("    ", " ", $players[$i]);
 										}
-										
+
 										for($i = 1; $i < count($players); $i++)
 										{
 											$player_data = explode(" ", $players[$i]);
-											
+
 											$this->add_to_template('<tr><td>'.$player_data[0].'</td><td style="text-align: center;">'.$player_data[1].'</td><td style="text-align: center;">'.$player_data[3].'</td><td style="text-align: right;"><a href="ucp.php?a=admin&p=pkick&i='.$player_data[0].'" class="btn-primary btn-sm">кик</a> <a href="ucp.php?a=admin&p=pban&i='.$player_data[0].'" class="btn-primary btn-sm">бан</a> <a href="ucp.php?a=admin&p=pinfo&i='.$player_data[1].'" class="btn-primary btn-sm">инфо</a></td></tr>');
 										}
-										
+
 										$this->add_to_template('</table>');
-										
+
 										break;
 									}
 									case 'pkick':
 									{
 										$result = $this->rcon($server_id, "kick ".strval($_GET['i']));
-										
+
 										$this->add_to_template('<div class="alert alert-info" role="alert"><strong>Результат: </strong>'.$result[0].'</div>');
-										
+
 										break;
 									}
 								}
-								
+
 								$this->add_to_template('</div>');
 							}
 						}
@@ -783,44 +780,44 @@ class engine
 				else
 				{
 					$this->add_to_template('<h4>'.$_SESSION['name'].' (сервер №'.($_SESSION['srv'] + 1).')</h4>');
-					
+
 					$this->db_connect($_SESSION['srv']);
-					
+
 					$response = $this->db->query("SELECT * FROM players WHERE Names = '".$_SESSION['name']."'");
-					
+
 					if($response->num_rows)
 					{
 						$server_id = $_SESSION['srv'];
 						$username = $_SESSION['name'];
-						
+
 						$data = $response->fetch_assoc();
 
 						if($data['Bank'] < 0)
 						{
 							$data['Bank'] = 0;
 						}
-						
+
 						if(isset($_POST['logout']))
 						{
 							unset($_SESSION['auth']);
 							unset($_SESSION['name']);
 							unset($_SESSION['srv']);
-							
+
 							$this->add_header('<meta http-equiv="refresh" content="0;URL=ucp.php">');
-							
+
 							$this->wlog("logout", array($data['ID'], $server_id, $data['Names']));
 						}
-						
+
 						if(isset($_POST['change_email_final']) && isset($_POST['new_email']))
 						{
 							$row = $response->fetch_assoc();
-							
+
 							$_POST['new_email'] = trim($_POST['new_email']);
-							
+
 							if($_POST['new_email'] == $data['Email'])
 							{
 								$_POST['change_email'] = 1;
-								
+
 								$this->add_to_template('
 									<div class="alert alert-danger" role="alert">
 									<b>Ошибка: </b>указанный e-mail совпадает с текущим
@@ -831,16 +828,16 @@ class engine
 							{
 								$_SESSION['ce_new_email'] = $_POST['new_email'];
 								$_SESSION['ce_key'] = $this->generate_key(24);
-								
+
 								$link = "http://greentech-rp.ru/ucp.php?ce=".$_SESSION['ce_key'];
-								
+
 								$message = "Здравствуйте!\n\r\n\r";
 								$message .= "Вы запросили изменение e-mail к аккаунту ".$_SESSION['name']." на сервере GreenTech RolePlay #".($server_id + 1).", перейдите по ".$link." для дальнейших действий.\n\r";
 								$message .= "Если вдруг вы не запрашивали это, проигнорируйте это письмо.\n\r\n\r";
 								$message .= "С Уважением, администрация GreenTech RolePlay.";
-								
+
 								mail($_POST['new_email'], "Изменение email", $message, "From: admin@greentech-rp.ru");
-								
+
 								$this->add_to_template('
 									<div class="alert alert-info" role="alert">
 									<b>Отлично! </b>На указанный e-mail было выслано письмо с дальнейшими указаниями
@@ -856,35 +853,35 @@ class engine
 								if($_SESSION['ce_key'] == $_GET['ce'])
 								{
 									$this->wlog("email_changed", array($data['ID'], $server_id, $data['Names'], $_SESSION['ce_key'], $_SESSION['ce_new_email'], $data['Email']));
-									
+
 									$data['Email'] = $_SESSION['ce_new_email'];
-									
+
 									$this->db->query("UPDATE players SET Email = '".$_SESSION['ce_new_email']."' WHERE Names = '".$_SESSION['name']."'");
-									
+
 									$this->add_to_template('
 										<div class="alert alert-success" role="alert">
 										<b>Успешно! </b>Электронный адрес вашего аккаунта изменен на '.$_SESSION['ce_new_email'].' 
 										</div>
 										');
-									
+
 									unset($_SESSION['ce_new_email']);
 									unset($_SESSION['ce_key']);
 								}
 							}
 						}
-						
+
 						if(isset($_POST['change_password_final']) && isset($_POST['old_password']) && isset($_POST['new_password']) && isset($_POST['new_password_sub']))
 						{
 							$_POST['old_password'] = trim($_POST['old_password']);
 							$_POST['new_password'] = trim($_POST['new_password']);
 							$_POST['new_password_sub'] = trim($_POST['new_password_sub']);
-							
+
 							if($_POST['new_password_sub'] == $_POST['new_password'])
 							{
 								if($_POST['old_password'] == $_POST['new_password'])
 								{
 									$_POST['change_password'] = 1;
-									
+
 									$this->add_to_template('
 										<div class="alert alert-danger" role="alert">
 										<b>Ошибка: </b>указанные пароли совпадают
@@ -907,25 +904,25 @@ class engine
 									{
 										$old_pass_hash = $this->get_password_hash($_POST['old_password'], $data['salt']);
 										$new_pass_hash = $this->get_password_hash($_POST['new_password'], $data['salt']);
-										
+
 										if($old_pass_hash == $data['Pass'])
 										{
 											$data['Pass'] = $new_pass_hash;
-											
+
 											$this->db->query("UPDATE players SET Pass = '".$new_pass_hash."' WHERE Names = '".$_SESSION['name']."'");
-											
+
 											$this->add_to_template('
 												<div class="alert alert-success" role="alert">
 												<b>Успешно! </b>Пароль вашего аккаунта изменен
 												</div>
 												');
-											
+
 											unset($_SESSION['auth']);
 											unset($_SESSION['name']);
 											unset($_SESSION['srv']);
-											
+
 											$this->add_header('<meta http-equiv="refresh" content="2;URL=ucp.php">');
-											
+
 											$this->wlog("password_changed", array($data['ID'], $server_id, $data['Names']));
 										}
 										else
@@ -952,17 +949,17 @@ class engine
 									');
 							}
 						}
-						
+
 						if(isset($_GET['uninvite']))
 						{
 							if($data['Leader'] > 0)
 							{
 								$response = $this->db->query("SELECT * FROM players WHERE ID = '".strval($_GET['uninvite'])."'");
-								
+
 								if($response->num_rows)
 								{
 									$pdata = $response->fetch_assoc();
-									
+
 									if($pdata['ID'] == $data['ID'])
 									{
 										$_POST['page_leader'] = 1;
@@ -1006,7 +1003,7 @@ class engine
 								}
 							}
 						}
-						
+
 						if(isset($_GET['spawn']) && $_GET['spawn'] == "reset")
 						{
 							if($data['Spawn'] < 5)
@@ -1022,19 +1019,19 @@ class engine
 									');
 							}
 						}
-						
+
 						if(isset($_POST['uninvite_final']) && isset($_POST['uninvite_id']))
 						{
 							if($data['Leader'] > 0)
 							{
 								$user_id = strval($_POST['uninvite_id']);
-								
+
 								$response = $this->db->query("SELECT * FROM players WHERE ID = '".$user_id."'");
-								
+
 								if($response->num_rows)
 								{
 									$pdata = $response->fetch_assoc();
-									
+
 									if($pdata['ID'] != $data['ID'])
 									{
 										if($pdata['Member'] == $data['Leader'])
@@ -1042,13 +1039,13 @@ class engine
 											if($pdata['Leader'] != $data['Leader'])
 											{
 												$this->db->query("UPDATE players SET Member = '0', Rank = '0', Spawn = '2' WHERE ID = '".$user_id."'");
-												
+
 												$this->add_to_template('
 													<div class="alert alert-success" role="alert">
 													<b>Успешно! </b>Вы исключили игрока '.$pdata['Names'].' из своей фракции
 													</div>
 													');
-												
+
 												$this->wlog("fraction_uninvate", array($data['ID'], $server_id, $data['Names'], $pdata['ID'], $pdata['Names']));
 											}
 										}
@@ -1060,25 +1057,25 @@ class engine
 						if($data['BanTime'] > 0)
 						{
 							$text = "Срок действия блокировки истек, зайдите на сервер.";
-							
+
 							if($data['BanTime'] > time())
 							{
 								$time = $data['BanTime'] - time();
-								
+
 								$hour = floor($time / 60 / 60);
 								$minute = floor(($time - ($hour * 60 * 60)) / 60);
 								$seconds = ($time - ($hour * 60 * 60)) - ($minute * 60);
-								
+
 								$text = "До разблокировки осталось: ".sprintf("%02d:%02d:%02d", $hour, $minute, $seconds).".";
 							}
-							
+
 							$this->add_to_template('
 								<div class="alert alert-warning" role="alert">
 								<b>Предупреждение: </b>ваш аккаунт заблокирован администратором '.$data['BanName'].', это означает, что вы не сможете зайти на сервер в ближайшее время. '.$text.'
 								</div>
 								');
 						}
-						
+
 						if($server_id == 1)
 						{
 							if($data['transfer_complete'] == 2)
@@ -1118,7 +1115,7 @@ class engine
 						}
 
 						$this->add_to_template('<div class="ucp-block-left" style="padding: 10px;">');
-						
+
 						$this->add_to_template('
 							<div class="ucp-menu-main">
 							<form method="post" action="ucp.php" class="ucp-menu-btn-exit"><input type="submit" name="logout" class="btn btn-danger btn-sm btn-block" value="Выйти"/></form>
@@ -1126,16 +1123,16 @@ class engine
 							<form method="post" action="ucp.php" class="ucp-menu-btn-sub-right"><input type="submit" name="change_password" class="btn btn-primary btn-sm btn-block" value="Сменить пароль"/></form>
 							</div>
 							');
-						
+
 						$this->add_to_template('<div class="ucp-menu-pages">');
-						
+
 						$this->add_to_template('
 							<form method="post" action="ucp.php"><input style="margin-bottom: 2px;" type="submit" name="page_main" class="btn btn-success btn-sm btn-block" value="Главное"/></form>
 							<form method="post" action="ucp.php"><input style="margin-bottom: 2px;" type="submit" name="page_property" class="btn btn-success btn-sm btn-block" value="Имущество"/></form>
 							<form method="post" action="ucp.php"><input style="margin-bottom: 2px;" type="submit" name="page_payments" class="btn btn-success btn-sm btn-block" value="Платежи"/></form>
 							<form method="post" action="ucp.php"><input style="margin-bottom: 2px;" type="submit" name="page_leaders" class="btn btn-success btn-sm btn-block" value="Лидеры"/></form>
 							');
-						
+
 						if($data['Leader'] > 0)
 						{
 							$this->add_to_template('<form method="post" action="ucp.php"><input type="submit" name="page_leader" class="btn btn-success btn-sm btn-block" value="Фракция"/></form>');
