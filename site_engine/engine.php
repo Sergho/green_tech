@@ -14,9 +14,9 @@ class engine
 			"ip" => "194.61.44.20:8904",
 			"db_hostname" => "localhost",
 			"db_username" => "root",
-			"db_password" => "password",
+			"db_password" => "srgho31296",
 			"db_database" => "players",
-			"unitpay_link" => "https://unitpay.ru/",
+			"unitpay_link" => "https://unitpay.ru/pay/2378-994ce",
 			"unitpay_secret_key" => "key"
 		)
 	);
@@ -268,36 +268,27 @@ class engine
 			</div>
 			<h1>Пополнение средств</h1>
 			<p>Основная идея социально–политических взглядов К.Маркса была в том, что созерцание традиционно понимает под собой либерализм. Александрийская школа экстремально иллюстрирует авторитаризм, изменяя привычную реальность</p>
-			<form action="donate.php" method="POST">
-			<input type="text" name="username" placeholder="Ник" oninput="CheckInput(this);">
-			<input type="text" name="sum" placeholder="Сумма (Руб)" oninput="CheckInput(this);">
-			<div class="agreement">
-			<label class="confirm">
-			<input type="checkbox">
-			<span class="visible" onclick="Tick(this);">
-			<span class="tick"></span>
-			</span>
-			</label>
-			<p>Я изучил и принял <a href="#">пользовательское соглашение</a></p>
-			</div>
-			<button type="submit">Продолжить</button>
-			</form>
-			</div>
-			</header>
 			';
 
+			$agree;								// Пользовательское соглашение
 			$username = '';				// Имя донатера
+			$sum = '';						// Сумма доната
 			$error = [];					// Массив с ошибками
 			
 			// Проверяем функцию страницы: если if срабатывает, значит пльзователь отправил форму, обрабатываем ее. Если if не срабатывает, значит пользователь зашел на страницу в первый раз и ему нужно показать форму
 			if(isset($_POST['username']) && isset($_POST['sum'])){
 				$username = $_POST['username'];						// Инициализация имени пользователя из формы
-				$sum = strval($_POST['sum']);							// Инициализация суммы доната из формы
+				$sum = $_POST['sum'];							// Инициализация суммы доната из формы
+				echo isset($_GET['agree']);
 
 				// Проверяем никнейм на длину символов
-				if(strlen($username) <= 3 || strlen($username) >= 20) $error[] = "Допустимая длина никнейма: 3-20 символов";
+				if(strlen($username) < 3 || strlen($username) > 20) $error[] = "Допустимая длина никнейма: 3-20 символов";
 				// Проверяем никнейм на соддержание запрещенных символов
 				if(!preg_match("#^[aA-zZ0-9\-_\]\[\$\=\(\)\@\.]+$#", $username)) $error[] = "В никнейме недопустимые символы";
+				// Проверяем никнейм на валидность
+				if(!ctype_digit($sum)) $error[] = "Сумма доната не является числом";
+				// Если строка является числом, то пусть в переменной будет int
+				else $sum = strval($sum);
 				// Проверяем сумму на соответствие максимальной и минимальной сумме доната
 				if($sum < 0 || $sum > 10000) $error[] = "Допустимая сумма платежа: от 1 до 10.000 рублей";
 			}
@@ -312,34 +303,82 @@ class engine
 				// Из БД выбираем всех пользователей, у которых логин соответствует введенному
 				$response = $this->db->query("SELECT * FROM players WHERE Names = '".$username."'");
 
-				// Если нашли пользователей с таким же логином, переходим на страницу оплаты
-				if($response->num_rows){
-
-					// Редирект на страницу оплаты
-					header('Location: https://google.com');
-
-					// // Showing special page to confirm data 
-					// $this->add_to_template('
-					// <form class="billing-form" action="'.$this->server_data[$server_id]['unitpay_link'].'" method="post">
-					// <p>
-					// <b>Проверьте указанные данные</b><br/>
-					// сервер: GreenTech RolePlay #'.($server_id + 1).'<br/>
-					// никнейм: '.$username.'<br/>
-					// к оплате: '.$sum.' RUB<br/>
-					// будет зачислено: '.($sum * $this->donate_multiplier).' ДО '.(($this->donate_multiplier > 1) ? "<font color=\"red\">(акция \"x".$this->donate_multiplier." донат\")</font>" : "").'<br/>
-					// <br/>
-					// <b>Вы хотите перейти к оплате?</b>
-					// </p>
-					// <input type="hidden" name="desc" value="Покупка внутриигровой валюты на сервере GreenTech RolePlay #'.($server_id + 1).' для аккаунта '.$username.'" />
-					// <input type="hidden" name="account" value="'.$username.'" />
-					// <input type="hidden" name="sum" value="'.$sum.'" />
-					// <button type="submit" class="btn btn-primary">Оплатить</button>
-					// </form>
-					// ');
-				}
+				// Если yt нашли пользователей с таким же логином, кидаем ошибку, типо пользователь не найден
+				if(!$response->num_rows) $error[] = "Игрок с таким никнеймом не существует";
 			}
+			// Еще раз проверяем есть ли ошибки и ожно ли делать донат
+			if(isset($_POST['username']) && isset($_POST['sum']) && !$error){
 
-		// 	if($form)
+				// Сделаем специальную страницу подтверждения
+				$this->body .= '
+				<form action="'.$this->server_data[0]['unitpay_link'].'" method="post">
+				<p>
+				<b>Проверьте указанные данные</b><br/>
+				сервер: GreenTech RolePlay #1<br/>
+				никнейм: '.$username.'<br/>
+				к оплате: '.$sum.' RUB<br/>
+				будет зачислено: '.($sum * $this->donate_multiplier).' ДО '.(($this->donate_multiplier > 1) ? "<font color=\"red\">(акция \"x".$this->donate_multiplier." донат\")</font>" : "").'<br/>
+				<br/>
+				<b>Вы хотите перейти к оплате?</b>
+				</p>
+				<input type="hidden" name="desc" value="Покупка внутриигровой валюты на сервере GreenTech RolePlay #1 для аккаунта '.$username.'" />
+				<input type="hidden" name="account" value="'.$username.'" />
+				<input type="hidden" name="sum" value="'.$sum.'" />
+				<button type="submit" class="btn btn-primary">Оплатить</button>
+				</form>
+				</div>
+				</header>
+				';
+			}
+			if($error || !isset($_POST['username']) || !isset($_POST['sum'])){
+				// Первая ошибка в массиве
+				$error_first = array_shift($error);
+				// Логичекая переменная, отслеживающая ошибку в поле с никнеймом
+				$username_error = ($error_first == "Допустимая длина никнейма: 3-20 символов" || $error_first == "В никнейме недопустимые символы" || $error_first == "Игрок с таким никнеймом не существует") ? true : false;
+				$sum_error = ($error_first == "Сумма доната не является числом" || $error_first == "Допустимая сумма платежа: от 1 до 10.000 рублей") ? true : false;
+				// Показываем стандартную форму и указываем на ошибки
+				$this->body .= '
+				<form action="donate.php" method="POST">
+				<input type="text" name="username" ';
+				// Проверяем причину ошибки, если причина в никнейме, то добавляем полю с никнеймом класс с ошибкой
+				if($username_error) $this->body .= 'class="error"';
+				$this->body .= 'placeholder="';
+				// Добавляем в placeholder либо стандартный текст либо "Стандартный текст, раннее введенный текст"
+				if($username_error) $this->body .= "Ник? " . $username;
+				else $this->body .= "Ник";
+				$this->body .= '" value="';
+				// Изменяем value на текст ошибки или на раннее введенный текст
+				if($username_error) $this->body .= $error_first;
+				else $this->body .= $username;
+				$this->body .= '" onclick="InputCloseError(this)" oninput="CheckInput(this);">
+				<input type="text" name="sum" ';
+				// Проверяем причину ошибки, если причина в сумме доната, то добавляем полю с суммой класс с ошибкой
+				if($sum_error) $this->body .= 'class="error"';
+				$this->body .= ' placeholder="';
+				// Добавляем в placeholder либо стандартный текст либо "Стандартный текст, раннее введенную сумму"
+				if($sum_error) $this->body .= "Сумма, (Руб)? " . $sum;
+				else $this->body .= "Сумма, (Руб)";
+				$this->body .= '" value="';
+				// Изменяем value на текст ошибки или на раннее введенную сумму
+				if($sum_error) $this->body .= $error_first;
+				else $this->body .= $sum;
+				$this->body .= '" onclick="InputCloseError(this);" oninput="CheckInput(this);">
+				<div class="agreement">
+				<label class="confirm">
+				<input type="checkbox" name="agree" value="confirm">
+				<span class="visible" onclick="Tick(this);">
+				<span class="tick"></span>
+				</span>
+				</label>
+				<p>Я изучил и принял <a href="#">пользовательское соглашение</a></p>
+				</div>
+				<button type="submit">Продолжить</button>
+				</form>
+				</div>
+				</header>
+				';
+			}
+			// 	if($form)
 		// 	{
 		// 		$server_id = -1;
 		// 		$servers = "";
