@@ -1,23 +1,17 @@
-<?
+<?php 
 
-session_start();
-require_once("site_engine/engine.php");
+// Домен страницы
 
-$page = 'BILLING_SUCCESS';
+$domain = "localhost";
 
-$engine = new engine;
+// Забираем нужные GET параметры
+$paymentId = $_GET['paymentId'];
+$username = $_GET['account'];
+$type = "SUCCESS";
 
-$body = $engine->compile_body($page);
-$head = $engine->compile_head();
+// Делаем перенаправление на главную страницу доната с нужными GET параметрами
+header("Location: http://" . $domain . "/donate.php?type=" . $type . "&account=" . $username . "&paymentId=" . $paymentId);
 
-echo '<!DOCTYPE html>';
-echo '<html lang="ru">';
-echo '<head>';
-echo $head;
-echo '</head>';
-echo '<body>';
-echo $body;
-echo '</body>';
-echo '</html>';
+echo $paymentId;
 
-?>
+ ?>

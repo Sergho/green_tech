@@ -2,198 +2,248 @@
 
 class engine
 {
+	// MySQL БД
 	public $db;
+	// Соддержимое тега body
 	public $body;
-	public $template;
-	public $headers;
-	
-	public $server_count = 1;		// Количество серверов
-	public $server_data = array(	// Собственно информация о самих серверах
-		array(
-			"name" => "#1",
-			"ip" => "194.61.44.20:8904",
-			"db_hostname" => "localhost",
-			"db_username" => "root",
-			"db_password" => "srgho31296",
-			"db_database" => "players",
-			"unitpay_link" => "https://unitpay.ru/pay/2378-994ce",
-			"unitpay_secret_key" => "key"
-		)
-	);
+	// Соддержимое тега head
+	public $head;
+	// Информация о сервере
+	public $server_data;
 	
 	public $block_site = false; // блокировка сайта
 	public $block_whitelist = array(); // список разрешенных ip при заблокированном сайте
 	
-	public $account_system_salt = "salt game mode";
+	public $account_system_salt = "MtIWebzsEjfXriFU";
 	public $rcon_password = "rcon";
 	public $donate_multiplier = 1;
 	
-	public $fraction_name = array(
-		"-",
-		"МВД",
-		"Правительство",
-		"Судебная Организация",
-		"ГИБДД",
-		"СМП",
-		"Прокуратура", // ?
-		"Армия",
-		"-", // ?
-		"Следственный комитет", // ?
-		"ОПГ Курганская",
-		"Гопники",
-		"Таксопарк",
-		"МЧС"
-	);
-	public $rang_name = array(
-		array(), // -
-		array("Рядовой", "Рядовой", "Младший сержант", "Сержант", "Старший сержант", "Старшина", "Младший лейтенант", "Лейтенант", "Старший лейтенант", "Капитан", "Майор", "Подполковник", "Полковник", "Генерал-майор"), // полиция
-		array("Стажер", "Стажер", "Секретарь", "Сотрудник СБ", "Начальник СБ", "Сотрудник ОДО", "Начальник ОДО", "Юрист", "Депутат обл. думы", "Заместитель мэра", "Мэр г.Арзамас", "Мэр г.Южный", "Заместитель Губернатора", "Губернатор"), // Правительство
-		array("Курсант ЦПП", "Курсант ЦПП", "Рядовой", "Мл.Сержант", "Сержант", "Ст.Сержант", "Старшина", "Прапорщик", "Мл.Лейтенант", "Ст.Лейтенант", "Капитан", "Майор", "Подполковник", "Полковник", "Генерал-майор", "Адвокат", "Руководитель", "Федеральный судья", "Зам. председателя", "Верховный судья"), // Судебка
-		array("Рядовой", "Рядовой", "Младший сержант", "Сержант", "Старший сержант", "Старшина", "Младший лейтенант", "Лейтенант", "Старший лейтенант", "Капитан", "Майор", "Подполковник", "Полковник", "Генерал-майор"), // ГИБДД
-		array("Практикант", "Практикант", "Водитель", "Интерн", "Диспетчер", "Психолог", "Хирург", "Нарколог", "Терапевт-Врач", "Зам.Заведующего", "Заведующий", "Зам. Глав. врача", "Глав Врач"), // СМП
-		array("Юрист 3 класса", "Юрист 3 класса", "Юрист 2 класса", "Юрист 1 класса", "Мл.советник юстиции", "Советник юстиции", "Ст.советник юстиции", "Помощник прокурора", "Прокурор", "Помощник обл.Прокурора", "Областной Прокурор"), // -
-		array("Рядовой", "Рядовой", "Ефрейтор", "Младший сержант", "Сержант", "Старший сержант", "Старшина", "Прапорщик", "Старший прапорщик", "Младший лейтенант", "Лейтенант", "Старший лейтенант", "Капитан", "Майор", "Подполковник", "Полковник"), // Армия
-		array("Юрист 3 класса", "Юрист 2 класса", "Юрист 1 класса", "Мл.советник юстиции", "Советник юстиции", "Ст.советник юстиции", "Помощник прокурора", "Прокурор", "Помощник обл.Прокурора", "Областной Прокурор"), // -
-		array("Рядовой", "Рядовой", "Младший сержант", "Сержант", "Старший сержант", "Старшина", "Младший лейтенант", "Лейтенант", "Старший лейтенант", "Капитан", "Майор", "Подполковник", "Полковник"), // -
-		array("Шнырь", "Шнырь", "Барыга", "Рэкетир", "Киллер", "Бригадир", "Смотрящий", "Криминальный авторитет", "Положенец", "Вор в законе"), // ОПГ Курганская
-		array("Молодой", "Молодой", "Шпана", "Гопник", "Хулиган", "Блатной", "Смотрящий за районом", "Авторитет", "Пахан"), // Гопники
-		array("Практикант", "Практикант", "Таксист 3 класса", "Таксист 2 класса", "Таксист 1 класса", "Диспетчер", "Руководитель", "Зам. директора", "Директор"), // Таксопарк
-		array("Рядовой", "Рядовой", "Мл. сержант", "Сержант", "Ст. Сержант", "Старшина", "Прапорщик", "Ст. Прапорщик", "Мл. Лейтенант", "Лейтенант", "Ст. Лейтенант", "Капитан", "Майор", "Подполковник", "Полковник") // МЧС
-	);
-	public $sub_rang_name = array(
-		array(),
-		array("ППС", "ППС", "ОМОН", "СО", "ОРО"), // Полиция
-		array(), // Правительство
-		array("ФСИН", "ФСИН", "СУД", "Адвокатура"), // Судебка
-		array("ОБ", "ОБ", "СБ", "СЭ", "МРЭО", "СР-ДПС", "СЭ-ДПС", "Мото-Рота", "ЦППС"), // ГИБДД
-		array("СМП", "СМП", "ХО", "НО"), // СМП
-		array(), // -
-		array("1-ая рота", "ВАИ", "1-ая рота", "2-ая рота", "РСПН", "Мед.Часть"), // Армия
-		array(), // -
-		array(), // -
-		array(), // ОПГ Курганская
-		array(), // Гопники
-		array(), // Таксопарк
-		array("ГДЗС", "ГДЗС", "МК", "ПСО", "ГПН") // МЧС
-	);
+	public $fraction_name;
+	public $rang_name;
+	public $sub_rang_name;
+
+	public $ucp_main;
+
+	// Ошибки
+	public $auth_error = [];
+	public $password_change_error = [];
+	public $email_change_error = [];
+	public $donate_error = [];
 	
-	public $ucp_log_action_names = array(
-		array("logout", "Выход из UCP"),
-		array("email_changed", "Изменен email"),
-		array("password_changed", "Изменен пароль"),
-		array("fraction_uninvate", "Исключен игрок из фракции"),
-		array("pageview_change_email", "Просмотр \"Сменить email\""),
-		array("pageview_change_password", "Просмотр \"Сменить пароль\""),
-		array("pageview_property", "Просмотр \"Имущество\""),
-		array("pageview_payments", "Просмотр \"Платежи\""),
-		array("pageview_leader", "Просмотр \"Фракция\""),
-		array("pageview_leaders", "Просмотр \"Лидеры\""),
-		array("pageview_main", "Просмотр \"Главное\""),
-		array("recovery_final", "Финал восстановления"),
-		array("recovery_query", "Запрос на восстановления"),
-		array("success_auth", "Вход в UCP")
-	);
-	
+	// Конструктор
+	public function __construct(){
+		// Подключаем config файлы
+		require_once("./config/server_config.php");
+		require_once("./config/fractions.php");
+		require_once("./config/ucp_main.php");
+		// Применяем конфиги
+		$this->server_data 		= $server_config;
+		$this->fraction_name 	= $fractions;
+		$this->rang_name 			= $rangs;
+		$this->sub_rang_name 	= $sub_rangs;
+		$this->ucp_main_ooc 	= $ucp_main_ooc_params;
+		$this->ucp_main_ic		= $ucp_main_ic_params;
+	}
+
 	// Составляем содержимое тега head
-	public function compile_head()
-	{
-		$head = '
+	public function compile_head(){
+		$this->add_to_head('
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="stylesheet" href="../fonts/fonts.css">
 		<link rel="stylesheet" href="../css/style.css">
-		<title>Main page - Green Tech</title>
-		';
+		<title>GreenTech Roleplay</title>
+		');
 		
-		return $head;
+		return $this->head;
 	}
 
 	// Составляем содержимое тега body
-	public function compile_body($page)
-	{
-		// Действия при заблокированном сайте и при том, что ip адрес пользователя не входит в whitelist
+	public function compile_body($page){
+		// Работает только при соответствующих запросах
+		$this->auth();
+		$this->change_password();
+		$this->change_email();
+		// Активация блокировки если это необходимо
 		if($this->block_site && !in_array($_SERVER['REMOTE_ADDR'], $this->block_whitelist)){
-			$this->body .= '
-			<center style="width: 60%; padding: 50px;">
-			<div class="alert alert-info" role="alert">
-			<h4 class="alert-heading">Сайт на технических работах</h4>
-			<p>В настоящие время данный сайт доступен только для указанных IP-адресов. Возможно, он находится на рекострукции или технических работах. Пожалуйста, подождите, возможно скоро он снова будет доступен.</p>
-			</div>
-			</center>
-			';
+			$this->add_to_body('
+				<center style="width: 100%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 50px;">
+				<h1 style="font-size: 5em; font-family: Proxima Nova Th; font-weight: bold">Сайт на технических работах</h4>
+				<p style="font-size: 3em; font-family: Proxima Nova Th;">В настоящие время данный сайт доступен только для указанных IP-адресов. Возможно, он находится на рекострукции или технических работах. Пожалуйста, подождите, возможно скоро он снова будет доступен.</p>
+				</center>');
 
 			return $this->body;
 		}
 
-		// Если главная страница сейчас открыта, то нужно вставить специальный задний фон, который есть только на этой странице
-		if($page == "MAIN"){
-			$this->body .= 	'
-			<div id="main-background">
-			<img src="../img/background.png" alt="background">
-			</div>';
+		// Вставляем определенную страницу
+		if($page == "MAIN") $this->compile_main();
+		if($page == "DONATE") $this->compile_donate();
+		if($page == "UCP") $this->compile_ucp();
+
+
+		if($page == "AGREEMENT"){
+			$this->add_to_body('
+				<section class="sa-text-area">
+				<center>
+				<div class="main-block">
+				<div class="main-block-sub" style="width: 70%;">
+				<p class="block-title">Пользовательское соглашение</p>
+				');
+
+			$this->add_to_body('
+				<div class="alert alert-success" role="alert" style="text-align: left;">
+				<h4 class="alert-heading">Принятие условий</h4>
+				<p>- Настоящие правила являются документом, обязательным к ознакомлению каждому пользователю, обратившегося к донат услугам.</p>
+				<p>- Если пользователь не согласен с каким-либо положением настоящих правил или ощущает вероятность негативных для себя последствий, ему рекомендуется отказаться от использования донат услуг.</p>
+				<p>- Факт обращения инициации пользователем процесса использования донат услуг считается подтверждением того, что он ознакомлен и согласен с каждым пунктом настоящих правил.</p>
+				</div>
+				<div class="alert alert-success" role="alert" style="text-align: left;">
+				<h4 class="alert-heading">Общие положения</h4>
+				<p>- Администрация проекта не несет никакой ответственности за ущерб морального либо материального характера, который может нанести прямо либо опосредованно предлагаемый игровой сервер, а также за любые неточности, ошибки, дефекты и сбои работы игрового сервера, вне зависимости от причин их вызвавших.</p>
+				<p>- Инициируя процесс использования донат услуг, пользователь подтверждает свое согласие не возлагать ответственность, возможные убытки и ущерб, связанные с пользованием игровым сервером, на его владельцев и администрацию.</p>
+				<p>- В случае нанесение пользователем ущерба проекту, администрация проекта имеют право на удаление аккаунта нарушителя.</p>
+				<p>- В случае несоответствия какого-либо положения настоящих правил требованиям действующего законодательства, оно считается замененным близким по содержанию положением действующего законодательства. При этом все остальные положения настоящих правил сохраняют свою силу.</p>
+				<p>- В случае просьбы вернуть средства, администрация имеет право на блокировку аккаунта.</p>
+				<p>- Администрация может сделать возврат средств, если со дня платежа прошло не более 7 дней.</p>
+				</div>
+				<div class="alert alert-success" role="alert" style="text-align: left;">
+				<h4 class="alert-heading">Исключение гарантий</h4>
+				<p>
+				<p>- Администрация проекта имеет право на блокирование или удаление аккаунта без предупреждения пользователя.</p>
+				<p>- Администрация проекта имеет право на удаление предоставленных Вам донат-услуг и/или на запрет их использования.</p>
+				</div>
+				');
+
+			$this->add_to_body('
+				</div>
+				</div>
+				</center>
+				</section>
+				');
 		}
 
-		// Вставляем верхнюю часть сайта (то, что одинаково на всех страницах)
-		// Там, где стоит strtolower($page), нужно менять id вреппера, чтобы css вносил мелкие изменения
-		$this->body .= '<div id="' . strtolower($page) . '-wrapper">
-		<div class="darkness" onclick="DropdownToggle(this); Auth();"></div>
-		<header>
-		<div class="logo">
-		<a href="main.html">
-		<img src="../img/logo.png" alt="logotype">
-		</a>
-		</div>
-		<div class="nav">
-		<div class="dropdown">
-		<div class="dropdown-burger" onclick="DropdownToggle(this);">
-		<span></span>
-		<span></span>
-		<span></span>
-		</div>
-		<ul class="dropdown-menu">
-		<li class="dropdown-item"><a href="main.php">Главная</a></li>
-		<li class="dropdown-item"><a href="#">Ставки BoxBet</a></li>
-		<li class="dropdown-item"><a href="donate.php">Донат</a></li>
-		<li class="dropdown-item"><a href="#">Gregtech FM</a></li>
-		<li class="dropdown-item"><a href="#">Форум</a></li>
-		<li class="dropdown-item lc"><a href="#" onclick="DropdownToggle(this); setTimeout(() => {Auth();}, 550);">Личный кабинет</a></li>
-		</ul>
-		</div>
-		<div class="navbar">
-		<ul class="navbar-menu">
-		<li class="navbar-item ';
-		// Делаем активным пункт в навбаре в зависиммости от страницы,добавляя класс active
-		if($page == "MAIN") $this->body .= 'active';
-		$this->body .= '"><a href="main.php">Главная</a></li>
-		<li class="navbar-item"><a href="#">Ставки BoxBet</a></li>
-		<li class="navbar-item ';
-		if($page == "DONATE") $this->body .= 'active';
-		$this->body .= '"><a href="donate.php">Донат</a></li>
-		<li class="navbar-item"><a href="#">Gregtech FM</a></li>
-		<li class="navbar-item"><a href="#">Форум</a></li>
-		</ul>
-		<div class="navbar-personal">
-		<a href="#" class="lc" onclick="Auth();">Личный кабинет</a>
-		</div>
-		</div>
-		</div>
-		';
+		$this->add_to_body('<div id="auth" ');
+		// если ошибка то оставляем модальное окно открытым
+		if($this->auth_error) $this->add_to_body('style="display: block; opacity: 1;"');
+		$this->add_to_body('>
+			<div class="exit" onclick="Auth();">
+			<span></span>
+			<span></span>
+			</div>
+			<h1>Авторизация</h1>
+			<form action="./" method="POST">');
+		// Выводим ошибку
+		if(!empty($this->auth_error)) $this->add_to_body('<input type="text" placeholder="Ник? ' . $_POST['login'] . '" class="error" name="login" oninput="CheckInput(this);" onclick="InputCloseError(this);" value="' . $this->auth_error[0] . '">');
+		else $this->add_to_body('<input type="text" placeholder="Ник" name="login" oninput="CheckInput(this);">');
+		$this->add_to_body('<input type="password" placeholder="Пароль" name="password" oninput="CheckInput(this);">
+			<img src="../img/eye.png" alt="show" onclick="ShowPassword(this, 1);" class="show">
+			<a href="#">Забыли пароль?</a>
+			<button type="submit">Войти</button>
+			</form>
+			</div>');
 
-		if($page == "MAIN")
-		{
-			// создаем html кнопку в зависимости от $server_data для захода на игровой сервер
-			$connect_buttons = '<a href="crmp://' . $this->server_data[0]["ip"] . '" class="connect">Подключиться к серверу</a>';
-			// Вставляем в боди все остальное
-			$this->body .= '
-			<div class="text">
+		// Добавляем скрипты
+		$this->body .= '<script src="../js/jquery.js"></script>';
+		$this->body .= '<script src="../js/script.js"></script>';
+
+		// Делаем overflow hidden body при модальном окне
+		if(isset($_POST['new_email']) || $this->auth_error || $this->password_change_error) $this->add_to_body('<style>body{overflow:hidden;}</style>');
+
+		return $this->body;
+	}
+
+	// Показываем затемноение при необходимости
+	public function compile_darkness($page){
+		$this->add_to_body('
+			<div id="' . $page . '-wrapper">
+			<div class="darkness" onclick="DropdownToggle(this); CloseModals();" ');
+
+		// Все модальные окна, при которых надо затемнять фон:
+		// 1. Ошибка аутефикации
+		// 2. Ошибка или успешный донат
+		// 3. Смена пароля
+		// 4. Смена мыла
+		if(($this->auth_error) || isset($_GET['type']) || isset($_POST['old_password']) || isset($_POST['new_email'])) $this->add_to_body('style="display: block; opacity: 1;"></div>');
+		else $this->add_to_body('></div>');
+	}
+
+	// Логотип сайта
+	public function compile_logo(){
+		$this->add_to_body('
+			<header>
+			<div class="logo">
+			<a href="main.html">
+			<img src="../img/logo.png" alt="logotype">
+			</a>
+			</div>');
+	}
+
+	// Навигация
+	public function compile_nav($page){
+		$this->add_to_body('<div class="nav">');
+		$this->compile_dropdown();
+		$this->compile_navbar($page);
+		$this->add_to_body('</div>');
+	}
+
+	// Выпадающее меню
+	public function compile_dropdown(){
+		$this->add_to_body('
+			<div class="dropdown">
+			<div class="dropdown-burger" onclick="DropdownToggle(this);">
+			<span></span>
+			<span></span>
+			<span></span>
+			</div>
+			<ul class="dropdown-menu">
+			<li class="dropdown-item"><a href="main.php">Главная</a></li>
+			<li class="dropdown-item"><a href="#">Ставки BoxBet</a></li>
+			<li class="dropdown-item"><a href="donate.php">Донат</a></li>
+			<li class="dropdown-item"><a href="#">Gregtech FM</a></li>
+			<li class="dropdown-item"><a href="#">Форум</a></li>
+			<li class="dropdown-item lc">');
+
+		// Устанавливаем ссылку в кнопке ЛК в зависиммости от сессии (Выпадающее меню)
+		if(isset($_SESSION['username'])) $this->add_to_body('<a href="./ucp.php">' . $_SESSION['username'] . '</a>');
+		else $this->add_to_body('<a href="#" onclick="DropdownToggle(this); setTimeout(() => {Auth();}, 550);">Личный кабинет</a>');
+
+		$this->add_to_body('</li></ul></div>');
+	}
+
+	// Навбар
+	public function compile_navbar($page){
+		$this->add_to_body('
+			<div class="navbar">
+			<ul class="navbar-menu">
+			<li class="navbar-item ');
+		if($page == "main") $this->add_to_body("active");
+		$this->add_to_body('"><a href="main.php">Главная</a></li>
+			<li class="navbar-item"><a href="#">Ставки BoxBet</a></li>
+			<li class="navbar-item ');
+		if($page == "donate") $this->add_to_body("active");
+		$this->add_to_body('"><a href="donate.php">Донат</a></li>
+			<li class="navbar-item"><a href="#">Gregtech FM</a></li>
+			<li class="navbar-item"><a href="#">Форум</a></li>
+			</ul>
+			<div class="navbar-personal">');
+
+		// Устанавливаем ссылку в кнопке ЛК в зависиммости от сессии (Просто меню)
+		if(isset($_SESSION['username'])) $this->add_to_body('<a href="./ucp.php" class="lc">' . $_SESSION['username'] . '</a>');
+		else $this->add_to_body('<a href="#" class="lc" onclick="Auth()">Личный кабинет</a>');
+
+		$this->add_to_body('</div></div>');
+	}
+
+	// Составляем главную страницу
+	public function compile_main(){
+		$this->compile_darkness("main");
+		$this->compile_logo();
+		$this->compile_nav("main");
+		$this->add_to_body('<div class="text">
 			<h1>Начни играть в CRMP на проекте GreenTech RolePlay прямо сейчас!</h1>
 			<p>Как легко получить из самых общих соображений, кампос-серрадос представляет собой холодный взрыв. Несмотря на внутренние противоречия, вещество мгновенно</p>
 			<a href="#" class="start">Как начать играть?</a>
-			';
-			// Внедряем кнопочки захода в сервер в body
-			$this->body .= $connect_buttons;
-
-			$this->body .= '
+			<a href="crmp://' . $this->server_data["ip"] . '" class="connect">Подключиться к серверу</a>
 			</div>
 			</header>
 			<div id="online">
@@ -254,115 +304,791 @@ class engine
 			<div class="bg">
 			<img src="../img/start-background.png" alt="background">
 			</div>
-			</div>
-			';
-		}
-		
-		if($page == "DONATE")
-		{
-			// Добавляем начало формы, то есть только статичный html
-			$this->body .= '
-			<div class="text">
+			</div>');
+
+			$this->compile_footer();
+	}
+
+	// Составляем страницу доната
+	public function compile_donate(){
+		$this->compile_darkness("donate");
+		$this->compile_logo();
+		$this->compile_nav("donate");
+		$this->add_to_body('<div class="text">
 			<div class="image-pig">
 			<img src="../img/pig.png" alt="pig_money">
 			</div>
 			<h1>Пополнение средств</h1>
-			<p>Основная идея социально–политических взглядов К.Маркса была в том, что созерцание традиционно понимает под собой либерализм. Александрийская школа экстремально иллюстрирует авторитаризм, изменяя привычную реальность</p>
-			';
+			<p>Основная идея социально–политических взглядов К.Маркса была в том, что созерцание традиционно понимает под собой либерализм. Александрийская школа экстремально иллюстрирует авторитаризм, изменяя привычную реальность</p>');
 
-			$agree;								// Пользовательское соглашение
-			$username = '';				// Имя донатера
-			$sum = '';						// Сумма доната
-			$error = [];					// Массив с ошибками
-			
-			// Проверяем функцию страницы: если if срабатывает, значит пльзователь отправил форму, обрабатываем ее. Если if не срабатывает, значит пользователь зашел на страницу в первый раз и ему нужно показать форму
-			if(isset($_POST['username']) && isset($_POST['sum'])){
-				$username = $_POST['username'];						// Инициализация имени пользователя из формы
-				$sum = $_POST['sum'];							// Инициализация суммы доната из формы
-				echo isset($_GET['agree']);
+		// Обработка доната
+		$this->donate();
+		// Подвал сайта
+		$this->compile_footer();
+	}
 
-				// Проверяем никнейм на длину символов
-				if(strlen($username) < 3 || strlen($username) > 20) $error[] = "Допустимая длина никнейма: 3-20 символов";
-				// Проверяем никнейм на соддержание запрещенных символов
-				if(!preg_match("#^[aA-zZ0-9\-_\]\[\$\=\(\)\@\.]+$#", $username)) $error[] = "В никнейме недопустимые символы";
-				// Проверяем никнейм на валидность
-				if(!ctype_digit($sum)) $error[] = "Сумма доната не является числом";
-				// Если строка является числом, то пусть в переменной будет int
-				else $sum = strval($sum);
-				// Проверяем сумму на соответствие максимальной и минимальной сумме доната
-				if($sum < 0 || $sum > 10000) $error[] = "Допустимая сумма платежа: от 1 до 10.000 рублей";
+	// Составляем страницу личного кабинета
+	public function compile_ucp(){
+		$this->compile_darkness("ucp");
+		$this->compile_logo();
+		$this->compile_nav("ucp");
+		// Основная отрисовка
+		$session = isset($_SESSION['username']);
+		$help = isset($_GET['help']) ? $_GET['help'] : "";	// Тип операции с личным кабинетом
+		// Проверяем сессию на авторизованный аккаунт
+		$this->db_connect();
+
+		// Выйти из личного кабинета
+		if($session && $help == "log_out"){
+			// Стираем сессию авторизации
+			unset($_SESSION['username']);
+			// Перенаправляем на главную страницу
+			header("Location: ./main.php");
+		}
+		// Чтобы пользователь намеренно не менял GET запрос, делаем его пустым, если он отличается от всех шаблонов
+		else $help = "";
+		// Если активирована сессия, то отрисовываем контент ЛК
+		if($session && $help == ""){
+		// Все переменные, которые нам будут нужны для ЛК
+		// Имя пользователя
+		$username = $_SESSION['username'];
+		$response_main = $this->get_ucp_main_response($username);
+		$response_payments = $this->complete_ucp_payments($username);
+		$response_leaders = $this->complete_ucp_leaders($username);
+		// Отрисовываем контент ЛК
+		// Для теста вставляем все остальное
+		$this->add_to_body('<div class="text">
+			<h1>Личный кабинет ' . $username . '</h1>
+			<div class="stats">
+			<h1>Статистика</h1>
+			<ul class="pages-nav">
+			<li class="active" onclick="PageSwitch(this);">Главное</li>
+			<li class="" onclick="PageSwitch(this);">Имущество</li>
+			<li class="" onclick="PageSwitch(this);">Платежи</li>
+			<li class="" onclick="PageSwitch(this);">Лидеры</li>
+			</ul>
+			<ul class="pages">
+			<li class="page main-page current">');
+
+		$this->compile_ucp_ooc($response_main);
+		$this->compile_ucp_ic($response_main);
+		$this->add_to_body('<div class="help">
+			<button onclick="OpenPasswordChangeMenu();">Сменить пароль</button>
+			<button onclick="OpenEmailChangeMenu();">Сменить Email</button>
+			</div>
+			</li>
+			<li class="page property-page">
+			<ul class="houses">
+			<span>Список домов</span>
+			<div class="empty">Дома отсутствуют</div>
+			</ul>
+			<ul class="businesses">
+			<span>Список бизнесов</span>
+			<div class="empty">Бизнесы отсутствуют</div>
+			</ul>
+			<ul class="cars">
+			<span>Список автомобилей</span>
+			<div class="empty">Автомобили отсутствуют</div>
+			</ul>
+			</li>
+			<li class="page payments-page">
+			<div class="sort">
+			<p>Сортировать:<span class="enabled" onclick="ActivateFilter(this);">Сначала новые</span>/<span class="" onclick="ActivateFilter(this);">Сначала старые</span></p>
+			</div>');
+		$this->compile_ucp_payments($response_payments);
+		$this->compile_ucp_leaders($response_leaders);
+		$this->add_to_body('<li class="page leaders-page">
+			<div class="slider">
+			<ul class="slides">
+			<li class="slide" style="display: flex; opacity: 1;">
+			<div class="h">
+			<div class="nick">Nick_Name</div>
+			<div class="organization">Организация</div>
+			<div class="last-enter">Последний вход</div>
+			</div>
+			<ul>
+			<li>
+			<div class="nick online">Ruslan_Budagov</div>
+			<div class="organization">УМВД</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Roman_Samarin</div>
+			<div class="organization">УМВД</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Sergey_Snegirev</div>
+			<div class="organization">УМВД</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Denis_Bilkov</div>
+			<div class="organization">УМВД</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Sergey_Ivanov</div>
+			<div class="organization">УМВД</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Jon_Town</div>
+			<div class="organization">Пра-во</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick">Maxim_Perfilev</div>
+			<div class="organization">Пра-во</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Vadim_Roslin</div>
+			<div class="organization">ФСИН</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick">Gleb_Shapranov</div>
+			<div class="organization">Прокуратура</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Sergey_Snegirev</div>
+			<div class="organization">УМВД</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Denis_Bilkov</div>
+			<div class="organization">УМВД</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Sergey_Ivanov</div>
+			<div class="organization">УМВД</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Jon_Town</div>
+			<div class="organization">Пра-во</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick">Maxim_Perfilev</div>
+			<div class="organization">Пра-во</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Vadim_Roslin</div>
+			<div class="organization">ФСИН</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick">Gleb_Shapranov</div>
+			<div class="organization">Прокуратура</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Jon_Town</div>
+			<div class="organization">Пра-во</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			</ul>
+			</li>
+			<li class="slide" style="display: none; opacity: 0;">
+			<div class="h">
+			<div class="nick">Nick_Name</div>
+			<div class="organization">Организация</div>
+			<div class="last-enter">Последний вход</div>
+			</div>
+			<ul>
+			<li>
+			<div class="nick online">Ruslan_Budagov</div>
+			<div class="organization">УМВД</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Roman_Samarin</div>
+			<div class="organization">УМВД</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Sergey_Snegirev</div>
+			<div class="organization">УМВД</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Denis_Bilkov</div>
+			<div class="organization">УМВД</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Sergey_Ivanov</div>
+			<div class="organization">УМВД</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Jon_Town</div>
+			<div class="organization">Пра-во</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick">Maxim_Perfilev</div>
+			<div class="organization">Пра-во</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Vadim_Roslin</div>
+			<div class="organization">ФСИН</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick">Gleb_Shapranov</div>
+			<div class="organization">Прокуратура</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Sergey_Snegirev</div>
+			<div class="organization">УМВД</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Denis_Bilkov</div>
+			<div class="organization">УМВД</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Sergey_Ivanov</div>
+			<div class="organization">УМВД</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Jon_Town</div>
+			<div class="organization">Пра-во</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick">Maxim_Perfilev</div>
+			<div class="organization">Пра-во</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Vadim_Roslin</div>
+			<div class="organization">ФСИН</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick">Gleb_Shapranov</div>
+			<div class="organization">Прокуратура</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			<li>
+			<div class="nick online">Jon_Town</div>
+			<div class="organization">Пра-во</div>
+			<div class="last-enter">21.08.2019</div>
+			</li>
+			</ul>
+			</li>
+			</ul>
+			<div class="prev disabled" onclick="SliderPrev(this);"></div>
+			<div class="current">1</div>
+			<div class="next" onclick="SliderNext(this);"></div>
+			</div>
+			</li>
+			</ul>
+			</div>
+			<div class="skin">
+			<div class="slider">
+			<ul class="slides">
+			<li class="slide" style="display: none; opacity: 0;">
+			<h1>Скин (обычный)</h1>
+			<p>' . $response_main['Char'] . 'id</p>
+			<img src="../img/skins/default/skin' . $response_main['Char'] . '.png" alt="skin">
+			</li>
+			<li class="slide" style="display: block; opacity: 1;">
+			<h1>Скин (мод-пак)</h1>
+			<p>' . $response_main['Char'] . 'id</p>
+			<img src="../img/skins/pack/skin' . $response_main['Char'] . '.png" alt="skin">
+			</li>
+			</ul>
+			<div class="prev" onclick="SliderPrev(this);"></div>
+			<p class="current" style="display: none">2</p>
+			<div class="next disabled" onclick="SliderNext(this);"></div>
+			</div>
+			</div>
+			<div class="help">
+			<button onclick="OpenPasswordChangeMenu();">Сменить пароль</button>
+			<button onclick="OpenEmailChangeMenu();">Сменить Email</button>
+			<a href="./ucp.php?help=log_out">Выйти</a>
+			</div>');
+		}
+		$this->add_to_body('
+			</div>
+			</header>');
+		// Добавляем окно смены пароля при ошибке
+		if($this->password_change_error) $this->add_to_body('
+			<div id="password_change" style="display: block; opacity: 1;">');
+		else $this->add_to_body('<div id="password_change" style="display: none; opacity: 0;">');
+		$this->add_to_body('<div class="exit" onclick="CloseModal(this);">
+			<span></span>
+			<span></span>
+			</div>
+			<h1>Смена пароля</h1>
+			<p class="error">');
+		// Добавляем ошибку при ее наличии
+		if($this->password_change_error) $this->add_to_body($this->password_change_error[0]);
+		else $this->add_to_body("&nbsp;");
+		$this->add_to_body('</p>
+			<form action="./ucp.php" method="POST">
+			<input type="password" name="old_password" placeholder="Введите старый пароль">
+			<input type="password" name="new_password" placeholder="Введите новый пароль">
+			<input type="password" name="password_confirm" placeholder="Повторите новый пароль">
+			<img src="../img/eye.png" alt="eye" class="show" onclick="ShowPassword(this, 0);">
+			<img src="../img/eye.png" alt="eye" class="show" onclick="ShowPassword(this, 1);">
+			<img src="../img/eye.png" alt="eye" class="show" onclick="ShowPassword(this, 2);">
+			<button type="submit" name="">Сменить пароль</button>
+			</form>
+			</div>');
+		// Окно успешной смены пароля
+		if(!$this->password_change_error && isset($_POST['old_password'])) $this->add_to_body('<div id="success" style="display: block; opacity: 1;">
+			<div class="exit" onclick="CloseModal(this);">
+			<span></span>
+			<span></span>
+			</div>
+			<img src="../img/success.png" alt="success">
+			<h1>Пароль сменён успешно</h1>
+			<p>Структура политической науки, как бы это ни казалось парадоксальным, представляет собой гарант. Мажоритарная избирательная система противоречива</p>
+			</div>');
+		// Добавляем окно смены мыла
+		if(!empty($this->email_change_error)) $this->add_to_body('<div id="email_change" style="display: block; opacity: 1;">');
+		else $this->add_to_body('<div id="email_change" style="display: none; opacity: 0;">');
+		$this->add_to_body('<div class="exit" onclick="CloseModal(this);">
+			<span></span>
+			<span></span>
+			</div>
+			<h1>Смена E-mail</h1>
+			<p class="error">');
+		if(!empty($this->email_change_error)) $this->add_to_body($this->email_change_error[0]);
+		else $this->add_to_body('&nbsp;');
+		$this->add_to_body('</p>
+			<form action="./ucp.php" method="POST">
+		<input type="text" name="new_email" placeholder="Введите вашу почту"');
+		if(!empty($this->email_change_error)) $this->add_to_body('value="' . $_POST['new_email'] . '"');
+		$this->add_to_body('>
+			<button type="submit">Отправить письмо</button>
+			</form>
+			</div>');
+		// Окно успешной отправки письма
+		if(isset($_POST['new_email'])) $this->add_to_body('<div id="success" style="display: block; opacity: 1;">
+			<div class="exit" onclick="CloseModal(this);">
+			<span></span>
+			<span></span>
+			</div>
+			<img src="../img/mail.png" alt="success">
+			<h1>Письмо с подтверждением отправлено</h1>
+			<p>Структура политической науки, как бы это ни казалось парадоксальным, представляет собой гарант. Мажоритарная избирательная система противоречива</p>
+			</div>');
+		// Подвал сайта
+		$this->compile_footer();
+	}
+
+	// Получаем и ПРЕОБРАЗУЕМ данные с БД на главную страницу
+	public function get_ucp_main_response($username){
+		$response = mysqli_fetch_assoc($this->db->query('SELECT * FROM `players` WHERE `Names` = "' . $username . '"'));
+
+		if($response['Sex'] == 1) $response['Sex'] = "Мужской";
+		else $response['Sex'] = "Женский";
+
+		if($response['PhoneNumber'] == '0') $response['PhoneNumber'] = '-';
+
+		$response['Job'] = $this->fraction_name[$response['Job']];
+
+		if($response['Job'] != '-') $response['Rank'] = $rang_name[$response['Job']][$response['Rank']];
+		else $response['Rank'] = '-';
+
+		return $response;
+	}
+
+	// Выводим данные ooc
+	public function compile_ucp_ooc($response){
+		$username = $_SESSION['username'];
+
+		$this->add_to_body('<ul class="ooc"><h2>OOC Информация</h2>');
+
+		foreach ($this->ucp_main_ooc as $key => $value){
+			if(substr($value, 0, 3) == "db_") $value = $response[substr($value, 3)];
+			if($value == "username") $value = $username;
+			$this->add_to_body('<li><div class="param">' . $key . '</div>');
+			$this->add_to_body('<div class="value">' . $value . '</div></li>');
+		}
+
+		$this->add_to_body('</ul>');
+	}
+
+	// Выводим данные ic
+	public function compile_ucp_ic($response){
+
+		$username = $_SESSION["username"];
+
+		$this->add_to_body('<ul class="ic">
+			<h2>IC Информация</h2>');
+		foreach($this->ucp_main_ic as $param => $value){
+			if(substr($value, 0, 3) == "db_") $value = $response[substr($value, 3)];
+			$this->add_to_body('<li>');
+			$this->add_to_body('<div class="param">' . $param . '</div>');
+			$this->add_to_body('<div class="value">' . $value . ' </div>');
+			$this->add_to_body('</li>');
+		}
+		$this->add_to_body("</ul>");
+	}
+
+	// Выводим данные о платежах
+	public function compile_ucp_payments($response){
+		$this->add_to_body('<div class="slider">
+			<ul class="slides">
+			<li class="slide" style="display: block; opacity: 1;">
+			<ul>');
+		foreach($response as $key => $payment){
+			if($key % 17 == 0 && $key != 0) $this->add_to_body('</ul>
+				</li>
+				<li class="slide" style="display: none; opacity: 0;"><ul>');
+
+			$num = $key + 1;
+			$date = explode(" ", $payment['dateComplete'])[0];
+			$date = explode("-", $date);
+			$date = implode(".", array_reverse($date));
+			$time = explode(" ", $payment['dateComplete'])[1];
+			$time = substr($time, 0, 5);
+
+			$this->add_to_body('<li>' . $num . '. Пополнение счёта ' . $date . " (" . $time . ') <span class="sum">+' . $payment['sum'] . "RUB</span></li>");
+		}
+		$this->add_to_body('</ul></li></ul><div class="prev disabled" onclick="SliderPrev(this);"></div>
+			<p class="current">1</p>
+			<div class="next ');
+		if(count($response) <= 17) $this->add_to_body('disabled');
+		$this->add_to_body('" onclick="SliderNext(this);"></div><a href="donate.php">Пополнить баланс</a>
+			</div>
+			</li>');
+	}
+
+	// выводим данные о лидерах организаций
+	public function compile_ucp_leaders($response){
+		$this->add_to_body('<li class="page leaders-page">
+			<div class="slider">
+			<ul class="slides">
+			<li class="slide" style="display: flex; opacity: 1;">
+			<div class="h">
+			<div class="nick">Nick_Name</div>
+			<div class="organization">Организация</div>
+			<div class="last-enter">Последний вход</div>
+			</div>
+			<ul>');
+		foreach($response as $leader){
+			$online = $leader['Online'] == 1 ? "online" : "";
+			$this->add_to_body('<li><div class="nick ' . $online . '">' . $leader['Names'] . '</div>');
+			$this->add_to_body('<div class="organization">' . $this->fraction_name[$leader['Job']] . '</div>');
+			$this->add_to_body('<div class="last-enter">' . $leader['pDay'] .'</div></li>');
+		}
+		$this->add_to_body('</ul></li></ul>
+			<div class="prev disabled" onclick="SliderPrev(this);"></div>
+			<div class="current">1</div>
+			<div class="next ');
+		if(count($response) <= 17) $this->add_to_body("disabled");
+		$this->add_to_body('" onclick="SliderNext(this);"></div>
+			</div>
+			</li>');
+	}
+
+	// Получаем и преобразуем данные с БД на страницу платежей
+	public function complete_ucp_payments($username){
+		$response = $this->db->query("SELECT * FROM unitpay_payments WHERE `account` = '" . $username . "' AND `status` = '1' ORDER BY `id` DESC");
+		$result = [];
+		while($test = mysqli_fetch_assoc($response)){
+			$result[] = $test;
+		}
+		return $result;
+	}
+
+	// Получаем и преобразуем данные с БД на страницу лидеров
+	public function complete_ucp_leaders(){
+		$response = $this->db->query("SELECT * FROM players WHERE Leader > 0 ORDER BY Leader");
+		$result = [];
+		while($leader = mysqli_fetch_assoc($response)){
+			$result[] = $leader;
+		}
+		return $result;
+	}
+
+	// Составляем подвал
+	public function compile_footer(){
+		
+		$this->add_to_body('<footer>
+			<div class="top">
+			<div class="socials">
+			<div class="image">
+			<a href="#" class="blur"><img src="../img/vk_blue.png" alt="VK"></a>
+			<a href="#" class="hover"><img src="../img/vk.png" alt="VK"></a>
+			</div>
+			<div class="image">
+			<a href="#" class="blur"><img src="../img/youtube_blue.png" alt="YOUTUBE"></a>
+			<a href="#" class="hover"><img src="../img/youtube.png" alt="YOUTUBE"></a>
+			</div>
+			</div>
+			<div class="scroll-top">
+			<span class="chevron" onclick="ScrollTop()"></span>
+			</div>
+			</div>
+			<div class="bottom">
+			<h1>GreenTech RolePlay © 2012-2019</h1>
+			<span>Made by Kipper Studio</span>
+			</div>
+			</footer>');
+	}
+
+	// Функция авторизации
+	public function auth(){
+		// Проверяем форму авторизации если она задействована
+		if(isset($_POST['login']) && isset($_POST['password'])){
+			// Записываем логин и пароль в переменную
+			$login = $_POST['login'];
+			$password = $_POST['password'];
+
+			// 1 шаг - проверка форм на валидность
+			if(strlen($login) < 1 || strlen($password) < 1) $this->auth_error[] = "Заполните все поля";
+
+			if(!$this->auth_error){
+				// 2 шаг - проверка на то, существует ли такой пользователь
+
+				// Подключаемся к БД
+				$this->db_connect();
+
+				// ID пользователя из БД
+				$id_db = $this->db_get('players', 'ID', $login);
+
+				// Если получили ID, значит такой пользователь существует
+				if(!isset($id_db)) $this->auth_error[] = "Указаный игрок не найден";
 			}
-			if(isset($_POST['username']) && isset($_POST['sum']) && !$error){
-				// Делаем донат
-				// Подклюяаемся к БД (0 это номер сервера, он у нас один)
-				$this->db_connect(0);
+			if(!$this->auth_error){
+				// 3 шаг - проверка совпадения пароля из формы с БД
 
-				// Валидация строки username для SQL
-				$username = $this->db->real_escape_string($username);
+				// Пароль и "Соль" из БД
+				$password_db 	= $this->db_get('players', 'Pass', $login);
+				$salt_db 			= $this->db_get('players', 'salt', $login);
 
-				// Из БД выбираем всех пользователей, у которых логин соответствует введенному
-				$response = $this->db->query("SELECT * FROM players WHERE Names = '".$username."'");
+				// Проверка cовместимости паролей
+				if($password_db != $this->get_password_hash($password, $salt_db)) $this->auth_error[] = "Неверный пароль";
+			}	
+			if(!$this->auth_error){
+				// 4 шаг - сама авторизация
 
-				// Если yt нашли пользователей с таким же логином, кидаем ошибку, типо пользователь не найден
-				if(!$response->num_rows) $error[] = "Игрок с таким никнеймом не существует";
+				// Переводим пользователя на страницу ЛК
+				$_SESSION['username'] = $login;
+				header('Location: ./ucp.php');
 			}
-			// Еще раз проверяем есть ли ошибки и ожно ли делать донат
-			if(isset($_POST['username']) && isset($_POST['sum']) && !$error){
+		}
+	}
+	
+	// Функция смены пароля
+	public function change_password(){
+		// Проверяем форму изменения пароля если она задействована
+		if(isset($_POST['old_password']) && isset($_POST['new_password']) && isset($_POST['password_confirm'])){
+			// Записываем всё что нужно в переменные
+			$old 			= $_POST['old_password'];
+			$new 			= $_POST['new_password'];
+			$confirm 	= $_POST['password_confirm'];
+			$username = $_SESSION['username'];
 
-				// Сделаем специальную страницу подтверждения
-				$this->body .= '
-				<form action="'.$this->server_data[0]['unitpay_link'].'" method="post">
-				<p>
-				<b>Проверьте указанные данные</b><br/>
-				сервер: GreenTech RolePlay #1<br/>
-				никнейм: '.$username.'<br/>
-				к оплате: '.$sum.' RUB<br/>
-				будет зачислено: '.($sum * $this->donate_multiplier).' ДО '.(($this->donate_multiplier > 1) ? "<font color=\"red\">(акция \"x".$this->donate_multiplier." донат\")</font>" : "").'<br/>
-				<br/>
-				<b>Вы хотите перейти к оплате?</b>
-				</p>
-				<input type="hidden" name="desc" value="Покупка внутриигровой валюты на сервере GreenTech RolePlay #1 для аккаунта '.$username.'" />
-				<input type="hidden" name="account" value="'.$username.'" />
-				<input type="hidden" name="sum" value="'.$sum.'" />
-				<button type="submit" class="btn btn-primary">Оплатить</button>
-				</form>
-				</div>
-				</header>
-				';
+			// 1 шаг - проверка форм на валидность
+			if(strlen($old) < 1 || strlen($new) < 1 || strlen($confirm) < 1) $this->password_change_error[] = "Заполните все поля";
+			if($new != $confirm) $this->password_change_error[] = "Пароли не совпадают";
+
+			if(!$this->password_change_error){
+				// 2 шаг - проверка совместимости старого пароля с текущем паролем из БД
+
+				// Подключаемся к БД
+				$this->db_connect();
+
+				// Пароль и "Соль" из БД
+				$db_password 	= $this->db_get('players', 'Pass', $username);
+				$db_salt			= $this->db_get('players', 'salt', $username);
+
+				// Проверяем
+				if($this->get_password_hash($old, $db_salt) != $db_password) $this->password_change_error[] = "Старый пароль введен неверно";
 			}
-			if($error || !isset($_POST['username']) || !isset($_POST['sum'])){
+			if(!$this->password_change_error){
+				// 3 шаг - собственно сама смена пароля
+
+				// "Соль" из БД
+				$db_salt = $this->db_get('players', 'salt', $username);
+
+				// Хеш нового пароля
+				$hash = $this->get_password_hash($new, $db_salt);
+
+				// Меняем пароль
+				$this->db_set('Pass', $hash, $username);
+			}
+		}
+	}
+
+	// Функция смены мыла
+	public function change_email(){
+		// От пользователя поступил запрос на смену почты
+		if(isset($_POST['new_email'])){
+			// Записываем все в переменные
+			$new_email = $_POST['new_email'];
+			if(!filter_var($new_email, FILTER_VALIDATE_EMAIL)) $this->email_change_error[] = "Некорректо введён адрес почты";
+			// Ключ подтверждения смены почты
+			$submit_key = $this->generate_key(24);
+			// Ссылка для подтверждения
+			$link = $this->server_data['address'] . '/ucp.php?email_change=' . $submit_key;
+
+			// Чтобы потом воспользоваться при переходе по ссылке из письма
+			$_SESSION['email_submit_key'] = $submit_key;
+			$_SESSION['new_email'] = $new_email;
+
+			// Формируем сообщение
+			$message = "Здравствуйте!\n\r\n\r";
+			$message .= "Вы запросили изменение e-mail к аккаунту ".$_SESSION['username'] . " на сервере GreenTech RolePlay #1, перейдите по " . $link . " для дальнейших действий.\n\r";
+			$message .= "Если вдруг вы не запрашивали это, проигнорируйте это письмо.\n\r\n\r";
+			$message .= "С Уважением, администрация GreenTech RolePlay.";
+			// Отправить письмо
+			mail("sergche04@gmail.com", "Изменение Email", $message, "From: admin@greentech-rp.ru");
+			echo $message;
+		}
+		// Пользователь перешел по ссылке восстановления почты
+		if(isset($_GET['email_change'])){
+			$this->db_connect();
+			// Ключ подтверждения смены почты из GET
+			$submit_key_get = $_GET['email_change'];
+			// Ключ подтверждения смены почты из сессии
+			$submit_key_session  = $_SESSION['email_submit_key'];
+
+			if($submit_key_get == $submit_key_session){
+				$this->db_set("Email", $_SESSION['new_email'], $_SESSION['username']);
+				
+				unset($_SESSION['new_email']);
+				unset($_SESSION['email_submit_key']);
+
+				header("Location: ../ucp.php");
+			}
+		}
+	}
+
+	// Функция осуществления доната
+	public function donate(){
+		// Проверяем форму доната при необходимости
+		if(isset($_POST['username']) && isset($_POST['sum'])){
+			// Записываем всё что нужно в переменные
+			$username = $_POST['username'];
+			$sum 			= $_POST['sum'];
+			$agree 		= false;
+			if(isset($_POST['agree'])) $agree = true;
+
+			// Шаг 1 - проверка валидации формы
+			if(!$agree) $this->donate_error[] = "Галочку не поставил";
+			if(strlen($username) < 3 || strlen($username) > 20) $this->donate_error[] = "Допустимая длина никнейма: 3-20 символов";
+			// Проверяем, сможет ли полученное значение суммы превратиться в число, если нет, то ошибка
+			if(!ctype_digit($sum)) $this->donate_error[] = "Сумма доната не является числом";
+			// Если да, то превращаем в число
+			else $sum = strval($sum);
+			if($sum < -1 || $sum > 10000) $this->donate_error[] = "Допустимая сумма платежа: от 1 до 10.000 рублей";
+
+			if(!$this->donate_error){
+				// Шаг 2 - Проверка логина на существование в БД
+
+				// Подклюяаемся к БД
+				$this->db_connect();
+
+				// Получаем ID из БД через логин, если что-то получим, значит такой логин сущетвует
+				$id_db = $this->db_get('players', "ID", $username);
+
+				// Проверка
+				if(!isset($id_db)) $this->donate_error[] = "Игрок с таким никнеймом не существует";
+			}
+			if(!$this->donate_error){
+				// 3 шаг - Вывод страницы подтверждения платежа
+				$this->add_to_body('
+					<form action="'.$this->server_data['unitpay_link'].'" method="post">
+					<p>
+					<b>Проверьте указанные данные</b><br/>
+					сервер: GreenTech RolePlay #1<br/>
+					никнейм: '.$username.'<br/>
+					к оплате: '.$sum.' RUB<br/>
+					будет зачислено: '.($sum * $this->donate_multiplier).' ДО '.(($this->donate_multiplier > 1) ? "<font color=\"red\">(акция \"x".$this->donate_multiplier." донат\")</font>" : "").'<br/>
+					<br/>
+					<b>Вы хотите перейти к оплате?</b>
+					</p>
+					<input type="hidden" name="desc" value="Покупка внутриигровой валюты на сервере GreenTech RolePlay #1 для аккаунта '.$username.'" />
+					<input type="hidden" name="account" value="'.$username.'" />
+					<input type="hidden" name="sum" value="'.$sum.'" />
+					<button type="submit">Оплатить</button>
+					</form>
+					</div>
+					</header>');
+			} else {
+				// Вывод ошибки
+
 				// Первая ошибка в массиве
-				$error_first = array_shift($error);
-				// Логичекая переменная, отслеживающая ошибку в поле с никнеймом
-				$username_error = ($error_first == "Допустимая длина никнейма: 3-20 символов" || $error_first == "В никнейме недопустимые символы" || $error_first == "Игрок с таким никнеймом не существует") ? true : false;
+				$error_first = array_shift($this->donate_error);
+				// Ошибка непостановки галочки соглашения
+				$tick_error = ($error_first == "Галочку не поставил") ? true : false;
+
+				// Переменная, показывающая ошибку в поле с никнеймом
+				$username_error = ($error_first == "Допустимая длина никнейма: 3-20 символов" || $error_first == "Игрок с таким никнеймом не существует") ? true : false;
+
+				// Переменная, показывающая ошибку в поле с суммой
 				$sum_error = ($error_first == "Сумма доната не является числом" || $error_first == "Допустимая сумма платежа: от 1 до 10.000 рублей") ? true : false;
-				// Показываем стандартную форму и указываем на ошибки
-				$this->body .= '
-				<form action="donate.php" method="POST">
-				<input type="text" name="username" ';
+
+				$this->add_to_body('
+					<form action="donate.php" method="POST">
+					<input type="text" name="username" ');
 				// Проверяем причину ошибки, если причина в никнейме, то добавляем полю с никнеймом класс с ошибкой
-				if($username_error) $this->body .= 'class="error"';
-				$this->body .= 'placeholder="';
+				if($username_error) $this->add_to_body('class="error"');
+				$this->add_to_body('placeholder="');
 				// Добавляем в placeholder либо стандартный текст либо "Стандартный текст, раннее введенный текст"
-				if($username_error) $this->body .= "Ник? " . $username;
-				else $this->body .= "Ник";
-				$this->body .= '" value="';
+				if($username_error) $this->add_to_body("Ник? " . $username);
+				else $this->add_to_body("Ник");
+				$this->add_to_body('" value="');
 				// Изменяем value на текст ошибки или на раннее введенный текст
-				if($username_error) $this->body .= $error_first;
-				else $this->body .= $username;
-				$this->body .= '" onclick="InputCloseError(this)" oninput="CheckInput(this);">
-				<input type="text" name="sum" ';
+				if($username_error) $this->add_to_body($error_first);
+				else $this->add_to_body($username);
+				$this->add_to_body('"
+					onclick="InputCloseError(this)" oninput="CheckInput(this);">
+					<input type="text" name="sum" ');
 				// Проверяем причину ошибки, если причина в сумме доната, то добавляем полю с суммой класс с ошибкой
-				if($sum_error) $this->body .= 'class="error"';
-				$this->body .= ' placeholder="';
+				if($sum_error) $this->add_to_body('class="error"');
+				$this->add_to_body(' placeholder="');
 				// Добавляем в placeholder либо стандартный текст либо "Стандартный текст, раннее введенную сумму"
-				if($sum_error) $this->body .= "Сумма, (Руб)? " . $sum;
-				else $this->body .= "Сумма, (Руб)";
-				$this->body .= '" value="';
+				if($sum_error) $this->add_to_body("Сумма, (Руб)? " . $sum);
+				else $this->add_to_body("Сумма, (Руб)");
+				$this->add_to_body('" value="');
 				// Изменяем value на текст ошибки или на раннее введенную сумму
-				if($sum_error) $this->body .= $error_first;
-				else $this->body .= $sum;
-				$this->body .= '" onclick="InputCloseError(this);" oninput="CheckInput(this);">
+				if($sum_error) $this->add_to_body($error_first);
+				else $this->add_to_body($sum);
+				$this->add_to_body('" onclick="InputCloseError(this);" oninput="CheckInput(this);">
+					<div class="agreement">
+					<label class="confirm">
+					<input type="checkbox" name="agree" value="confirm">
+					<span class="visible ');
+				// Если не поставлена галочка, выделяем поле с ней
+				if($tick_error) $this->add_to_body("error");
+				$this->add_to_body('" onclick="Tick(this);">
+					<span class="tick"></span>
+					</span>
+					</label>
+					<p>Я изучил и принял <a href="#">пользовательское соглашение</a></p>
+					</div>
+					<button type="submit">Продолжить</button>
+					</form>
+					</div>
+					</header>');
+			}
+		} else {
+			// Просто выводим форму
+			$this->add_to_body('
+				<form action="donate.php" method="POST">
+				<input type="text" name="username" placeholder="Ник"
+				onclick="InputCloseError(this)" oninput="CheckInput(this);">
+				<input type="text" name="sum" placeholder="Сумма, (Руб)" onclick="InputCloseError(this);" oninput="CheckInput(this);">
 				<div class="agreement">
 				<label class="confirm">
 				<input type="checkbox" name="agree" value="confirm">
@@ -375,2291 +1101,108 @@ class engine
 				<button type="submit">Продолжить</button>
 				</form>
 				</div>
-				</header>
-				';
-			}
-			// 	if($form)
-		// 	{
-		// 		$server_id = -1;
-		// 		$servers = "";
-
-		// 		if(isset($_POST['srv']))
-		// 		{
-		// 			$server_id = strval($_POST['srv']);
-		// 		}
-		// 		else
-		// 		{
-		// 			if(isset($_GET['srv']))
-		// 			{
-		// 				$server_id = strval($_GET['srv']);
-		// 			}
-		// 			else
-		// 			{
-		// 				if(isset($_SESSION['auth']) && $_SESSION['auth'] == "YES")
-		// 				{
-		// 					$server_id = strval($_SESSION['srv']) + 1;
-		// 				}
-		// 			}
-		// 		}
-
-		// 		//for($i = 0; $i < $this->server_count; $i++)
-		// 		for($i = 0; $i < 1; $i++)
-		// 		{
-		// 			$servers .= '<option value="'.($i + 1).'" '.($server_id - 1 == $i ? "selected" : "").'>GreenTech RolePlay #'.($i + 1).'</option>';
-		// 		}
-
-		// 		$this->add_to_template('<form class="billing-form" method="post">');
-
-		// 		if($error != "")
-		// 		{
-		// 			$this->add_to_template('<div class="alert alert-danger" role="alert"><b>Ошибка: </b>'.$error.'</div>');
-		// 		}
-		// 		else if($this->donate_multiplier > 1)
-		// 		{
-		// 			$this->add_to_template('<div class="alert alert-warning" role="alert"><b>Акция: </b>x'.$this->donate_multiplier.' донат</div>');
-		// 		}
-
-		// 		$this->add_to_template('
-		// 			<div class="form-group row">
-		// 			<label for="server-select">Сервер</label>
-		// 			<select class="form-control" name="srv" id="server-select">
-		// 			'.$servers.'
-		// 			</select>
-		// 			</div>
-		// 			');
-
-		// 		if($server_id == 0)
-		// 		{
-		// 			//$username = "";
-
-		// 			if(isset($_POST['username']))
-		// 			{
-		// 				$username = $_POST['username'];
-		// 			}
-		// 			else
-		// 			{
-		// 				if(isset($_GET['name']))
-		// 				{
-		// 					$username = $_GET['name'];
-		// 				}
-		// 				else
-		// 				{
-		// 					if(isset($_SESSION['auth']) && $_SESSION['auth'] == "YES")
-		// 					{
-		// 						$username = $_SESSION['name'];
-		// 					}
-		// 				}
-		// 			}
-		// 		}
-
-		// 		$this->add_to_template('
-		// 			<div class="form-group row">
-		// 			<label for="username-input">Никнейм</label>
-		// 			<input class="form-control" type="text" name="username" value="'.$username.'" placeholder="Введите никнейм" id="username-input">
-		// 			</div>
-		// 			');
-
-		// 		$sum = 50;
-
-		// 		if(isset($_POST['sum']))
-		// 		{
-		// 			$sum = strval($_POST['sum']);
-		// 		}
-		// 		else
-		// 		{
-		// 			if(isset($_GET['sum']))
-		// 			{
-		// 				$sum = strval($_GET['sum']);
-		// 			}
-		// 		}
-
-		// 		$this->add_to_template('
-		// 			<div class="form-group row">
-		// 			<label for="sum-input">Сумма</label>
-		// 			<input class="form-control" type="number" value="'.$sum.'" name="sum" id="sum-input">
-		// 			</div>
-		// 			');
-
-		// 		$this->add_to_template('
-		// 			<div class="form-group row">
-		// 			<label class="form-check-label">
-		// 			<input type="checkbox" class="form-check-input" required>
-		// 			Я прочитал и принял <a href="agreement.php">пользовательское соглашение</a>
-		// 			</label>
-		// 			</div>
-		// 			');
-
-		// 		$this->add_to_template('
-		// 			<button type="submit" class="btn btn-primary">Продолжить</button>
-		// 			');
-
-		// 		$this->add_to_template('</form>');
-		// 	}
-
-		// 	$this->add_to_template('
-		// 		</div>
-		// 		</div>
-		// 		</center>
-		// 		</section>
-		// 		');
-		// }
-
-		// if($page == "BILLING_SUCCESS")
-		// {
-		// 	$this->add_to_template('
-		// 		<section class="sa-text-area">
-		// 		<center>
-		// 		<div class="main-block">
-		// 		<div class="main-block-sub" style="width: 70%;">
-		// 		<p class="block-title">Пополнить счет</p>
-		// 		');
-
-		// 	$this->add_to_template('
-		// 		<div class="alert alert-success" role="alert">
-		// 		<h4 class="alert-heading">Успешно!</h4>
-		// 		<p>На указанный аккаунт была зачислена указанная сумма. Номер платежа UnitPay #'.$_GET['paymentId'].'.</p>
-		// 		</div>
-		// 		');
-
-		// 	$this->add_to_template('
-		// 		</div>
-		// 		</div>
-		// 		</center>
-		// 		</section>
-		// 		');
+				</header>');
 		}
-
-		if($page == "BILLING_ERROR")
-		{
-			$this->add_to_template('
-				<section class="sa-text-area">
-				<center>
-				<div class="main-block">
-				<div class="main-block-sub" style="width: 70%;">
-				<p class="block-title">Пополнить счет</p>
-				');
-
-			$this->add_to_template('
-				<div class="alert alert-danger" role="alert">
-				<h4 class="alert-heading">Упс!</h4>
-				<p>При оплате произошла ошибка, обратитесь к администрации с указанными данными: '.$_GET['account'].':'.$_GET['paymentId'].'</p>
-				</div>
-				');
-
-			$this->add_to_template('
-				</div>
-				</div>
-				</center>
-				</section>
-				');
-		}
-
-		if($page == "AGREEMENT")
-		{
-			$this->add_to_template('
-				<section class="sa-text-area">
-				<center>
-				<div class="main-block">
-				<div class="main-block-sub" style="width: 70%;">
-				<p class="block-title">Пользовательское соглашение</p>
-				');
-
-			$this->add_to_template('
-				<div class="alert alert-success" role="alert" style="text-align: left;">
-				<h4 class="alert-heading">Принятие условий</h4>
-				<p>- Настоящие правила являются документом, обязательным к ознакомлению каждому пользователю, обратившегося к донат услугам.</p>
-				<p>- Если пользователь не согласен с каким-либо положением настоящих правил или ощущает вероятность негативных для себя последствий, ему рекомендуется отказаться от использования донат услуг.</p>
-				<p>- Факт обращения инициации пользователем процесса использования донат услуг считается подтверждением того, что он ознакомлен и согласен с каждым пунктом настоящих правил.</p>
-				</div>
-				<div class="alert alert-success" role="alert" style="text-align: left;">
-				<h4 class="alert-heading">Общие положения</h4>
-				<p>- Администрация проекта не несет никакой ответственности за ущерб морального либо материального характера, который может нанести прямо либо опосредованно предлагаемый игровой сервер, а также за любые неточности, ошибки, дефекты и сбои работы игрового сервера, вне зависимости от причин их вызвавших.</p>
-				<p>- Инициируя процесс использования донат услуг, пользователь подтверждает свое согласие не возлагать ответственность, возможные убытки и ущерб, связанные с пользованием игровым сервером, на его владельцев и администрацию.</p>
-				<p>- В случае нанесение пользователем ущерба проекту, администрация проекта имеют право на удаление аккаунта нарушителя.</p>
-				<p>- В случае несоответствия какого-либо положения настоящих правил требованиям действующего законодательства, оно считается замененным близким по содержанию положением действующего законодательства. При этом все остальные положения настоящих правил сохраняют свою силу.</p>
-				<p>- В случае просьбы вернуть средства, администрация имеет право на блокировку аккаунта.</p>
-				<p>- Администрация может сделать возврат средств, если со дня платежа прошло не более 7 дней.</p>
-				</div>
-				<div class="alert alert-success" role="alert" style="text-align: left;">
-				<h4 class="alert-heading">Исключение гарантий</h4>
-				<p>
-				<p>- Администрация проекта имеет право на блокирование или удаление аккаунта без предупреждения пользователя.</p>
-				<p>- Администрация проекта имеет право на удаление предоставленных Вам донат-услуг и/или на запрет их использования.</p>
-				</div>
-				');
-
-			$this->add_to_template('
-				</div>
-				</div>
-				</center>
-				</section>
-				');
-		}
-
-		if($page == "UCP")
-		{
-			$this->add_to_template('
-				<section class="sa-text-area">
-				<center>
-				<div class="main-block">
-				');
-
-			if(isset($_SESSION['auth']) && $_SESSION['auth'] == "YES")
-			{
-				$this->add_to_template('<div class="main-block-sub-ucp">');
-				$this->add_to_template('<p class="block-title" style="margin-bottom: 10px;">Личный кабинет</p>');
-
-				if(isset($_GET['a']))
-				{
-					if($_GET['a'] == "admin" && isset($_GET['p']))
-					{
-						$server_id = $_SESSION['srv'];
-
-						$this->db_connect($server_id);
-
-						$response = $this->db->query("SELECT * FROM players WHERE Names = '".$_SESSION['name']."'");
-
-						if($response->num_rows)
-						{
-							$data = $response->fetch_assoc();
-
-							if($data['Admin'] > 0)
-							{
-								$this->add_to_template('<h4>Панель администратора (сервер №'.($server_id + 1).')</h4>');
-
-								$this->add_to_template('<div class="ucp-block-left" style="padding: 10px;">');
-
-								$this->add_to_template('
-									<div class="ucp-menu-main">
-									<form method="post" action="ucp.php" class="ucp-menu-btn-exit"><input style="margin-bottom: 2px;" type="submit" name="page_main" class="btn btn-danger btn-sm btn-block" value="Назад в UCP"/></form>
-									</div>
-									');
-
-								$this->add_to_template('<div class="ucp-menu-pages">');
-
-								$this->add_to_template('
-									<a href="ucp.php?a=admin&p=main" style="margin-bottom: 2px;" class="btn btn-primary btn-sm btn-block">Главное</a>
-									<a href="ucp.php?a=admin&p=ucplogs" style="margin-bottom: 2px;" class="btn btn-primary btn-sm btn-block">История UCP</a>
-									<a href="ucp.php?a=admin&p=players" style="margin-bottom: 2px;" class="btn btn-primary btn-sm btn-block">Игроки</a>
-									');
-
-								$this->add_to_template('</div>');
-
-								$this->add_to_template('<br/>');
-								$this->add_to_template('</div>');
-
-								$this->add_to_template('<div class="ucp-block-right" style="padding: 10px;">');
-
-								switch($_GET['p'])
-								{
-									case 'main':
-									{
-										$this->add_to_template('<h5><b>Главное</b></h5>');
-
-										$this->add_to_template('
-											<table class="table" width="100%" style="border-left: 1px solid #eeeeee; font-size: 10pt;">
-											<tr><td><b>Сервер</b></td><td style="text-align: right;">GreenTech RolePlay #'.($server_id + 1).'</td></tr>
-											<tr><td><b>Аккаунт</b></td><td style="text-align: right;">#'.$data['ID'].'</td></tr>
-											<tr><td><b>Никнейм</b></td><td style="text-align: right;">'.$data['Names'].'</td></tr>
-											<tr><td><b>Уровень администратора</b></td><td style="text-align: right;">'.$data['Admin'].'</td></tr>
-											</table>
-											');
-
-										break;
-									}
-									case 'ucplogs':
-									{
-										$this->add_to_template('<h5><b>История UCP</b></h5>');
-
-										$this->add_to_template('<table class="table" width="100%" style="font-size: 10pt;">');
-										$this->add_to_template('<tr><td><b>ip</b></td><td style="text-align: center;"><b>никнейм</b></td><td style="text-align: center;"><b>дата</b></td><td style="text-align: right;"><b>действие</b></td></tr>');
-
-										$start_id = 0;
-
-										if(isset($_GET['s']))
-										{
-											$start_id = strval($_GET['s']);
-										}
-
-										$response = $this->db->query('SELECT * FROM `ucp_log` ORDER BY `id` DESC LIMIT '.($start_id * 30).',30');
-
-										if($response)
-										{
-											for($i = 0; $i < $response->num_rows; $i++)
-											{
-												$log_data = $response->fetch_assoc();
-
-												$action_name = "неизвестно";
-												$action_data = json_decode($log_data['params']);
-
-												for($a = 0; $a < sizeof($this->ucp_log_action_names); $a++)
-												{
-													if($log_data['action'] == $this->ucp_log_action_names[$a][0])
-													{
-														$action_name = $this->ucp_log_action_names[$a][1];
-													}
-												}
-
-												$this->add_to_template('<tr><td>'.$log_data['ip'].'</td><td style="text-align: center;">'.$action_data[2].'</td><td style="text-align: center;">'.date("d.m.Y H:m:s", $log_data['ts']).'</td><td style="text-align: right;">'.$action_name.' <a href="ucp.php?a=admin&p=ucplogdata&i='.$log_data['id'].'" class="btn-primary btn-sm">подробнее</a></td></tr>');
-											}
-										}
-
-										$this->add_to_template('</table>');
-
-										$this->add_to_template('<table style="border: none;" width="100%">');
-										$this->add_to_template('<tr>');
-
-										if($start_id > 0)
-										{
-											$this->add_to_template('<td style="padding: 5px; text-align: left;"><b><a class="btn btn-primary btn-sm" href="ucp.php?a=admin&p=ucplogs&s='.($start_id - 1).'">назад</a></b></td>');
-										}
-
-										$this->add_to_template('<td style="padding: 5px; text-align: right;"><b><a class="btn btn-primary btn-sm" href="ucp.php?a=admin&p=ucplogs&s='.($start_id + 1).'">вперед</a></b></td>');
-
-										$this->add_to_template('</tr>');
-										$this->add_to_template('</table>');
-
-										break;
-									}
-									case 'ucplogdata':
-									{
-										if(isset($_GET['i']))
-										{
-											$this->add_to_template('<h5><b>История UCP</b></h5>');
-
-											$response = $this->db->query('SELECT * FROM `ucp_log` WHERE `id` = \''.strval($_GET['i']).'\'');
-
-											if($response)
-											{
-												$log_data = $response->fetch_assoc();
-
-												$action_name = "неизвестно";
-												$action_data = json_decode($log_data['params']);
-
-												for($a = 0; $a < sizeof($this->ucp_log_action_names); $a++)
-												{
-													if($log_data['action'] == $this->ucp_log_action_names[$a][0])
-													{
-														$action_name = $this->ucp_log_action_names[$a][1];
-													}
-												}
-
-												$this->add_to_template('
-													<table class="table" width="100%" style="border-left: 1px solid #eeeeee; font-size: 10pt;">
-													<tr><td><a href="ucp.php?a=admin&p=ucplogs" class="btn-primary btn-sm">назад</a></td><td style="text-align: right;"></td></tr>
-													<tr><td><b>ID</b></td><td style="text-align: right;">'.$log_data['id'].'</td></tr>
-													<tr><td><b>Аккаунт</b></td><td style="text-align: right;">'.$action_data[2].'</td></tr>
-													<tr><td><b>Действие</b></td><td style="text-align: right;">'.$action_name.'</td></tr>
-													</table>
-													');
-											}
-										}
-
-										break;
-									}
-									case 'players':
-									{
-										$this->add_to_template('<h5><b>Игроки</b></h5>');
-
-										$this->add_to_template('<p>Данный раздел предназначен для управления игроками, находящиеся на сервере. Получение списка игроков может занять до 30 секунд</p>');
-										$this->add_to_template('<p><a class="btn btn-primary btn-sm" href="ucp.php?a=admin&p=plist">Получить список игроков</a></p>');
-
-										break;
-									}
-									case 'plist':
-									{
-										$this->add_to_template('<h5><b>Список игроков</b></h5>');
-
-										$players = $this->rcon($server_id, "players");
-
-										if($players === false)
-										{
-											$this->add_to_template('<div class="alert alert-danger" role="alert"><strong>Ошибка: </strong>не удалось получить список игроков, возможно сервер недоступен</div>');
-										}
-
-										$this->add_to_template('<table class="table" width="100%" style="font-size: 10pt;">');
-										$this->add_to_template('<tr><td><b>ID</b></td><td style="text-align: center;"><b>никнейм</b></td><td style="text-align: center;"><b>IP</b></td><td style="text-align: right;"><b>действия</b></td></tr>');
-
-										for($i = 0; $i < count($players); $i++)
-										{
-											$players[$i] = str_ireplace("\n", "", $players[$i]);
-											$players[$i] = str_ireplace("\r", "", $players[$i]);
-											$players[$i] = str_ireplace("\t", " ", $players[$i]);
-											$players[$i] = str_ireplace("  ", " ", $players[$i]);
-											$players[$i] = str_ireplace("   ", " ", $players[$i]);
-											$players[$i] = str_ireplace("    ", " ", $players[$i]);
-										}
-
-										for($i = 1; $i < count($players); $i++)
-										{
-											$player_data = explode(" ", $players[$i]);
-
-											$this->add_to_template('<tr><td>'.$player_data[0].'</td><td style="text-align: center;">'.$player_data[1].'</td><td style="text-align: center;">'.$player_data[3].'</td><td style="text-align: right;"><a href="ucp.php?a=admin&p=pkick&i='.$player_data[0].'" class="btn-primary btn-sm">кик</a> <a href="ucp.php?a=admin&p=pban&i='.$player_data[0].'" class="btn-primary btn-sm">бан</a> <a href="ucp.php?a=admin&p=pinfo&i='.$player_data[1].'" class="btn-primary btn-sm">инфо</a></td></tr>');
-										}
-
-										$this->add_to_template('</table>');
-
-										break;
-									}
-									case 'pkick':
-									{
-										$result = $this->rcon($server_id, "kick ".strval($_GET['i']));
-
-										$this->add_to_template('<div class="alert alert-info" role="alert"><strong>Результат: </strong>'.$result[0].'</div>');
-
-										break;
-									}
-								}
-
-								$this->add_to_template('</div>');
-							}
-						}
-					}
-				}
-				else
-				{
-					$this->add_to_template('<h4>'.$_SESSION['name'].' (сервер №'.($_SESSION['srv'] + 1).')</h4>');
-
-					$this->db_connect($_SESSION['srv']);
-
-					$response = $this->db->query("SELECT * FROM players WHERE Names = '".$_SESSION['name']."'");
-
-					if($response->num_rows)
-					{
-						$server_id = $_SESSION['srv'];
-						$username = $_SESSION['name'];
-
-						$data = $response->fetch_assoc();
-
-						if($data['Bank'] < 0)
-						{
-							$data['Bank'] = 0;
-						}
-
-						if(isset($_POST['logout']))
-						{
-							unset($_SESSION['auth']);
-							unset($_SESSION['name']);
-							unset($_SESSION['srv']);
-
-							$this->add_header('<meta http-equiv="refresh" content="0;URL=ucp.php">');
-
-							$this->wlog("logout", array($data['ID'], $server_id, $data['Names']));
-						}
-
-						if(isset($_POST['change_email_final']) && isset($_POST['new_email']))
-						{
-							$row = $response->fetch_assoc();
-
-							$_POST['new_email'] = trim($_POST['new_email']);
-
-							if($_POST['new_email'] == $data['Email'])
-							{
-								$_POST['change_email'] = 1;
-
-								$this->add_to_template('
-									<div class="alert alert-danger" role="alert">
-									<b>Ошибка: </b>указанный e-mail совпадает с текущим
-									</div>
-									');
-							}
-							else
-							{
-								$_SESSION['ce_new_email'] = $_POST['new_email'];
-								$_SESSION['ce_key'] = $this->generate_key(24);
-
-								$link = "http://greentech-rp.ru/ucp.php?ce=".$_SESSION['ce_key'];
-
-								$message = "Здравствуйте!\n\r\n\r";
-								$message .= "Вы запросили изменение e-mail к аккаунту ".$_SESSION['name']." на сервере GreenTech RolePlay #".($server_id + 1).", перейдите по ".$link." для дальнейших действий.\n\r";
-								$message .= "Если вдруг вы не запрашивали это, проигнорируйте это письмо.\n\r\n\r";
-								$message .= "С Уважением, администрация GreenTech RolePlay.";
-
-								mail($_POST['new_email'], "Изменение email", $message, "From: admin@greentech-rp.ru");
-
-								$this->add_to_template('
-									<div class="alert alert-info" role="alert">
-									<b>Отлично! </b>На указанный e-mail было выслано письмо с дальнейшими указаниями
-									</div>
-									');
-							}
-						}
-
-						if(isset($_GET['ce']))
-						{
-							if(isset($_SESSION['ce_new_email']) && isset($_SESSION['ce_key']))
-							{
-								if($_SESSION['ce_key'] == $_GET['ce'])
-								{
-									$this->wlog("email_changed", array($data['ID'], $server_id, $data['Names'], $_SESSION['ce_key'], $_SESSION['ce_new_email'], $data['Email']));
-
-									$data['Email'] = $_SESSION['ce_new_email'];
-
-									$this->db->query("UPDATE players SET Email = '".$_SESSION['ce_new_email']."' WHERE Names = '".$_SESSION['name']."'");
-
-									$this->add_to_template('
-										<div class="alert alert-success" role="alert">
-										<b>Успешно! </b>Электронный адрес вашего аккаунта изменен на '.$_SESSION['ce_new_email'].' 
-										</div>
-										');
-
-									unset($_SESSION['ce_new_email']);
-									unset($_SESSION['ce_key']);
-								}
-							}
-						}
-
-						if(isset($_POST['change_password_final']) && isset($_POST['old_password']) && isset($_POST['new_password']) && isset($_POST['new_password_sub']))
-						{
-							$_POST['old_password'] = trim($_POST['old_password']);
-							$_POST['new_password'] = trim($_POST['new_password']);
-							$_POST['new_password_sub'] = trim($_POST['new_password_sub']);
-
-							if($_POST['new_password_sub'] == $_POST['new_password'])
-							{
-								if($_POST['old_password'] == $_POST['new_password'])
-								{
-									$_POST['change_password'] = 1;
-
-									$this->add_to_template('
-										<div class="alert alert-danger" role="alert">
-										<b>Ошибка: </b>указанные пароли совпадают
-										</div>
-										');
-								}
-								else
-								{
-									if(strlen($_POST['new_password']) < 6 || strlen($_POST['new_password']) > 32)
-									{
-										$_POST['change_password'] = 1;
-
-										$this->add_to_template('
-											<div class="alert alert-danger" role="alert">
-											<b>Ошибка: </b>допустимая длина нового пароля от 6 до 32 символов
-											</div>
-											');
-									}
-									else
-									{
-										$old_pass_hash = $this->get_password_hash($_POST['old_password'], $data['salt']);
-										$new_pass_hash = $this->get_password_hash($_POST['new_password'], $data['salt']);
-
-										if($old_pass_hash == $data['Pass'])
-										{
-											$data['Pass'] = $new_pass_hash;
-
-											$this->db->query("UPDATE players SET Pass = '".$new_pass_hash."' WHERE Names = '".$_SESSION['name']."'");
-
-											$this->add_to_template('
-												<div class="alert alert-success" role="alert">
-												<b>Успешно! </b>Пароль вашего аккаунта изменен
-												</div>
-												');
-
-											unset($_SESSION['auth']);
-											unset($_SESSION['name']);
-											unset($_SESSION['srv']);
-
-											$this->add_header('<meta http-equiv="refresh" content="2;URL=ucp.php">');
-
-											$this->wlog("password_changed", array($data['ID'], $server_id, $data['Names']));
-										}
-										else
-										{
-											$_POST['change_password'] = 1;
-
-											$this->add_to_template('
-												<div class="alert alert-danger" role="alert">
-												<b>Ошибка: </b>текущий пароль не совпадает
-												</div>
-												');
-										}
-									}
-								}
-							}
-							else
-							{
-								$_POST['change_password'] = 1;
-
-								$this->add_to_template('
-									<div class="alert alert-danger" role="alert">
-									<b>Ошибка: </b>новые пароли не совпадают
-									</div>
-									');
-							}
-						}
-
-						if(isset($_GET['uninvite']))
-						{
-							if($data['Leader'] > 0)
-							{
-								$response = $this->db->query("SELECT * FROM players WHERE ID = '".strval($_GET['uninvite'])."'");
-
-								if($response->num_rows)
-								{
-									$pdata = $response->fetch_assoc();
-
-									if($pdata['ID'] == $data['ID'])
-									{
-										$_POST['page_leader'] = 1;
-
-										$this->add_to_template('
-											<div class="alert alert-danger" role="alert">
-											<b>Ошибка: </b>вы не можете исключить себя
-											</div>
-											');
-									}
-									else if($pdata['Member'] != $data['Leader'])
-									{
-										$_POST['page_leader'] = 1;
-
-										$this->add_to_template('
-											<div class="alert alert-danger" role="alert">
-											<b>Ошибка: </b>query malformed
-											</div>
-											');
-									}
-									else if($pdata['Leader'] == $data['Leader'])
-									{
-										$_POST['page_leader'] = 1;
-
-										$this->add_to_template('
-											<div class="alert alert-danger" role="alert">
-											<b>Ошибка: </b>вы не можете исключить лидера
-											</div>
-											');
-									}
-								}
-								else
-								{
-									$_POST['page_leader'] = 1;
-
-									$this->add_to_template('
-										<div class="alert alert-danger" role="alert">
-										<b>Ошибка: </b>query malformed
-										</div>
-										');
-								}
-							}
-						}
-
-						if(isset($_GET['spawn']) && $_GET['spawn'] == "reset")
-						{
-							if($data['Spawn'] < 5)
-							{
-								$data['Spawn'] = 2;
-
-								$this->db->query("UPDATE players SET Spawn = '2' WHERE ID = '".$data['ID']."'");
-
-								$this->add_to_template('
-									<div class="alert alert-success" role="alert">
-									<b>Успешно! </b>Вы сбросили своё место появления
-									</div>
-									');
-							}
-						}
-
-						if(isset($_POST['uninvite_final']) && isset($_POST['uninvite_id']))
-						{
-							if($data['Leader'] > 0)
-							{
-								$user_id = strval($_POST['uninvite_id']);
-
-								$response = $this->db->query("SELECT * FROM players WHERE ID = '".$user_id."'");
-
-								if($response->num_rows)
-								{
-									$pdata = $response->fetch_assoc();
-
-									if($pdata['ID'] != $data['ID'])
-									{
-										if($pdata['Member'] == $data['Leader'])
-										{
-											if($pdata['Leader'] != $data['Leader'])
-											{
-												$this->db->query("UPDATE players SET Member = '0', Rank = '0', Spawn = '2' WHERE ID = '".$user_id."'");
-
-												$this->add_to_template('
-													<div class="alert alert-success" role="alert">
-													<b>Успешно! </b>Вы исключили игрока '.$pdata['Names'].' из своей фракции
-													</div>
-													');
-
-												$this->wlog("fraction_uninvate", array($data['ID'], $server_id, $data['Names'], $pdata['ID'], $pdata['Names']));
-											}
-										}
-									}
-								}
-							}
-						}
-
-						if($data['BanTime'] > 0)
-						{
-							$text = "Срок действия блокировки истек, зайдите на сервер.";
-
-							if($data['BanTime'] > time())
-							{
-								$time = $data['BanTime'] - time();
-
-								$hour = floor($time / 60 / 60);
-								$minute = floor(($time - ($hour * 60 * 60)) / 60);
-								$seconds = ($time - ($hour * 60 * 60)) - ($minute * 60);
-
-								$text = "До разблокировки осталось: ".sprintf("%02d:%02d:%02d", $hour, $minute, $seconds).".";
-							}
-
-							$this->add_to_template('
-								<div class="alert alert-warning" role="alert">
-								<b>Предупреждение: </b>ваш аккаунт заблокирован администратором '.$data['BanName'].', это означает, что вы не сможете зайти на сервер в ближайшее время. '.$text.'
-								</div>
-								');
-						}
-
-						if($server_id == 1)
-						{
-							if($data['transfer_complete'] == 2)
-							{
-								$this->add_to_template('
-									<div class="alert alert-info" role="alert">
-									<b>Напоминание:</b><br/>
-									По некоторым причинам второй сервер GreenTech RolePlay скоро будет закрыт.<br/>
-									Ваш никнейм на первом сервере: <b>'.$data['transfer_nickname'].'</b><br/>
-									</div>
-									');
-							}
-							else if($data['transfer_complete'] == 1)
-							{
-								$this->add_to_template('
-									<div class="alert alert-info" role="alert">
-									<b>Внимание!</b><br/>
-									По некоторым причинам второй сервер GreenTech RolePlay скоро будет закрыт.<br/>
-									Вы не завершили перенос аккаунта на первый сервер.<br/>
-									<br/>
-									<a class="btn btn-primary btn-sm" href="/transfer.php">Завершить перенос</a>
-									</div>
-									');
-							}
-							else
-							{
-								$this->add_to_template('
-									<div class="alert alert-info" role="alert">
-									<b>Внимание!</b><br/>
-									По некоторым причинам второй сервер GreenTech RolePlay скоро будет закрыт.<br/>
-									Мы предлагаем перенести Ваш аккаунт на первый сервер.<br/>
-									<br/>
-									<a class="btn btn-primary btn-sm" href="/transfer.php">Перенести аккаунт</a>
-									</div>
-									');
-							}
-						}
-
-						$this->add_to_template('<div class="ucp-block-left" style="padding: 10px;">');
-
-						$this->add_to_template('
-							<div class="ucp-menu-main">
-							<form method="post" action="ucp.php" class="ucp-menu-btn-exit"><input type="submit" name="logout" class="btn btn-danger btn-sm btn-block" value="Выйти"/></form>
-							<form method="post" action="ucp.php" class="ucp-menu-btn-sub-left"><input type="submit" name="change_email" class="btn btn-primary btn-sm btn-block" value="Сменить e-mail"/></form>
-							<form method="post" action="ucp.php" class="ucp-menu-btn-sub-right"><input type="submit" name="change_password" class="btn btn-primary btn-sm btn-block" value="Сменить пароль"/></form>
-							</div>
-							');
-
-						$this->add_to_template('<div class="ucp-menu-pages">');
-
-						$this->add_to_template('
-							<form method="post" action="ucp.php"><input style="margin-bottom: 2px;" type="submit" name="page_main" class="btn btn-success btn-sm btn-block" value="Главное"/></form>
-							<form method="post" action="ucp.php"><input style="margin-bottom: 2px;" type="submit" name="page_property" class="btn btn-success btn-sm btn-block" value="Имущество"/></form>
-							<form method="post" action="ucp.php"><input style="margin-bottom: 2px;" type="submit" name="page_payments" class="btn btn-success btn-sm btn-block" value="Платежи"/></form>
-							<form method="post" action="ucp.php"><input style="margin-bottom: 2px;" type="submit" name="page_leaders" class="btn btn-success btn-sm btn-block" value="Лидеры"/></form>
-							');
-
-						if($data['Leader'] > 0)
-						{
-							$this->add_to_template('<form method="post" action="ucp.php"><input type="submit" name="page_leader" class="btn btn-success btn-sm btn-block" value="Фракция"/></form>');
-						}
-
-						$this->add_to_template('</div>');
-
-						/*if($data['Admin'] > 0)
-						{
-							$this->add_to_template('<div style="margin-top: 10px;"><a href="ucp?a=admin&p=main">Админ-панель</a></div>');
-						}*/
-						
-						$this->add_to_template('</div>');
-
-						$this->add_to_template('<div class="ucp-block-right" style="padding: 10px;">');
-
-						if(isset($_POST['change_email']))
-						{
-							$this->add_to_template('
-								<h5><b>Сменить e-mail</b></h5>
-								<form action="ucp.php" method="post" style="width: 70%">
-								<input style="margin-bottom: 5px;" type="email" name="new_email" class="form-control" placeholder="Введите новый e-mail" required/>
-								<input type="submit" name="change_email_final" class="btn btn-primary btn-sm btn-block" value="Далее"/>
-								</form>
-								');
-							
-							$this->wlog("pageview_change_email", array($data['ID'], $server_id, $data['Names']));
-						}
-						else if(isset($_POST['change_password']))
-						{
-							$this->add_to_template('
-								<h5><b>Сменить пароль</b></h5>
-								<form action="ucp.php" method="post" style="width: 70%">
-								<input style="margin-bottom: 5px;" type="password" name="old_password" class="form-control" placeholder="Введите текущий пароль" required/>
-								<input style="margin-bottom: 5px;" type="password" name="new_password" class="form-control" placeholder="Введите новый пароль" required/>
-								<input style="margin-bottom: 5px;" type="password" name="new_password_sub" class="form-control" placeholder="Подтвердите новый пароль" required/>
-								<input type="submit" name="change_password_final" class="btn btn-primary btn-sm btn-block" value="Далее"/>
-								</form>
-								');
-							
-							$this->wlog("pageview_change_password", array($data['ID'], $server_id, $data['Names']));
-						}
-						else if(isset($_POST['page_property']))
-						{
-							$this->add_to_template('<h5><b>Имущество</b></h5>');
-							$this->add_to_template('<table class="table" width="100%" style="font-size: 10pt;">');
-							
-							$response = $this->db->query("SELECT hID,Street FROM houses WHERE hOwner = '".$_SESSION['name']."'");
-							
-							if($response->num_rows)
-							{
-								for($i = 0; $i < $response->num_rows; $i++)
-								{
-									$house_data = $response->fetch_assoc();
-									
-									$this->add_to_template('<tr><td><b>Дом #'.$house_data['hID'].'</b></td><td style="text-align: right;">'.iconv("CP1251", "UTF-8", $house_data['Street']).'</td></tr>');
-								}
-							}
-							else
-							{
-								$this->add_to_template('<tr><td><b>дома отсутствуют</b></td><td style="text-align: right;"></td></tr>');
-							}
-							
-							$response = $this->db->query("SELECT ID,Model,2Owner FROM cars WHERE Owner = '".$_SESSION['name']."'");
-							
-							if($response->num_rows)
-							{
-								for($i = 0; $i < $response->num_rows; $i++)
-								{
-									$car_data = $response->fetch_assoc();
-									
-									$this->add_to_template('<tr><td><b>Машина #'.$car_data['ID'].'</b></td><td style="text-align: right;">'.$car_data['Model'].', '.$car_data['2Owner'].'</td></tr>');
-								}
-							}
-							else
-							{
-								$this->add_to_template('<tr><td><b>машины отсутствуют</b></td><td style="text-align: right;"></td></tr>');
-							}
-
-							$this->add_to_template('</table>');
-							
-							$this->wlog("pageview_property", array($data['ID'], $server_id, $data['Names']));
-						}
-						else if(isset($_POST['page_payments']))
-						{
-							$this->add_to_template('<h5><b>Платежи</b></h5>');
-							$this->add_to_template('<table class="table" width="100%" style="font-size: 10pt;">');
-							
-							$response = $this->db->query("SELECT * FROM unitpay_payments WHERE `account` = '".$_SESSION['name']."' AND `status` = '1' ORDER BY `id` DESC");
-							
-							if($response->num_rows)
-							{
-								$this->add_to_template('<tr><td><b>общий номер (unitpayid)</b></td><td><b>зачислено на счет</b></td><td><b>дата оплаты</b></td><td style="text-align: right;"><b>сумма</b></td></tr>');
-								
-								$common_sum = 0;
-
-								for($i = 0; $i < $response->num_rows; $i++)
-								{
-									$payment_data = $response->fetch_assoc();
-									
-									$common_sum += $payment_data['sum'];
-
-									$this->add_to_template('<tr><td>Платеж #'.$payment_data['id'].' ('.$payment_data['unitpayId'].')</td><td>'.$payment_data['itemsCount'].' донат-очков</td><td>'.$payment_data['dateComplete'].'</td><td style="text-align: right;">'.$payment_data['sum'].' RUB</td></tr>');
-								}
-								
-								$this->add_to_template('<tr><td><b>Всего</b></td><td></td><td></td><td style="text-align: right;"><b>'.$common_sum.' RUB</b></td></tr>');
-							}
-							else
-							{
-								$this->add_to_template('<tr><td><b>Вы ещё не пополняли свой баланс</b></td><td></td><td></td><td style="text-align: right;"><a href="billing.php" class="btn-primary btn-sm">пополнить</a></td></tr>');
-							}
-
-							$this->add_to_template('</table>');
-							
-							$this->wlog("pageview_payments", array($data['ID'], $server_id, $data['Names']));
-						}
-						else if(isset($_POST['page_leader']))
-						{
-							if($data['Leader'] > 0)
-							{
-								$fraction_id = $data['Leader'];
-								
-								$this->add_to_template('<h5><b>Фракция "'.$this->fraction_name[$fraction_id].'"</b></h5>');
-								
-								$response = $this->db->query("SELECT * FROM players WHERE Member = '".$fraction_id."' ORDER BY Rank DESC");
-								
-								$this->add_to_template('<table class="table" width="100%" style="font-size: 9pt;">');
-								$this->add_to_template('<tr><td><b>онлайн ли, имя</b></td><td><b>последний вход</b></td><td><b>ранг [подразделение]</b></td><td style="text-align: right;"><b>действия</b></td></tr>');
-								
-								if($response->num_rows)
-								{
-									for($i = 0; $i < $response->num_rows; $i++)
-									{
-										$rang = "-";
-										$online = "offline";
-										
-										$member_data = $response->fetch_assoc();
-										
-										if(count($this->rang_name[$fraction_id]))
-										{
-											$rang = $this->rang_name[$fraction_id][$member_data['Rank']];
-										}
-										
-										if(count($this->sub_rang_name[$fraction_id]))
-										{
-											$rang .= " [".$this->sub_rang_name[$fraction_id][$member_data['DopRank']]."]";
-										}
-										
-										if($member_data['Online'])
-										{
-											$online = "<font color=\"green\">online</font>";
-										}
-										
-										$uninvite_btn = '<a href="ucp.php?uninvite='.$member_data['ID'].'" class="btn-danger btn-sm" />исключить</a>';
-										
-										if($member_data['Leader'] == $data['Leader'])
-										{
-											$uninvite_btn = 'невозможно ';
-										}
-										
-										if($member_data['ID'] == $data['ID'])
-										{
-											$uninvite_btn = 'невозможно ';
-										}
-										
-										$this->add_to_template('<tr><td><img src="images/ucp_'.($member_data['Online'] ? "online" : "offline").'.png" /> '.$member_data['Names'].'</td><td>'.$member_data['DataTimes'].'</td><td>'.$rang.'</td></td><td style="text-align: right;">'.$uninvite_btn.'</td></tr>');
-									}
-								}
-								else
-								{
-									$this->add_to_template('<tr><td><b>в вашей фракции нет игроков</b></td><td></td><td></td><td style="text-align: right;"></td></tr>');
-								}
-								
-								$this->add_to_template('</table>');
-								
-								$this->wlog("pageview_leader", array($data['ID'], $server_id, $data['Names']));
-							}
-						}
-						else if(isset($_POST['page_leaders']))
-						{
-							$this->add_to_template('<h5><b>Лидеры</b></h5>');
-							
-							$response = $this->db->query("SELECT * FROM players WHERE Leader > 0 ORDER BY Leader");
-							
-							$this->add_to_template('<table class="table" width="100%" style="font-size: 9pt;">');
-							$this->add_to_template('<tr><td><b>онлайн ли, имя</b></td><td style="text-align: center;"><b>последний вход</b></td><td style="text-align: center;"><b>фракция</b><td style="text-align: right;"><b>ранг [подразделение]</b></td></tr>');
-							
-							if($response->num_rows)
-							{
-								for($i = 0; $i < $response->num_rows; $i++)
-								{
-									$rang = "-";
-									$online = "offline";
-									
-									$member_data = $response->fetch_assoc();
-									$fraction_id = $member_data['Leader'];
-
-									if(count($this->rang_name[$fraction_id]))
-									{
-										$rang = $this->rang_name[$fraction_id][$member_data['Rank']];
-									}
-									
-									if(count($this->sub_rang_name[$fraction_id]))
-									{
-										$rang .= " [".$this->sub_rang_name[$fraction_id][$member_data['DopRank']]."]";
-									}
-									
-									if($member_data['Online'])
-									{
-										$online = "<font color=\"green\">online</font>";
-									}
-
-									$this->add_to_template('<tr><td><img src="images/ucp_'.($member_data['Online'] ? "online" : "offline").'.png" /> '.$member_data['Names'].'</td><td style="text-align: center;">'.$member_data['DataTimes'].'</td><td style="text-align: center;">'.$this->fraction_name[$fraction_id].'</td><td style="text-align: right;">'.$rang.'</td></tr>');
-								}
-							}
-							
-							$this->add_to_template('</table>');
-							
-							$this->wlog("pageview_leaders", array($data['ID'], $server_id, $data['Names']));
-						}
-						else if(isset($_GET['uninvite']))
-						{
-							if($data['Leader'] > 0)
-							{
-								$response = $this->db->query("SELECT * FROM players WHERE ID = '".strval($_GET['uninvite'])."'");
-								
-								if($response->num_rows)
-								{
-									$pdata = $response->fetch_assoc();
-									
-									if($pdata['ID'] != $data['ID'])
-									{
-										if($pdata['Member'] == $data['Leader'])
-										{
-											$this->add_to_template('<h5><b>Фракция "'.$this->fraction_name[$data['Leader']].'"</b></h5>');
-											$this->add_to_template('
-												<form method="post" action="ucp.php" style="width: 70%">
-												<p>Вы действительно хотите исключить игрока '.$pdata['Names'].' из своей фракции?</p>
-												<input type="hidden" name="uninvite_id" value="'.$pdata['ID'].'"/>
-												<input type="hidden" name="page_leader" value="1"/>
-												<input type="submit" name="uninvite_final" class="btn btn-danger btn-sm" value="Да"/>
-												<input type="submit" name="uninvite_final_no_accept" class="btn btn-primary btn-sm" value="Нет"/>
-												</form>
-												');
-										}
-									}
-								}
-							}
-						}
-						else
-						{
-							$this->wlog("pageview_main", array($data['ID'], $server_id, $data['Names']));
-							
-							$this->add_to_template('<h5><b>Главное</b></h5>');
-							
-							$rang = "-";
-							$fraction_id = 0;
-							
-							if($data['Member'] > 0)
-							{
-								$fraction_id = $data['Member'];
-							}
-							
-							if($data['Leader'] > 0)
-							{
-								$fraction_id = $data['Leader'];
-							}
-							
-							if($fraction_id > 0)
-							{
-								if(count($this->rang_name[$fraction_id]))
-								{
-									$rang = $this->rang_name[$fraction_id][$data['Rank']];
-								}
-								
-								if(count($this->sub_rang_name[$fraction_id]))
-								{
-									$rang .= " [".$this->sub_rang_name[$fraction_id][$data['DopRank']]."]";
-								}
-								
-								$rang .= " (".$data['Rank'].":".$data['DopRank'].")";
-							}
-							
-							$this->add_to_template('
-								<div id="ucp_main_left" class="ucp-main-left">
-								<table class="table" width="100%" style="border-left: 1px solid #eeeeee; font-size: 10pt;">
-								<tr><td><b>Сервер</b></td><td style="text-align: right;">GreenTech RolePlay #'.($server_id + 1).'</td></tr>
-								<tr><td><b>Аккаунт</b></td><td style="text-align: right;">#'.$data['ID'].'</td></tr>
-								<tr><td><b>Имя</b></td><td style="text-align: right;">'.$username.'</td></tr>
-								<tr><td><b>E-mail</b></td><td style="text-align: right;">'.$data['Email'].'</td></tr>
-								<tr><td><b>Уровень</b></td><td style="text-align: right;">'.$data['Level'].'</td></tr>
-								<tr><td><b>Возраст</b></td><td style="text-align: right;">'.$data['Age'].'</td></tr>
-								<tr><td><b>Пол</b></td><td style="text-align: right;">'.($data['Sex'] == 2 ? "женский" : "мужской").'</td></tr>
-								<tr><td><b>Номер телефона</b></td><td style="text-align: right;">'.$data['PhoneNumber'].'</td></tr>
-								<tr><td><b>Баланс на телефоне</b></td><td style="text-align: right;">'.$data['PhoneBank'].' RUB</td></tr>
-								<tr><td><b>Деньги (наличные)</b></td><td style="text-align: right;">'.$data['Money'].' RUB</td></tr>
-								<tr><td><b>Деньги (в банке)</b></td><td style="text-align: right;">'.$data['Bank'].' RUB</td></tr>
-								<tr><td><b>Место появления</b></td><td style="text-align: right;">#'.$data['Spawn'].' <a href="ucp.php?spawn=reset" class="btn-primary btn-sm">сбросить</a></td></tr>
-								<tr><td><b>Донат-очки</b></td><td style="text-align: right;">'.$data['Donate'].' RUB <a href="billing.php" class="btn-primary btn-sm">пополнить</a></td></tr>
-								<tr><td><b>Фракция</b></td><td style="text-align: right;">'.$this->fraction_name[$fraction_id].'</td></tr>
-								<tr><td><b>Ранг</b></td><td style="text-align: right;">'.$rang.'</td></tr>
-								</table>
-								</div>
-								');
-							
-							$this->add_to_template('<div id="ucp_main_right" class="ucp-main-right">');
-							$this->add_to_template('<table class="table table-bordered" width="100%" style="font-size: 10pt;">');
-							$this->add_to_template('<tr><td>');
-							
-							if(file_exists("images/skins/pack/skin".$data['Char'].".png"))
-							{
-								$this->add_to_template('<center>');
-								$this->add_to_template('<button id="bskinsel0" style="width: 46%; margin-right: 5px;" type="button" class="btn btn-primary btn-sm">Обычный</button>');
-								$this->add_to_template('<button id="bskinsel1" style="width: 46%;" type="button" class="btn btn-primary btn-sm">Мод-пак</button>');
-								$this->add_to_template('</center>');
-								$this->add_to_template('<img class="ucp-skin" id="skin_default" src="images/skins/default/skin'.$data['Char'].'.png" style="display: none;" />');
-								$this->add_to_template('<img class="ucp-skin" id="skin_pack" src="images/skins/pack/skin'.$data['Char'].'.png" style="display: block;" />');
-							}
-							else
-							{
-								$this->add_to_template('<img class="ucp-skin" src="images/skins/default/skin'.$data['Char'].'.png" style="display: block;" />');
-							}
-							
-							$this->add_to_template('</td></tr>');
-							$this->add_to_template('</table>');
-							$this->add_to_template('</div>');
-						}
-						
-						$this->add_to_template('</div>');
-					}
-					else
-					{
-						unset($_SESSION['auth']);
-						unset($_SESSION['name']);
-						unset($_SESSION['srv']);
-
-						$this->add_to_template('<div class="alert alert-danger" role="alert"><b>Ошибка: </b>авторизованный раннее аккаунт не найден в базе данных, возможно он был удален. Обновите страницу, чтобы перейти к авторизации</div>');
-					}
-				}
-				
-				$this->add_to_template('</div>');
-			}
-			else
-			{
-				$this->add_to_template('<div class="main-block-sub-login">');
-				$this->add_to_template('<p class="block-title" style="margin-bottom: 10px;">Личный кабинет</p>');
-
-				$error = "";
-				$servers = "";
-				
-				for($i = 0; $i < $this->server_count; $i++)
-				{
-					$servers .= '<option value="'.($i + 1).'">GreenTech RolePlay #'.($i + 1).'</option>';
-				}
-
-				if(isset($_SESSION['auth']) && $_SESSION['auth'] == "PIN")
-				{
-					if(isset($_GET['a']))
-					{
-						if($_GET['a'] == "recovery")
-						{
-							$this->add_to_template('<h4>Восстановление кода безопасности</h4>');
-							
-							if(isset($_GET['k']) && isset($_SESSION['pin_recovery_key']))
-							{
-								$recovery_key = trim($_GET['k']);
-								
-								if(strlen($recovery_key) == 24)
-								{
-									if($_SESSION['pin_recovery_key'] == $recovery_key)
-									{
-										$form = true;
-										
-										$this->db_connect($_SESSION['srv']);
-										
-										if(isset($_POST['pincode']))
-										{
-											$pincode = trim($_POST['pincode']);
-
-											if((strlen($pincode) == 4 || strlen($pincode) == 3) && ctype_digit($pincode))
-											{
-												$response = $this->db->query("SELECT * FROM players WHERE Names = '".$_SESSION['name']."'");
-
-												if($response->num_rows)
-												{
-													$form = false;
-													
-													$this->db->query("UPDATE players SET DopZa = '".strval($pincode)."' WHERE Names = '".$_SESSION['name']."'");
-													
-													$this->add_to_template('
-														<form action="ucp.php" method="post" class="billing-form">
-														<div class="alert alert-success" role="alert"><b>Успешно! </b>Новый код безопасности установлен</div>
-														<button type="submit" class="btn btn-primary">Вернуться на форму авторизации</button>
-														</form>
-														');
-												}
-												else
-												{
-													$error = "аккаунт не найден";
-												}
-											}
-											else
-											{
-												$error = "код безопасности должен состоять из 3 или 4 цифр";
-											}
-										}
-										
-										if($form)
-										{
-											$this->add_to_template('
-												<form class="billing-form" method="post">
-												'.($error == "" ? "" : '<div class="alert alert-danger" role="alert"><b>Ошибка: </b>'.$error.'</div>').'
-												<div class="form-group row">
-												<label for="pincode-input">Новый код безопасности</label>
-												<input class="form-control" type="input" name="pincode" placeholder="Введите новый код безопасности" id="pincode-input" required>
-												</div>
-												<button type="submit" class="btn btn-primary">Установить</button><br/>
-												</form>
-												');
-										}
-									}
-									else
-									{
-										$this->add_to_template('<div class="alert alert-danger" role="alert"><b>Ошибка: </b>ссылка недействительна</div>');
-									}
-								}
-								else
-								{
-									$this->add_to_template('<div class="alert alert-danger" role="alert"><b>Ошибка: </b>некорректный запрос</div>');
-								}
-							}
-							else
-							{
-								if(!isset($_SESSION['pin_recovery_key']))
-								{
-									$this->db_connect($_SESSION['srv']);
-
-									$response = $this->db->query("SELECT * FROM players WHERE Names = '".$_SESSION['name']."'");
-
-									if($response->num_rows)
-									{
-										//require_once "SendMailSmtpClass.php"; // подключаем класс
-										//$mailSMTP = new SendMailSmtpClass('forum.greentech-rp@yandex.ua', 'a214aarji14214SDaa341', 'ssl://smtp.yandex.ru', 465, "UTF-8");
-										
-										$row = $response->fetch_assoc();
-
-										$key = $this->generate_key(24);
-										$link = "http://greentech-rp.ru/ucp.php?a=recovery&k=".$key;
-										
-										$_SESSION['pin_recovery_key'] = $key;
-
-										$message = "Здравствуйте!\n\r\n\r";
-										$message .= "Вы запросили восстановление кода безопасности для доступа к аккаунту ".$_SESSION['name']." на сервере GreenTech RolePlay #".($_SESSION['srv'] + 1).", перейдите по ".$link." для дальнейших действий.\n\r";
-										$message .= "Если вдруг вы не запрашивали восстановление, проигнорируйте это письмо.\n\r\n\r";
-										$message .= "С Уважением, администрация GreenTech RolePlay.";
-										//$result =  $mailSMTP->send(($row['Email'], "Восстановление кода безопасности", $message, "From: forum.greentech-rp@yandex.ua");
-										mail($row['Email'], "Восстановление кода безопасности", $message, "From: admin@greentech-rp.ru");
-									}
-								}
-								
-								$form = false;
-
-								$this->add_to_template('<div class="alert alert-success" role="alert"><b>Успешно! </b>На электронную почту было отправлено письмо с дальнейшими инструкциями</div>');
-								$this->add_to_template('<div class="alert alert-success" role="alert"><b>Внимание! </b>Если письмо не получено в течении 5 минут, проверьте СПАМ!</div>');
-							}
-						}
-					}
-					else
-					{
-						$form = true;
-						
-						$this->add_to_template('<h4>Авторизация</h4>');
-						
-						if(isset($_POST['pincode']) && isset($_POST['g-recaptcha-response']))
-						{
-							$pincode = $_POST['pincode'];
-							$gresponse = $_POST['g-recaptcha-response'];
-							
-							if(strlen($pincode) == 4 || strlen($pincode) == 3)
-							{
-								if(strlen($gresponse) > 0)
-								{
-									$curl = curl_init();
-									
-									curl_setopt($curl, CURLOPT_URL, 'https://www.google.com/recaptcha/api/siteverify');
-									curl_setopt($curl, CURLOPT_POST, true);
-									curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-									curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-									curl_setopt(
-										$curl,
-										CURLOPT_POSTFIELDS,
-										http_build_query(
-											array(
-												"secret" => "6LeBTg0UAAAAAIBqLkP3M3bHZoTcAjq3va04fcRp", 
-												"response" => $gresponse,
-												"remoteip" => $_SERVER['REMOTE_ADDR']
-											)
-										)
-									);
-									
-									$response = (array)json_decode(curl_exec($curl), true);
-									
-									curl_close($curl);
-									
-									if(isset($response['success']))
-									{
-										if($response['success'] == true)
-										{
-											$this->db_connect($_SESSION['srv']);
-
-											$response = $this->db->query("SELECT DopZa FROM players WHERE Names = '".$_SESSION['name']."'");
-											
-											if($response->num_rows)
-											{
-												$row = $response->fetch_assoc();
-												
-												if(strval($row['DopZa']) === strval($pincode))
-												{
-													$form = false;
-
-													$_SESSION['auth'] = "YES";
-
-													$this->add_header('<meta http-equiv="refresh" content="3;URL=ucp.php">');
-													$this->add_to_template('<div id="auth_success" class="alert alert-success" role="alert"><b>Успешно!</b> Сейчас вы будете перенаправлены на страницу своего аккаунта, если этого не произойдет автоматически - обновите страницу</div>');
-													
-													$this->wlog("success_auth", array($row['ID'], $_SESSION['srv'], $_SESSION['name']));
-												}
-												else
-												{
-													$error = "неверный код безопасности";
-												}
-											}
-											else
-											{
-												$error = "игрок с таким никнеймом или паролем не найден";
-											}
-										}
-										else
-										{
-											$error = "активируйте капчу";
-										}
-									}
-									else
-									{
-										$error = "произошла ошибка при подключении к серверам Google reCAPTCHA";
-									}
-								}
-								else
-								{
-									$error = "активируйте капчу";
-								}
-							}
-							else
-							{
-								$error = "код безопасности состоит из 3 или 4 цифр";
-							}
-						}
-						
-						if($form)
-						{
-							$this->add_to_template('
-								<form class="billing-form" method="post">
-								'.($error == "" ? "" : '<div class="alert alert-danger" role="alert"><b>Ошибка: </b>'.$error.'</div>').'
-								<div class="form-group row">
-								<label for="pincode-input">Код безопасности</label>
-								<input class="form-control" type="password" name="pincode" placeholder="Введите код безопасности" id="pincode-input">
-								</div>
-								<div class="form-group row" style="margin-top: 20px;">
-								<div class="g-recaptcha" data-sitekey="6LeBTg0UAAAAALAG7ZhJBr6PpTbk0WEjKAknCn0P"></div>
-								</div>
-								<button type="submit" class="btn btn-primary">Войти</button><br/>
-								</form>
-								<a href="ucp.php?a=recovery" class="btn btn btn-link">Восстановить код безопасности</a>
-								');
-						}
-					}
-				}
-				else
-				{
-					if(isset($_GET['a']))
-					{
-						if($_GET['a'] == "recovery")
-						{
-							$this->add_to_template('<h4>Восстановление доступа</h4>');
-							
-							if(isset($_GET['s']) && isset($_GET['k']))
-							{
-								$server_id = strval($_GET['s']) - 1;
-								$recovery_key = trim($_GET['k']);
-								
-								if($server_id >= 0 && $server_id < $this->server_count)
-								{
-									if(strlen($recovery_key) == 24)
-									{
-										$this->db_connect($server_id);
-										
-										$recovery_key = $this->db->real_escape_string($recovery_key);
-										
-										$response = $this->db->query("SELECT * FROM ucp_recovery WHERE `key` = '".$recovery_key."'");
-
-										if($response->num_rows)
-										{
-											$row = $response->fetch_assoc();
-											$recovery_id = $row['id'];
-											
-											if($row['ip'] == $_SERVER['REMOTE_ADDR'])
-											{
-												if(time() - $row['ts'] > 21600)
-												{
-													$this->add_to_template('<div class="alert alert-danger" role="alert"><b>Ошибка: </b>срок действия восстановления истек</div>');
-												}
-												else
-												{
-													$form = true;
-													
-													if(isset($_POST['pass']) && isset($_POST['pass-confirm']))
-													{
-														$password = trim($_POST['pass']);
-														$password_confirm = trim($_POST['pass-confirm']);
-														
-														if(strlen($password) > 0 && strlen($password_confirm) > 0)
-														{
-															if($password == $password_confirm)
-															{
-																if(strlen($password) >= 6 && strlen($password) <= 32)
-																{
-																	$response = $this->db->query("SELECT * FROM players WHERE `ID` = '".$row['uid']."'");
-
-																	if($response->num_rows)
-																	{
-																		$row = $response->fetch_assoc();
-																		
-																		$hash = $this->get_password_hash($password, $row['salt']);
-																		
-																		if($hash != $row['Pass'])
-																		{
-																			$form = false;
-																			
-																			$this->db->query("DELETE FROM ucp_recovery WHERE `id` = '".$recovery_id."'");
-																			$this->db->query("UPDATE players SET `Pass` = '".$hash."' WHERE `ID` = '".$row['ID']."'");
-																			
-																			$this->add_to_template('
-																				<form action="ucp.php" method="post" class="billing-form">
-																				<div class="alert alert-success" role="alert"><b>Успешно! </b>Новый пароль установлен</div>
-																				<button type="submit" class="btn btn-primary">Вернуться на форму авторизации</button>
-																				</form>
-																				');
-																			
-																			$this->wlog("recovery_final", array($row['ID'], $server_id, $row['Names'], $recovery_id));
-																		}
-																		else
-																		{
-																			$error = "данный пароль установлен сейчас на аккаунте";
-																		}
-																	}
-																	else
-																	{
-																		$error = "аккаунт не найден";
-																	}
-																}
-																else
-																{
-																	$error = "допустимая длина пароля от 6 до 32 символов";
-																}
-															}
-															else
-															{
-																$error = "пароли не совпадают";
-															}
-														}
-														else
-														{
-															$error = "введите пароль";
-														}
-													}
-													
-													if($form)
-													{
-														$this->add_to_template('
-															<form class="billing-form" method="post">
-															'.($error == "" ? "" : '<div class="alert alert-danger" role="alert"><b>Ошибка: </b>'.$error.'</div>').'
-															<div class="form-group row">
-															<label for="pass-input">Новый пароль</label>
-															<input class="form-control" type="password" name="pass" placeholder="Введите новый пароль" id="pass-input" required>
-															</div>
-															<div class="form-group row">
-															<label for="pass-confirm-input">Подтверждение нового пароля</label>
-															<input class="form-control" type="password" name="pass-confirm" placeholder="Снова введите новый пароль" id="pass-confirm-input" required>
-															</div>
-															<button type="submit" class="btn btn-primary">Продолжить</button><br/>
-															</form>
-															');
-													}
-												}
-											}
-											else
-											{
-												$this->add_to_template('<div class="alert alert-danger" role="alert"><b>Ошибка: </b>вы пытаетесь восстановить пароль с IP-адреса, который не совпадает с адресом при запросе восстановления</div>');
-											}
-										}
-										else
-										{
-											$this->add_to_template('<div class="alert alert-danger" role="alert"><b>Ошибка: </b>ссылка недействительна</div>');
-										}
-									}
-									else
-									{
-										$this->add_to_template('<div class="alert alert-danger" role="alert"><b>Ошибка: </b>некорректный запрос</div>');
-									}
-								}
-								else
-								{
-									$this->add_to_template('<div class="alert alert-danger" role="alert"><b>Ошибка: </b>некорректный запрос</div>');
-								}
-							}
-							else if(isset($_GET['s']) && isset($_GET['u']))
-							{
-								$server_id = strval($_GET['s']) - 1;
-								$user_id = strval($_GET['u']);
-								
-								if($server_id >= 0 && $server_id < $this->server_count)
-								{
-									$this->db_connect($server_id);
-									
-									$user_id = $this->db->real_escape_string($user_id);
-									
-									$response = $this->db->query("SELECT * FROM players WHERE `ID` = '".$user_id."'");
-
-									if($response->num_rows)
-									{
-										$row = $response->fetch_assoc();
-
-										$key = $this->generate_key(24);
-										$link = "http://greentech-rp.ru/ucp.php?a=recovery&s=".($server_id + 1)."&k=".$key;
-										$text = "";
-										
-										$message = "Здравствуйте!\n\r\n\r";
-										$message .= "Вы запросили восстановление доступа к аккаунту ".$row['Names']." на сервере GreenTech RolePlay #".($server_id + 1).", перейдите по ".$link." для дальнейших действий.\n\r";
-										$message .= "Если вдруг вы не запрашивали восстановление, проигнорируйте это письмо.\n\r\n\r";
-										$message .= "С Уважением, администрация GreenTech RolePlay.";
-										
-										mail($row['Email'], "Восстановление доступа к аккаунту", $message, "From: admin@greentech-rp.ru");
-										
-										$this->wlog("recovery_query", array($row['ID'], $server_id, $row['Names'], $key, $row['Email']));
-										
-										$result = $this->db->query("INSERT INTO ucp_recovery(`uid`,`ts`,`ip`,`key`) VALUES('".$row['ID']."','".time()."','".$_SERVER['REMOTE_ADDR']."','".$key."')");
-										
-										if($result)
-										{
-											$form = false;
-											
-											$this->add_to_template('<div class="alert alert-success" role="alert"><b>Успешно! </b>На электронную почту было отправлено письмо с дальнейшими инструкциями</div>');
-											$this->add_to_template('<div class="alert alert-success" role="alert"><b>Внимание! </b>Если письмо не получено в течении 5 минут, проверьте СПАМ!</div>');
-										}
-										else
-										{
-											$this->add_to_template('<div class="alert alert-danger" role="alert"><b>Ошибка: </b>произошла ошибка при выполнении запроса, попробуйте позже</div>');
-										}
-									}
-									else
-									{
-										$this->add_to_template('<div class="alert alert-danger" role="alert"><b>Ошибка: </b>аккаунт не найден</div>');
-									}
-								}
-								else
-								{
-									$this->add_to_template('<div class="alert alert-danger" role="alert"><b>Ошибка: </b>некорректный запрос</div>');
-								}
-							}
-							else
-							{
-								$form = true;
-								
-								if(isset($_POST['srv']) && isset($_POST['email']) && isset($_POST['g-recaptcha-response']))
-								{
-									$server_id = strval($_POST['srv']) - 1;
-									$email = $_POST['email'];
-									$gresponse = $_POST['g-recaptcha-response'];
-									
-									if($server_id >= 0 && $server_id < $this->server_count)
-									{
-										if(strlen($email) > 0)
-										{
-											if(strlen($gresponse) > 0)
-											{
-												$curl = curl_init();
-												
-												curl_setopt($curl, CURLOPT_URL, 'https://www.google.com/recaptcha/api/siteverify');
-												curl_setopt($curl, CURLOPT_POST, true);
-												curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-												curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-												curl_setopt(
-													$curl,
-													CURLOPT_POSTFIELDS,
-													http_build_query(
-														array(
-															"secret" => "6LeBTg0UAAAAAIBqLkP3M3bHZoTcAjq3va04fcRp", 
-															"response" => $gresponse,
-															"remoteip" => $_SERVER['REMOTE_ADDR']
-														)
-													)
-												);
-												
-												$response = (array)json_decode(curl_exec($curl), true);
-												
-												curl_close($curl);
-												
-												if(isset($response['success']))
-												{
-													if($response['success'] == true)
-													{
-														$this->db_connect($server_id);
-
-														$email = $this->db->real_escape_string($email);
-														
-														$response = $this->db->query("SELECT * FROM players WHERE Email = '".$email."'");
-														
-														if($response->num_rows)
-														{
-															$form = false;
-															
-															$this->add_to_template('<div class="alert alert-info" role="alert"><b>Отлично! </b>Выберете аккаунт, который вы хотите восстановить</div>');
-															
-															$this->add_to_template('<table class="table" style="width: 70%;">');
-
-															for($i = 0; $i < $response->num_rows; $i++)
-															{
-																$row = $response->fetch_assoc();
-																
-																$this->add_to_template('<tr><td>'.$row['Names'].'</td><td style="text-align: right;"><a href="ucp.php?a=recovery&s='.($server_id + 1).'&u='.$row['ID'].'" class="btn btn-primary">восстановить</a></td></tr>');
-															}
-															
-															$this->add_to_template('</table>');
-														}
-														else
-														{
-															$error = "игрок с таким email не найден";
-														}
-													}
-													else
-													{
-														$error = "активируйте капчу";
-													}
-												}
-												else
-												{
-													$error = "произошла ошибка при подключении к серверам Google reCAPTCHA";
-												}
-											}
-											else
-											{
-												$error = "активируйте капчу";
-											}
-										}
-										else
-										{
-											$error = "введите email";
-										}
-									}
-									else
-									{
-										$error = "некорректный сервер";
-									}
-								}
-								
-								if($form)
-								{
-									$this->add_to_template('
-										<form class="billing-form" method="post">
-										'.($error == "" ? "" : '<div class="alert alert-danger" role="alert"><b>Ошибка: </b>'.$error.'</div>').'
-										<div class="form-group row">
-										<label for="server-select">Сервер</label>
-										<select class="form-control" name="srv" id="server-select">
-										'.$servers.'
-										</select>
-										</div>
-										<div class="form-group row">
-										<label for="email-input">E-mail</label>
-										<input class="form-control" type="email" name="email" placeholder="Введите e-mail" id="email-input" required>
-										</div>
-										<div class="form-group row" style="margin-top: 20px;">
-										<div class="g-recaptcha" data-sitekey="6LeBTg0UAAAAALAG7ZhJBr6PpTbk0WEjKAknCn0P"></div>
-										</div>
-										<button type="submit" class="btn btn-primary">Продолжить</button><br/>
-										</form>
-										');
-								}
-							}
-						}
-					}
-					else
-					{
-						$form = true;
-						
-						$this->add_to_template('<h4>Авторизация</h4>');
-						
-						if(isset($_POST['srv']) && isset($_POST['username']) && isset($_POST['password']) && isset($_POST['g-recaptcha-response']))
-						{
-							$server_id = strval($_POST['srv']) - 1;
-							$username = $_POST['username'];
-							$password = $_POST['password'];
-							$gresponse = $_POST['g-recaptcha-response'];
-							
-							if($server_id >= 0 && $server_id < $this->server_count)
-							{
-								if(strlen($username) > 0)
-								{
-									if(strlen($password) > 0)
-									{
-										if(strlen($gresponse) > 0)
-										{
-											$curl = curl_init();
-											
-											curl_setopt($curl, CURLOPT_URL, 'https://www.google.com/recaptcha/api/siteverify');
-											curl_setopt($curl, CURLOPT_POST, true);
-											curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-											curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-											curl_setopt(
-												$curl,
-												CURLOPT_POSTFIELDS,
-												http_build_query(
-													array(
-														"secret" => "6LeBTg0UAAAAAIBqLkP3M3bHZoTcAjq3va04fcRp", 
-														"response" => $gresponse,
-														"remoteip" => $_SERVER['REMOTE_ADDR']
-													)
-												)
-											);
-											
-											$response = (array)json_decode(curl_exec($curl), true);
-											
-											curl_close($curl);
-											
-											if(isset($response['success']))
-											{
-												if($response['success'] == true)
-												{
-													if(strlen($username) >= 3 && strlen($username) <= 20)
-													{
-														if(strlen($username) >= 6 && strlen($username) <= 32)
-														{
-															if(preg_match("#^[aA-zZ0-9\-_\]\[\$\=\(\)\@\.]+$#", $username))
-															{
-																$this->db_connect($server_id);
-
-																$username = $this->db->real_escape_string($username);
-																
-																$response = $this->db->query("SELECT salt,Pass,DopZa FROM players WHERE Names = '".$username."'");
-																
-																if($response->num_rows)
-																{
-																	$row = $response->fetch_assoc();
-																	
-																	$real_password_hash = $row['Pass'];
-																	$my_password_hash = $this->get_password_hash($password, $row['salt']);
-
-																	if($real_password_hash === $my_password_hash)
-																	{
-																		$form = false;
-
-																		$_SESSION['name'] = $username;
-																		$_SESSION['srv'] = $server_id;
-																		
-																		if($row['DopZa'])
-																		{
-																			$_SESSION['auth'] = "PIN";
-																			
-																			$this->add_header('<meta http-equiv="refresh" content="0;URL=ucp.php">');
-																		}
-																		else
-																		{
-																			$_SESSION['auth'] = "YES";
-																			
-																			$this->add_header('<meta http-equiv="refresh" content="3;URL=ucp.php">');
-																			$this->add_to_template('<div id="auth_success" class="alert alert-success" role="alert"><b>Успешно!</b> Сейчас вы будете перенаправлены на страницу своего аккаунта, если этого не произойдет автоматически - обновите страницу</div>');
-
-																			$this->wlog("success_auth", array($row['ID'], $server_id, $username));
-																		}
-																	}
-																	else
-																	{
-																		$error = "игрок с таким никнеймом или паролем не найден";
-																	}
-																}
-																else
-																{
-																	$error = "игрок с таким никнеймом или паролем не найден";
-																}
-															}
-															else
-															{
-																$error = "в никнейме недопустимые символы";
-															}
-														}
-														else
-														{
-															$error = "допустимая длина пароля: 6-32 символов";
-														}
-													}
-													else
-													{
-														$error = "допустимая длина никнейма: 3-20 символов";
-													}
-												}
-												else
-												{
-													$error = "активируйте капчу";
-												}
-											}
-											else
-											{
-												$error = "произошла ошибка при подключении к серверам Google reCAPTCHA";
-											}
-										}
-										else
-										{
-											$error = "активируйте капчу";
-										}
-									}
-									else
-									{
-										$error = "введите пароль";
-									}
-								}
-								else
-								{
-									$error = "введите никнейм";
-								}
-							}
-							else
-							{
-								$error = "некорректный сервер";
-							}
-						}
-						
-						if($form)
-						{
-							$this->add_to_template('
-								<form class="billing-form" method="post">
-								'.($error == "" ? "" : '<div class="alert alert-danger" role="alert"><b>Ошибка: </b>'.$error.'</div>').'
-								<div class="form-group row">
-								<label for="server-select">Сервер</label>
-								<select class="form-control" name="srv" id="server-select">
-								'.$servers.'
-								</select>
-								</div>
-								<div class="form-group row">
-								<label for="username-input">Никнейм</label>
-								<input class="form-control" type="text" name="username" placeholder="Введите никнейм" id="username-input">
-								</div>
-								<div class="form-group row">
-								<label for="password-input">Пароль</label>
-								<input class="form-control" type="password" name="password" placeholder="Введите пароль" id="password-input">
-								</div>
-								<div class="form-group row" style="margin-top: 20px;">
-								<div class="g-recaptcha" data-sitekey="6LeBTg0UAAAAALAG7ZhJBr6PpTbk0WEjKAknCn0P"></div>
-								</div>
-								<button type="submit" class="btn btn-primary">Войти</button><br/>
-								</form>
-								<a href="ucp.php?a=recovery" class="btn btn btn-link">Восстановить пароль</a>
-								');
-						}
-					}
-				}
-			}
-			
-			$this->add_to_template('
-				</div>
-				</div>
-				</center>
-				</section>
-				');
-		}
-		
-		if($page == "TRANSFER")
-		{
-			$this->add_to_template('
-				<section class="sa-text-area">
-				<center>
-				<div class="main-block">
-				');
-			
-			if(isset($_SESSION['auth']) && $_SESSION['auth'] == "YES")
-			{
-				$this->add_to_template('<div class="main-block-sub-ucp">');
-				$this->add_to_template('<p class="block-title" style="margin-bottom: 10px;">Личный кабинет</p>');
-				$this->add_to_template('<h4>Перенос аккаунта: '.$_SESSION['name'].'</h4>');
-				
-				$this->db_connect($_SESSION['srv']);
-				
-				$response = $this->db->query("SELECT * FROM players WHERE Names = '".$_SESSION['name']."'");
-				
-				if($_SESSION['srv'] == 1 && $response->num_rows)
-				{
-					$server_id = $_SESSION['srv'];
-					$username = $_SESSION['name'];
-					
-					$data = $response->fetch_assoc();
-
-					if($data['Bank'] < 0)
-					{
-						$data['Bank'] = 0;
-					}
-					
-					if($data['transfer_complete'] < 2)
-					{
-						$allowed = true;
-						$report_data = array();
-						
-						// ========
-						
-						$first_srv = $this->db_connect_ret(0);
-						
-						if($first_srv->query("SELECT * FROM players WHERE Names = '".$username."'")->num_rows)
-						{
-							$allowed = false;
-						}
-						
-						$first_srv->close();
-						
-						// ========
-						
-						$report_data[] = 'Аккаунт с никнеймом '.$username.' <b><font color="green">будет</font></b> перенесен со второго на первый сервер';
-						
-						// ========
-						
-						$houses_data = $this->db->query("SELECT * FROM houses WHERE hOwner = '".$username."'");
-						
-						for($i = 0; $i < $houses_data->num_rows; $i++)
-						{
-							$house_data = $houses_data->fetch_assoc();
-							
-							$report_data[] = 'Дом/квартира #'.$house_data['hID'].' перенесен <b><font color="red">не будет</font></b>';
-						}
-						
-						// ========
-						
-						$garages_data = $this->db->query("SELECT * FROM garage WHERE Owner = '".$username."'");
-
-						for($i = 0; $i < $garages_data->num_rows; $i++)
-						{
-							$garage_data = $garages_data->fetch_assoc();
-							
-							$report_data[] = 'Гараж #'.$garage_data['ID'].' перенесен <b><font color="red">не будет</font></b>';
-						}
-						
-						// ========
-						
-						$bizz_data = $this->db->query("SELECT * FROM bizz WHERE Owner = '".$username."'");
-						
-						for($i = 0; $i < $bizz_data->num_rows; $i++)
-						{
-							$biz_data = $bizz_data->fetch_assoc();
-							
-							$report_data[] = 'Бизнес #'.$biz_data['ID'].' перенесен <b><font color="red">не будет</font></b>';
-						}
-						
-						// ========
-						
-						$cars_data = $this->db->query("SELECT * FROM cars WHERE Owner = '".$username."'");
-						
-						for($i = 0; $i < $cars_data->num_rows; $i++)
-						{
-							$car_data = $cars_data->fetch_assoc();
-							
-							$report_data[] = 'Машина #'.$car_data['ID'].' ('.$car_data['Model'].') <b><font color="green">будет</font></b> перенесена со второго на первый сервер';
-						}
-						
-						// ========
-						
-						$cars_data = $this->db->query("SELECT * FROM cars WHERE 2Owner = '".$username."'");
-						
-						for($i = 0; $i < $cars_data->num_rows; $i++)
-						{
-							$car_data = $cars_data->fetch_assoc();
-							
-							$report_data[] = 'Машина #'.$car_data['ID'].' ('.$car_data['Model'].') перенесена <b><font color="red">не будет</font></b> (вы со-владелец)';
-						}
-						
-						// ========
-
-						if($data['transfer_complete'] == 1)
-						{
-							$nickname = $data['transfer_nickname'];
-							
-							$this->db->query("UPDATE players SET transfer_complete = 2 WHERE Names = '".$username."'");
-							
-							$first_srv = $this->db_connect_ret(0);
-
-							// ========
-							
-							$transfer_data = $data;
-							
-							unset($transfer_data['ID']);
-							unset($transfer_data['transfer_complete']);
-							unset($transfer_data['transfer_nickname']);
-							unset($transfer_data['Names']);
-							
-							$transfer_data['housenalog'] = 0;
-							$transfer_data['bizznalog'] = 0;
-
-							$query_list = "`Names`";
-							$query_data = "'".$nickname."'";
-							
-							$keys = array_keys($transfer_data);
-							
-							for($i = 0; $i < sizeof($keys); $i++)
-							{
-								$query_list .= ",`".$keys[$i]."`";
-								$query_data .= ",'".$transfer_data[$keys[$i]]."'";
-							}
-							
-							$first_srv->query("INSERT INTO `players`(".$query_list.") VALUES(".$query_data.")");
-
-							// ========
-							
-							$cars_data = $this->db->query("SELECT * FROM cars WHERE Owner = '".$username."'");
-							
-							for($idx = 0; $idx < $cars_data->num_rows; $idx++)
-							{
-								$transfer_data = $cars_data->fetch_assoc();
-
-								unset($transfer_data['ID']);
-								unset($transfer_data['Owner']);
-								
-								$transfer_data['2Owner'] = 'No-Body';
-
-								$query_list = "`Owner`";
-								$query_data = "'".$nickname."'";
-								
-								$keys = array_keys($transfer_data);
-								
-								for($i = 0; $i < sizeof($keys); $i++)
-								{
-									$query_list .= ",`".$keys[$i]."`";
-									$query_data .= ",'".$transfer_data[$keys[$i]]."'";
-								}
-								
-								$first_srv->query("INSERT INTO `cars`(".$query_list.") VALUES(".$query_data.")");
-							}
-							
-							// ========
-
-							$first_srv->close();
-							
-							$_SESSION['auth'] = "YES";
-							$_SESSION['srv'] = 0;
-							$_SESSION['name'] = $nickname;
-
-							$this->add_header('<meta http-equiv="refresh" content="10;URL=ucp.php">');
-							$this->add_to_template('<div class="alert alert-success" role="alert"><b>Успешно!</b><br/><br/>Ваш аккаунт перенесен на первый сервер с никнеймом <b>'.$nickname.'</b><br/>Вы будете переброшены на страницу Личного Кабинета через 10 секунд</div>');
-						}
-						else
-						{
-							$form = true;
-							
-							$this->add_to_template("<h5><b>Вы собираетесь выполнить перенос аккаунта на первый сервер</b></h5>");
-
-							if(isset($_POST['submit']))
-							{
-								$nickname = $username;
-								
-								if(!$allowed && isset($_POST['nickname']))
-								{
-									$nickname = trim($_POST['nickname']);
-								}
-								
-								if(strlen($nickname) >= 3 && strlen($nickname) <= 20)
-								{
-									if(preg_match("#^[aA-zZ0-9\-_\]\[\$\=\(\)\@\.]+$#", $nickname))
-									{
-										$already_exists = false;
-										$first_srv = $this->db_connect_ret(0);
-
-										if($first_srv->query("SELECT * FROM players WHERE Names = '".$nickname."'")->num_rows)
-										{
-											$already_exists = true;
-										}
-										
-										$first_srv->close();
-										
-										if(!$already_exists)
-										{
-											$form = false;
-
-											$this->add_header('<meta http-equiv="refresh" content="5;URL=transfer.php">');
-											$this->add_to_template('<div class="alert alert-info" role="alert"><b>Пожалуйста, подождите...</b><br/><br/>Ваш аккаунт переносится на первый сервер.<br/>Ни в коем случае не закрывайте эту вкладку или браузер.</div>');
-											
-											$this->db->query("UPDATE players SET transfer_complete = 1, transfer_nickname = '".$nickname."' WHERE Names = '".$username."'");
-										}
-										else
-										{
-											$this->add_to_template('<div class="alert alert-danger" role="alert"><b>Ошибка: </b>аккаунт с указанным никнеймом уже существует на первом сервере</div>');
-										}
-									}
-									else
-									{
-										$this->add_to_template('<div class="alert alert-danger" role="alert"><b>Ошибка: </b>новый никнейм содержит запрещенные символы</div>');
-									}
-								}
-								else
-								{
-									$this->add_to_template('<div class="alert alert-danger" role="alert"><b>Ошибка: </b>неверная длина нового никнейма</div>');
-								}
-							}
-							
-							if($form)
-							{
-								$this->add_to_template('<div id="ucp_main_left" class="ucp-main-left" style="width: 70%;">');
-								$this->add_to_template('
-									<table class="table" width="100%" style="border-left: 1px solid #eeeeee; font-size: 10pt;">
-									<tr><td><b>Условия и примечания:</b></td></tr>
-									<tr>
-									<td>
-									<b>1. </b>Недвижимость (дом, квартира, бизнес) не переносятся.
-									<br/><b>2. </b>Вам будет предложено изменение никнейма в том случае, если на первом сервере уже будет аккаунт с текущим никнеймом.
-									</td>
-									</tr>
-									</table>
-									');
-								
-								$this->add_to_template('
-									<table class="table" width="100%" style="border-left: 1px solid #eeeeee; font-size: 10pt;"><tr><td><b>Результат проверки:</b></td></tr><tr><td>
-									');
-								
-								if($allowed)
-								{
-									$this->add_to_template('Аккаунт <b><font color="green">допускается</font></b> к переносу на первый сервер.');
-								}
-								else
-								{
-									$this->add_to_template('Аккаунт <b><font color="green">допускается</font></b> к переносу на первый сервер, но <b><font color="#DF5A3E;">требуется</font></b> изменение никнейма.');
-								}
-								
-								$this->add_to_template('<br/><br/><b>Будут выполнены следующие действия:</b><br/>');
-								
-								for($i = 0; $i < sizeof($report_data); $i++)
-								{
-									$this->add_to_template('<b>'.($i + 1).'. </b>'.$report_data[$i].'.<br/>');
-								}
-
-								$this->add_to_template('</td></tr></table>');
-								$this->add_to_template('</div>');
-								
-								$this->add_to_template('<div id="ucp_main_right" class="ucp-main-right">');
-								$this->add_to_template('
-									<table class="table" width="100%" style="border-left: 1px solid #eeeeee; font-size: 10pt;">
-									<tr><td><b>Аккаунт</b></td><td style="text-align: right;">#'.$data['ID'].'</td></tr>
-									<tr><td><b>Имя</b></td><td style="text-align: right;">'.$username.'</td></tr>
-									<tr><td><b>E-mail</b></td><td style="text-align: right;">'.$data['Email'].'</td></tr>
-									<tr><td><b>Уровень</b></td><td style="text-align: right;">'.$data['Level'].'</td></tr>
-									</table>
-									');
-								
-								$this->add_to_template('<form method="post">');
-								
-								if(!$allowed)
-								{
-									$this->add_to_template('
-										<div class="form-group row" style="width: 95%;">
-										<input class="form-control" type="input" name="nickname" placeholder="Новый никнейм">
-										</div>
-										');
-								}
-								
-								$this->add_to_template('
-									<label class="form-check-label">
-									<input type="checkbox" class="form-check-input" required>
-									Я подтверждаю перенос
-									</label>
-									');
-
-								$this->add_to_template('<input style="width: 100%;" type="submit" name="submit" class="btn btn-primary" value="Выполнить перенос"/>');
-								
-								$this->add_to_template('</form>');
-
-								$this->add_to_template('</div>');
-								$this->add_to_template('</div>');
-							}
-						}
-					}
-					else
-					{
-						$this->add_to_template('
-							<div class="alert alert-danger" role="alert">
-							<b>Ошибка: </b>данный аккаунт уже перенесен.<br/><br/>Никнейм на первом сервере: <b>'.$data['transfer_nickname'].'</b> 
-							</div>
-							');
-					}
-				}
-
-				$this->add_to_template('</div>');
-			}
-			else
-			{
-				$this->add_to_template('<div class="main-block-sub-login">');
-				$this->add_to_template('<p class="block-title" style="margin-bottom: 10px;">Личный кабинет</p>');
-				$this->add_to_template('<h4>Перенос аккаунта</h4>');
-				$this->add_to_template('<div class="alert alert-danger" role="alert"><b>Ошибка: </b>для доступа к этой странице необходимо авторизироваться<br/><br/><a href="/ucp.php" class="btn btn-danger btn-sm">Авторизироваться</a></div>');
-			}
-			
-			$this->add_to_template('
-				</div>
-				</div>
-				</center>
-				</section>
-				');
-		}
-		
-
-		// Добавляем подвал сайта и модальное окно авторизации
-		$this->body .= '
-		<footer>
-		<div class="top">
-		<div class="socials">
-		<div class="image">
-		<a href="#" class="blur"><img src="../img/vk_blue.png" alt="VK"></a>
-		<a href="#" class="hover"><img src="../img/vk.png" alt="VK"></a>
-		</div>
-		<div class="image">
-		<a href="#" class="blur"><img src="../img/youtube_blue.png" alt="YOUTUBE"></a>
-		<a href="#" class="hover"><img src="../img/youtube.png" alt="YOUTUBE"></a>
-		</div>
-		</div>
-		<div class="scroll-top">
-		<span class="chevron" onclick="ScrollTop()"></span>
-		</div>
-		</div>
-		<div class="bottom">
-		<h1>GreenTech RolePlay © 2012-2019</h1>
-		<span>Made by Kipper Studio</span>
-		</div>
-		</footer>
-		<div id="auth">
-		<div class="exit" onclick="Auth();">
-		<span></span>
-		<span></span>
-		</div>
-		<h1>Авторизация</h1>
-		<p class="error">Ошибка! Логин или пароль введён неверно</p>
-		<form>
-		<input type="text" placeholder="Ник" oninput="CheckInput(this);">
-		<input type="password" placeholder="Пароль" oninput="CheckInput(this);">
-		<img src="../img/eye.png" alt="show" class="show">
-		<a href="#">Забыли пароль?</a>
-		<button type="submit">Войти</button>
-		</form>
-		</div>
-		</div>
-		';
-		
-		// Добавляем скрипты
-		$this->body .= '<script src="../js/jquery.js"></script>';
-		$this->body .= '<script src="../js/script.js"></script>';
-		
-		return $this->body;
 	}
-	
-	public function add_to_template($data)
-	{
-		$this->template .= $data;
+
+	// Функция обработки страницы статуса доната
+	public function donate_status(){
+		// Если успешная оплата или ошибка при оплате
+		if(isset($_GET['paymentId']) && isset($_GET['account']) && isset($_GET['type'])){
+			// Создаем переменные хранящие GET параметры
+			$type = $_GET['type'];
+
+			if($type == "SUCCESS"){
+				// Страница успешной оплаты
+
+				// Добавляем оставшееся от страницы доната, открываем модальное окно ошибки
+				$this->add_to_body('
+					<form>
+					<input type="text" class="" placeholder="Ник" onclick="InputCloseError(this);" oninput="CheckInput(this);">
+					<input type="text" class="" placeholder="Сумма (Руб)" onclick="InputCloseError(this);" oninput="CheckInput(this);">
+					<div class="agreement">
+					<label class="confirm">
+					<input type="checkbox">
+					<span class="visible" onclick="Tick(this);">
+					<span class="tick"></span>
+					</span>
+					</label>
+					<p>Я изучил и принял <a href="#">пользовательское соглашение</a></p>
+					</div>
+					<button type="submit">Продолжить</button>
+					</form>
+					</div>
+					</header>
+					<div id="success" style="display: block; opacity: 1;">
+					<div class="exit" onclick="CloseModal(this);">
+					<span></span>
+					<span></span>
+					</div>
+					<img src="../img/success.png" alt="success">
+					<h1>Всё прошло успешно!</h1>
+					<p>Структура политической науки, как бы это ни казалось парадоксальным, представляет собой гарант. Мажоритарная избирательная система противоречива</p>
+					</div>');
+				} else if($type == "ERROR"){
+					// Страница ошибки при оплате
+
+					// Добавляем оставшееся от страницы доната, открываем модальное окно ошибки
+					$this->add_to_body('
+						<form>
+						<input type="text" class="" placeholder="Ник" onclick="InputCloseError(this);" oninput="CheckInput(this);">
+						<input type="text" class="" placeholder="Сумма (Руб)" onclick="InputCloseError(this);" oninput="CheckInput(this);">
+						<div class="agreement">
+						<label class="confirm">
+						<input type="checkbox">
+						<span class="visible" onclick="Tick(this);">
+						<span class="tick"></span>
+						</span>
+						</label>
+						<p>Я изучил и принял <a href="#">пользовательское соглашение</a></p>
+						</div>
+						<button type="submit">Продолжить</button>
+						</form>
+						</div>
+						</header>
+						<div id="error" style="display: block; opacity: 1;">
+						<div class="exit" onclick="CloseModal(this);">
+						<span></span>
+						<span></span>
+						</div>
+						<img src="../img/error.png" alt="error">
+						<h1>Ошибка!</h1>
+						<p>Гений неоднозначен. Гипотеза, как бы это ни казалось парадоксальным, верифицирует гений. Оферта создает современный дедуктивный метод</p>
+						</div>
+						</div>');
+				}
+			}
 	}
-	
-	public function add_header($header)
-	{
-		$this->headers .= $header;
+
+	public function add_to_body($data){
+		$this->body .= $data;
 	}
-	
-	public function db_connect($server_id)
-	{
+
+	public function add_to_head($head){
+		$this->head .= $head;
+	}
+
+	// Подключение к БД
+	public function db_connect(){
 		$this->db = @new mysqli(
-			$this->server_data[$server_id]['db_hostname'],
-			$this->server_data[$server_id]['db_username'],
-			$this->server_data[$server_id]['db_password'],
-			$this->server_data[$server_id]['db_database']
+			$this->server_data['db_hostname'],
+			$this->server_data['db_username'],
+			$this->server_data['db_password'],
+			$this->server_data['db_database']
 		);
 
-		if (mysqli_connect_errno())
-		{
+		if (mysqli_connect_errno()){
 			die("failed to connect database");
 		}
-		
+
 		$this->db->query("SET NAMES cp1251;");
 		$this->db->query("SET SESSION character_set_server = 'utf8';");
 	}
-	
-	public function db_connect_ret($server_id)
-	{
+
+	public function db_connect_ret($server_id){
 		$db = @new mysqli(
 			$this->server_data[$server_id]['db_hostname'],
 			$this->server_data[$server_id]['db_username'],
@@ -2667,24 +1210,43 @@ class engine
 			$this->server_data[$server_id]['db_database']
 		);
 
-		if(mysqli_connect_errno())
-		{
+		if(mysqli_connect_errno()){
 			die("failed to connect database");
 		}
-		
+
 		$db->query("SET NAMES cp1251;");
 		$db->query("SET SESSION character_set_server = 'utf8';");
-		
+
 		return $db;
 	}
-	
-	public function get_password_hash($password, $account_salt)
-	{
+
+	// Получить данные из БД $get - поле, которое хотим получить у $username
+	public function db_get($table, $get, $username, $order = "ID"){
+		// Защита от SQL инъекций
+		$get = $this->db->real_escape_string($get);
+		$username = $this->db->real_escape_string($username);
+		// Получаем данные
+		$result = $salt_db = $this->db->query('SELECT `' . $get . '` FROM `' . $table . '` WHERE `Names` = ' . '"' . $username . '" ORDER BY `' . $order . '` DESC');
+		$result = mysqli_fetch_assoc($result)[$get];
+		return $result;
+	}
+
+	// Сменить данные из БД $set - поле у $username, в котором нужно установить значение $value
+	public function db_set($set, $value, $username){
+		// Защита от SQL инъекций
+		$set = $this->db->real_escape_string($set);
+		$value = $this->db->real_escape_string($value);
+		$username = $this->db->real_escape_string($username);
+		// Изменяем
+		$this->db->query('UPDATE `' . $this->server_data['db_database'] . '` SET `' . $set . '` = "' . $value . '" WHERE `Names` = "' . $username . '"');
+	}
+
+	public function get_password_hash($password, $account_salt){
 		return strtoupper(hash("sha256", $password."_".$account_salt."_".$this->account_system_salt));
 	}
-	
-	public function generate_key($len)
-	{
+
+	// Генерация случайного ключа
+	public function generate_key($len){
 		$chars = array(
 			'a','b','c','d','e','f',
 			'g','h','i','j','k','l',
@@ -2699,34 +1261,33 @@ class engine
 		);
 
 		$key = "";
-		
+
 		for($i = 0; $i < $len; $i++)
 		{
 			$key .= $chars[rand(0, count($chars) - 1)];
 		}
-		
+
 		return $key;
 	}
-	
-	public function unitpay_handler($server_id)
-	{
+
+	public function unitpay_handler($server_id){
 		$this->db_connect($server_id);
-		
+
 		if(empty($_GET['method']) || empty($_GET['params']) || !is_array($_GET['params']))
 		{
 			return $this->unitpay_gen_error("invalid query");
 		}
-		
+
 		$method = $_GET['method'];
 		$params = $_GET['params'];
-		
+
 		$secret_key = $this->server_data[$server_id]['unitpay_secret_key'];
-		
+
 		if($params['signature'] != $this->unitpay_gen_sha256_sig($method, $params, $secret_key))
 		{
 			return $this->unitpay_gen_error("invalid signature");
 		}
-		
+
 		if($method == "check")
 		{
 			if($this->unitpay_get_payment($params['unitpayId']))
@@ -2746,7 +1307,7 @@ class engine
 
 			return $this->unitpay_gen_success('CHECK is successful');
 		}
-		
+
 		if($method == "pay")
 		{
 			$payment = $this->unitpay_get_payment($params['unitpayId']);
@@ -2755,26 +1316,25 @@ class engine
 			{
 				return $this->unitpay_gen_success('payment has already been paid');
 			}
-			
+
 			if(!$this->unitpay_confirm_payment($params['unitpayId']))
 			{
 				return $this->unitpay_gen_error('unable to confirm payment database');
 			}
-			
+
 			$this->db->query('
 				UPDATE players SET
 				Donate = Donate + '.(((int)floor($params['sum'])) * $this->donate_multiplier).'
 				WHERE Names = \''.$this->db->real_escape_string($params['account']).'\'
 				');
-			
+
 			return $this->unitpay_gen_success('PAY is successful');
 		}
-		
+
 		return $this->unitpay_gen_error($method." not supported");
 	}
-	
-	public function unitpay_gen_success($message)
-	{
+
+	public function unitpay_gen_success($message){
 		return json_encode(array(
 			"jsonrpc" => "2.0",
 			"result" => array(
@@ -2784,8 +1344,7 @@ class engine
 		));
 	}
 
-	public function unitpay_gen_error($message)
-	{
+	public function unitpay_gen_error($message){
 		return json_encode(array(
 			"jsonrpc" => "2.0",
 			"error" => array(
@@ -2795,27 +1354,24 @@ class engine
 			'id' => 1
 		));
 	}
-	
-	public function unitpay_gen_sha256_sig($method, array $params, $secretKey)
-	{
+
+	public function unitpay_gen_sha256_sig($method, array $params, $secretKey){
 		$delimiter = '{up}';
-		
+
 		ksort($params);
 		unset($params['sign']);
 		unset($params['signature']);
 
 		return hash('sha256', $method.$delimiter.join($delimiter, $params).$delimiter.$secretKey);
 	}
-	
-	public function unitpay_get_payment($unitpayId)
-	{ 
+
+	public function unitpay_get_payment($unitpayId){ 
 		$result = $this->db->query('SELECT * FROM unitpay_payments WHERE unitpayId = \''.$unitpayId.'\' LIMIT 1');
-		
+
 		return $result->fetch_object();
 	}
-	
-	public function unitpay_create_payment($unitpayId, $account, $sum, $itemsCount)
-	{
+
+	public function unitpay_create_payment($unitpayId, $account, $sum, $itemsCount){
 		$query = '
 		INSERT INTO
 		unitpay_payments (unitpayId, account, sum, itemsCount, dateCreate, status)
@@ -2832,21 +1388,19 @@ class engine
 
 		return $this->db->query($query);
 	}
-	
-	public function unitpay_is_account_exists($account)
-	{
+
+	public function unitpay_is_account_exists($account){
 		$result = $this->db->query('SELECT * FROM players WHERE Names = \''.$this->db->real_escape_string($account).'\' LIMIT 1');
-		
+
 		if($result->num_rows > 0)
 		{
 			return true;
 		}
-		
+
 		return false;
 	}
-	
-	public function unitpay_confirm_payment($unitpayId)
-	{
+
+	public function unitpay_confirm_payment($unitpayId){
 		$query = '
 		UPDATE unitpay_payments SET
 		status = 1,
@@ -2855,32 +1409,30 @@ class engine
 		unitpayId = "'.$this->db->real_escape_string($unitpayId).'"
 		LIMIT 1
 		';
-		
+
 		return $this->db->query($query);
 	}
-	
-	public function wlog($action, $params)
-	{
+
+	public function wlog($action, $params){
 		$this->db->query('INSERT INTO `ucp_log`(`ip`, `ts`, `action`, `params`) VALUES(\''.$_SERVER['REMOTE_ADDR'].'\', \''.time().'\', \''.$action.'\', \''.json_encode($params).'\')');
 		return 1;
 	}
-	
-	public function rcon($server_id, $command)
-	{
+
+	public function rcon($server_id, $command){
 		$ipdata = explode(":", $this->server_data[$server_id]['ip']);
-		
+
 		$ip = $ipdata[0];
 		$port = strval($ipdata[1]);
-		
+
 		$sock = fsockopen('udp://'.$ip, $port, $iError, $sError, 2);
-		
+
 		if(!$sock)
 		{
 			return false;
 		}
-		
+
 		socket_set_timeout($sock, 2);
-		
+
 		$packet = 'SAMP';
 		$packet .= chr(strtok($ip, '.'));
 		$packet .= chr(strtok('.'));
@@ -2889,9 +1441,9 @@ class engine
 		$packet .= chr($port & 0xFF);
 		$packet .= chr($port >> 8 & 0xFF);
 		$packet .= 'p4150';
-		
+
 		fwrite($sock, $packet);
-		
+
 		if(fread($sock, 10))
 		{
 			if(fread($sock, 5) == 'p4150')
@@ -2904,23 +1456,23 @@ class engine
 				$packet .= chr($port & 0xFF);
 				$packet .= chr($port >> 8 & 0xFF);
 				$packet .= 'x';
-				
+
 				$packet .= chr(strlen($this->rcon_password) & 0xFF);
 				$packet .= chr(strlen($this->rcon_password) >> 8 & 0xFF);
 				$packet .= $this->rcon_password;
 				$packet .= chr(strlen($command) & 0xFF);
 				$packet .= chr(strlen($command) >> 8 & 0xFF);
 				$packet .= $command;
-				
+
 				fwrite($sock, $packet);
 
 				$retarray = array();
 				$mctime = microtime(true) + 1.0;
-				
+
 				while(microtime(true) < $mctime)
 				{
 					$tmp = substr(fread($sock, 128), 13);
-					
+
 					if(strlen($tmp))
 					{
 						$retarray[] = $tmp;
@@ -2930,11 +1482,11 @@ class engine
 						break;
 					}
 				}
-				
+
 				return $retarray;
 			}
 		}
-		
+
 		return false;
 	}
 }

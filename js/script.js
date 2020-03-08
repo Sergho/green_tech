@@ -43,6 +43,7 @@ function Auth(){		// login
 		document.body.style.overflow = "hidden"; // Убираем прокрутку страницы
 		darkness.style.display = "block";
 		modal.style.display = "block";
+		ScrollTop();
 		setTimeout(function(){darkness.style.opacity = "1";}, 50);
 		setTimeout(function(){modal.style.opacity = "1";}, 50);
 	} else {
@@ -71,8 +72,8 @@ function CheckInput(input){		// Функция проверки заполнен
 	if(input.value.length > 0) input.classList.add("filled");
 	else input.classList.remove("filled");
 }
-function ShowPassword(eye){		// Функция скрытия и показывания пароля
-	const input = document.querySelector("#auth form input:nth-child(2)");
+function ShowPassword(eye, input_index){		// Функция скрытия и показывания пароля
+	const input = eye.parentNode.children[input_index];
 
 	if(input.type == "password"){
 		input.type = "text";
@@ -226,8 +227,10 @@ function ActivateFilter(filter){
 	current.innerHTML = "1";
 
 	// Корректируем кнопки
-	prev.classList.add("disabled");
-	next.classList.remove("disabled");
+	if(slides.length > 1){
+		prev.classList.add("disabled");
+		next.classList.remove("disabled");
+	}
 
 	// Сортировка платежей
 	payments.sort((a, b) => {
@@ -279,7 +282,7 @@ function ActivateFilter(filter){
 			slides[i].querySelector("ul").innerHTML = "";
 			// 17 платежей может быть максимально на одном слайде
 			for(let j = 0; j < 17; j++){
-				if(i * 17 + j > payments.length) break;
+				if(i * 17 + j >= payments.length) break;
 				let elem = document.createElement("li");
 				elem.innerHTML = (i * 17 + j + 1) + ". " + payments[i * 17 + j];
 				slides[i].querySelector("ul").append(elem);
@@ -311,4 +314,100 @@ function InputCloseError(input){
 		// Проверим на введенные данные, чтобы оставить поле активным если что
 		if(input.value.length > 0) input.classList.add("filled");
 	}
+}
+
+/* Скрытие модального окна */
+
+function CloseModal(close){
+	// Модальное окно
+	const modal = close.parentNode;
+	// Темнота
+	const darkness = document.querySelector('.darkness');
+
+	// Закрываем модальное окно
+	modal.style.opacity = "0";
+	setTimeout(() => {modal.style.display = "none"}, 300);
+	// Закрываем темноту
+	darkness.style.opacity = "0";
+	setTimeout(() => {darkness.style.display = "none"}, 300);
+	// overflow убираем
+	document.body.style.overflow = "visible";
+}
+
+// Закрыть все модальные окна
+
+function CloseModals(){
+	const auth = document.querySelector("#auth");
+	const pass_change = document.querySelector("#password_change");
+	const email_change = document.querySelector("#email_change");
+	const error = document.querySelector("#error");
+	const success = document.querySelector("#success");
+
+	const darkness = document.querySelector(".darkness");
+
+	// Закрываем все
+	if(auth != undefined){
+		auth.style.opacity = "0";
+		setTimeout(() => {auth.style.display = "none"}, 300);
+	}
+	if(pass_change != undefined){
+		pass_change.style.opacity = "0";
+		setTimeout(() => {pass_change.style.display = "none"}, 300);
+	}
+	if(email_change != undefined){
+		email_change.style.opacity = "0";
+		setTimeout(() => {email_change.style.display = "none"}, 300);
+	}
+	if(success != undefined){
+		success.style.opacity = "0";
+		setTimeout(() => {success.style.display = "none"}, 300);
+	}
+	if(error != undefined){
+		error.style.opacity = "0";
+		setTimeout(() => {error.style.display = "none"}, 300);
+	}
+
+	// Скрываем темноту
+
+	darkness.style.opacity = "0";
+	setTimeout(() => {darkness.style.display = "none"}, 300);
+
+}
+
+// Открываем окно смены пароля
+
+function OpenPasswordChangeMenu(){
+	const modal = document.querySelector("#password_change");
+	const darkness = document.querySelector(".darkness");
+
+	// Показываем всё
+
+	ScrollTop();
+	modal.style.display = "block";
+	darkness.style.display = "block";
+	setTimeout(() => {modal.style.opacity = "1";}, 50);
+	setTimeout(() => {darkness.style.opacity = "1";}, 50);
+
+	// запрещаем прокрутку
+
+	document.body.style.overflow = "hidden";
+}
+
+// Открываем окно смены мыла
+
+function OpenEmailChangeMenu(){
+	const modal = document.querySelector("#email_change");
+	const darkness = document.querySelector(".darkness");
+
+	// Показываем всё
+
+	ScrollTop();
+	modal.style.display = "block";
+	darkness.style.display = "block";
+	setTimeout(() => {modal.style.opacity = "1";}, 50);
+	setTimeout(() => {darkness.style.opacity = "1";}, 50);
+
+	// запрещаем прокрутку
+
+	document.body.style.overflow = "hidden";
 }

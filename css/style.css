@@ -4,7 +4,7 @@
 }
 .darkness{
 	width: 100%;
-	height: 100vh;
+	height: 100%;
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -382,14 +382,6 @@
 		margin-left: 50%;
 		transform: translate(-50%, 0);
 	}
-	#auth .error{
-		opacity: 0;
-		color: #444b61;
-		font-size: 0.9em;
-		text-align: center;
-		font-family: Proxima Nova Rg;
-		margin-top: 5px;
-	}
 
 	#auth form{
 		margin-top: 5px;
@@ -425,7 +417,7 @@
 		width: 30px;
 		height: 30px;
 		position: absolute;
-		top: 245px;
+		top: 225px;
 		right: 40px;
 		cursor: pointer;
 		transition: .3s ease;
@@ -599,9 +591,12 @@
 		opacity: 1;
 		color: rgba(54,60,77, 1);
 	}
-	header form input.error{
+	header form input[type="text"].error{
 		color: #30394C;
 		opacity: 1;
+	}
+	header form .agreement .confirm .visible.error{
+		border: 2px solid #507fcd;
 	}
 
 	header form .agreement{
@@ -679,6 +674,7 @@
 	}
 
 	#success, #error{
+		z-index: 3;
 		display: none;
 		opacity: 0;
 		position: absolute;
@@ -805,6 +801,9 @@
 		display: flex;
 		justify-content: space-between;
 	}
+	#ucp-wrapper .text .stats .pages .main-page .help button{
+		display: none;
+	}
 
 	/* UCP Property page */
 
@@ -928,11 +927,11 @@
 		margin-bottom: 5px;
 	}
 	#ucp-wrapper .text .stats .pages .leaders-page .slide .h .nick{
-		width: 100px;
+		width: 110px;
 		text-align: left;
 	}
 	#ucp-wrapper .text .stats .pages .leaders-page .slide .h .organization{
-		width: 80px;
+		width: 75px;
 		text-align: left;
 	}
 	#ucp-wrapper .text .stats .pages .leaders-page .slide ul li{
@@ -944,15 +943,19 @@
 		justify-content: space-between;
 	}
 	#ucp-wrapper .text .stats .pages .leaders-page .slide ul li .nick{
-		width: 70px;
+		width: 90px;
 		text-align: left;
 	}
 	#ucp-wrapper .text .stats .pages .leaders-page .slide ul li .nick.online{
 		color: #2bb673;
 	}
 	#ucp-wrapper .text .stats .pages .leaders-page .slide ul li .organization{
-		width: 140px;
+		width: 120px;
 		text-align: center;
+	}
+	#ucp-wrapper .text .stats .pages .leaders-page .slide ul li .last-enter{
+		width: 40px;
+		text-align: right;
 	}
 	#ucp-wrapper .text .stats .pages .leaders-page .prev{
 		width: 5px;
@@ -1005,7 +1008,7 @@
 
 	#ucp-wrapper .text .skin{
 		width: 310px;
-		height: 500px;
+		height: 600px;
 		margin-left: 50%;
 		transform: translate(-50%, 0);
 		background-color: white;
@@ -1084,8 +1087,9 @@
 		margin-left: 50%;
 		transform: translate(-50%, 0);
 	}
-	#ucp-wrapper .help a{
+	#ucp-wrapper .help button, #ucp-wrapper .help a{
 		display: block;
+		background-color: rgba(0, 0, 0, 0.0);
 		border: 2px solid #558DCB;
 		color: #558DCB;
 		width: 222px;
@@ -1096,10 +1100,12 @@
 		text-align: center;
 		text-decoration: none;
 		border-radius: 15px;
-		margin-top: 35px;
+		margin-top: 38px;
 		transition: .3s ease;
+		cursor: pointer;
+		font-size: 1em;
 	}
-	#ucp-wrapper .help a:hover{
+	#ucp-wrapper .help button:hover{
 		background-color: #558DCB;
 		color: white;
 	}
@@ -1110,6 +1116,179 @@
 	#ucp-wrapper .help a:nth-child(3):hover{
 		background-color: #30394C;
 		color: white;
+	}
+
+	/* UCP Modals */
+
+	#password_change{
+		width: 300px;
+		height: 400px;
+		background-color: #f6f6f9;
+		position: absolute;
+		top: 50vh;
+		left: 50vw;
+		transform: translate(-50%, -50%);
+		z-index: 3;
+		border-radius: 40px;
+		transition: .3s ease;
+	}
+	#password_change h1{
+		color: #3F4A62;
+		font-size: 30px;
+		font-family: Proxima Nova Th;
+		text-align: center;
+		font-weight: bold;
+		margin-top: 45px;
+	}
+	#password_change p.error{
+		font-family: Proxima Nova Lt;
+		text-align: center;
+		font-size: 16px;
+		margin-top: 5px;
+		font-weight: 600;
+		color: #3F4A62;
+	}
+	#password_change form{
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		margin-top: 15px;
+	}
+	#password_change form input{
+		width: 270px;
+		height: 40px;
+		background-color: white;
+		border: none;
+		border-radius: 15px;
+		margin-top: 15px;
+		box-sizing: border-box;
+		padding: 10px;
+		font-family: Proxima Nova Rg;
+		font-weight: 700;
+		font-size: 16px;
+		color: #30394C;
+		outline: none;
+		opacity: 0.7;
+		transition: .3s ease;
+	}
+	#password_change form input::placeholder{
+		color: #D0D1D5;
+	}
+	#password_change form input:focus, #password_change form input.error{
+		opacity: 1;
+		box-shadow: 0 0 7px rgba(0, 1, 5, 0.08);
+	}
+	#password_change form button{
+		margin-top: 25px;
+		width: 176px;
+		height: 43px;
+		border-radius: 10px;
+		background-color: rgba(0, 0, 0, 0.0);
+		border: 2px solid #558DCB;
+		color: #558DCB;
+		font-family: Proxima Nova Rg;
+		font-size: 14px;
+		font-weight: 800;
+		cursor: pointer;
+		transition: .3s ease;
+	}
+	#password_change form button:hover{
+		background-color: #558DCB;
+		color: white;
+	}
+	#password_change form img.show{
+		position: absolute;
+		width: 30px;
+		height: 30px;
+		opacity: 0.5;
+		transition: .3s ease;
+	}
+	#password_change form img.show:nth-child(4){
+		top: 142.5px;
+		left: 240px;
+	}
+	#password_change form img.show:nth-child(5){
+		top: 197.5px;
+		left: 240px;
+	}
+	#password_change form img.show:nth-child(6){
+		top: 250px;
+		left: 240px;
+	}
+
+	#email_change{
+		position: absolute;
+		top: 50vh;
+		left: 50vw;
+		transform: translate(-50%, -50%);
+		width: 300px;
+		height: 300px;
+		background-color: #f6f6f9;
+		z-index: 3;
+		border-radius: 40px;
+		transition: .3s ease;
+	}
+	#email_change h1{
+		text-align: center;
+		font-size: 30px;
+		margin-top: 60px;
+		font-family: Proxima Nova Th;
+		font-weight: bold;
+		color: #3F4A62;
+	}
+	#email_change p.error{
+		text-align: center;
+		margin-top: 0;
+		font-family: Proxima Nova Rg;
+		font-weight: bold;
+		font-size: 16px;
+		color: #3F4A62;
+	}
+	#email_change form{
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		margin-top: 10px;
+	}
+	#email_change form input{
+		width: 260px;
+		height: 40px;
+		background-color: white;
+		border: none;
+		border-radius: 15px;
+		box-sizing: border-box;
+		padding: 15px;
+		font-family: Proxima Nova Rg;
+		font-weight: bold;
+		outline: none;
+		color: #30394C;
+		opacity: 0.7;
+		transition: .3s ease;
+	}
+	#email_change form input:focus, #email_change form input.error{
+		box-shadow: 5px 5px 10px #ddd;
+		opacity: 1;
+	}
+	#email_change form input::placeholder{
+		color: #D0D1D5;
+	}
+	#email_change form button{
+		width: 183px;
+		height: 43px;
+		background-color: rgba(0, 0, 0, 0.0);
+		border: 2px solid #558DCB;
+		border-radius: 10px;
+		color: #558DCB;
+		font-size: 16px;
+		font-family: Proxima Nova Rg;
+		font-weight: bold;
+		cursor: pointer;
+		transition: .3s ease;
+		margin-top: 20px;
+	}
+	#email_change form button:hover{
+		color: white;
+		background-color: #558DCB;
 	}
 
 }
@@ -1140,7 +1319,7 @@
 		width: 200px;
 	}
 	#auth form img.show{
-		top: 245px;
+		top: 225px;
 		right: 70px;
 	}
 
@@ -1246,19 +1425,19 @@
 		font-size: 0.9em;
 	}
 	#ucp-wrapper .text .stats .pages .leaders-page .slide .h .nick{
-		width: 130px;
+		width: 140px;
 	}
 	#ucp-wrapper .text .stats .pages .leaders-page .slide .h .organization{
 		width: 100px;
 	}
 	#ucp-wrapper .text .stats .pages .leaders-page .slide ul li{
-		font-size: 1em;
+		font-size: 0.9em;
 	}
 	#ucp-wrapper .text .stats .pages .leaders-page .slide ul li .nick{
-		width: 100px;
+		width: 120px;
 	}
 	#ucp-wrapper .text .stats .pages .leaders-page .slide ul li .organization{
-		width: 160px;
+		width: 140px;
 	}
 	#ucp-wrapper .text .stats .pages .leaders-page .prev{
 		width: 7px;
@@ -1280,6 +1459,46 @@
 		width: 400px;
 		height: 600px;
 		padding: 40px;
+	}
+
+	/* UCP Modals */
+
+	#password_change{
+		width: 400px;
+	}
+	#password_change form{
+		margin-top: 5px;
+	}
+	#password_change form input{
+		width: 345px;
+		height: 50px;
+		padding: 15px;
+	}
+	#password_change form img.show:nth-child(4){
+		top: 137.5px;
+		left: 320px;
+	}
+	#password_change form img.show:nth-child(5){
+		top: 200px;
+		left: 320px;
+	}
+	#password_change form img.show:nth-child(6){
+		top: 265px;
+		left: 320px;
+	}
+
+	#email_change{
+		width: 400px;
+		height: 300px;
+	}
+	#email_change p.error{
+		margin-top: 5px;
+	}
+	#email_change form{
+		margin-top: 15px;
+	}
+	#email_change form button{
+		margin-top: 30px;
 	}
 
 }
@@ -1368,7 +1587,7 @@
 		font-size: 1em;
 	}
 	#auth form img.show{
-		top: 250px;
+		top: 225px;
 		right: 90px;
 	}
 
@@ -1461,6 +1680,37 @@
 	}
 	#ucp-wrapper .text .stats .pages .leaders-page .next{
 		left: 270px;
+	}
+
+	/* UCP Modals */
+
+	#password_change{
+		width: 442px;
+		height: 437px;
+	}
+	#password_change form{
+		margin-top: 10px;
+	}
+	#password_change form img.show:nth-child(4){
+		top: 142.5px;
+		left: 350px;
+	}
+	#password_change form img.show:nth-child(5){
+		top: 207.5px;
+		left: 350px;
+	}
+	#password_change form img.show:nth-child(6){
+		top: 270px;
+		left: 350px;
+	}
+
+	#email_change{
+		width: 442px;
+		height: 309px;
+	}
+	#email_change form input{
+		height: 50px;
+		width: 400px;
 	}
 
 }
@@ -1719,7 +1969,7 @@
 		font-size: 18px;
 	}
 	#auth form img.show{
-		top: 275px;
+		top: 250px;
 		right: 100px;
 	}
 	#auth form a{
@@ -1808,7 +2058,7 @@
 		display: grid;
 		grid-template-columns: 500px 400px;
 		grid-column-gap: 30px;
-		grid-template-rows: 75px 500px 130px;
+		grid-template-rows: 75px 600px 130px;
 		grid-template-areas:
 		"heading heading"
 		"stats skin"
@@ -1847,12 +2097,82 @@
 		bottom: 40px;
 		left: 0;
 	}
-	#ucp-wrapper .text .stats .pages .main-page > .help a{
+	#ucp-wrapper .text .stats .pages .main-page > .help button{
+		display: block;
 		margin-top: 0;
 		width: 200px;
+		height: 50px;
 	}
-	#ucp-wrapper .text > .help a:nth-child(1), #ucp-wrapper .text > .help a:nth-child(2){
+	#ucp-wrapper .text .stats .pages .leaders-page .slide ul li{
+		font-size: 1em;
+	}
+	#ucp-wrapper .text > .help button:nth-child(1), #ucp-wrapper .text > .help button:nth-child(2){
 		display: none;
+	}
+
+	/* UCP Modals */
+
+	#password_change{
+		width: 703px;
+		height: 592px;
+	}
+	#password_change form{
+		margin-top: 20px;
+	}
+	#password_change form input{
+		width: 549px;
+		height: 66px;
+		margin-top: 20px;
+		padding: 30px;
+		font-size: 18px;
+	}
+	#password_change form button{
+		margin-top: 50px;
+		width: 253px;
+		height: 66px;
+		border-radius: 15px;
+		border: 3px solid #558DCB;
+		font-size: 18px;
+	}
+	#password_change form img.show{
+		width: 40px;
+		height: 40px;
+	}
+	#password_change form img.show:nth-child(4){
+		top: 162.5px;
+		left: 560px;
+	}
+	#password_change form img.show:nth-child(5){
+		top: 247.5px;
+		left: 560px;
+	}
+	#password_change form img.show:nth-child(6){
+		top: 330px;
+		left: 560px;
+	}
+		
+	#email_change{
+		width: 703px;
+		height: 415px;
+	}
+	#email_change p.error{
+		margin-top: 10px;
+		font-size: 18px;
+	}
+	#email_change form{
+		margin-top: 20px;
+	}
+	#email_change form input{
+		width: 549px;
+		font-size: 18px;
+		height: 66px;
+	}
+	#email_change form button{
+		font-size: 18px;
+		width: 253px;
+		height: 66px;
+		border-radius: 15px;
+		margin-top: 50px;
 	}
 
 }
@@ -1930,6 +2250,10 @@
 		width: 100%;
 		box-sizing: border-box;
 		padding: 0 55px;
+	}
+	#ucp-wrapper .text .stats .pages .main-page > .help button{
+		width: 222px;
+		height: 56px;
 	}
 	#ucp-wrapper .text > .help{
 		margin-top: 20px;
@@ -2035,6 +2359,11 @@
 	#ucp-wrapper .text .stats .pages .leaders-page .next{
 		left: 320px;
 		bottom: 57px;
+	}
+
+
+	#ucp-wrapper .text > .help button{
+		margin-top: 40px;
 	}
 
 }
