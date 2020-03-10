@@ -800,6 +800,10 @@
 		width: 100%;
 		display: flex;
 		justify-content: space-between;
+		position: relative;
+	}
+	#ucp-wrapper .text .stats .pages .main-page ul li button{
+		display: none;
 	}
 	#ucp-wrapper .text .stats .pages .main-page .help button{
 		display: none;
@@ -1646,6 +1650,44 @@
 	}
 	#ucp-wrapper .text .stats .pages-nav li.active{
 		font-size: 20px;
+	}
+
+	/* UCP Main page */
+
+	#ucp-wrapper .text .stats .pages .main-page ul li form{
+		display: block;
+		position: absolute;
+		top: 0;
+		right: -10px;
+		width: 20px;
+		height: 20px;
+	}
+	#ucp-wrapper .text .stats .pages .main-page ul li form button{
+		display: block;
+		position: absolute;
+		top: 50%;
+		right: -25px;
+		transform: translate(0, -50%);
+		width: 18px;
+		height: 18px;
+		border-radius: 5px;
+		border: none;
+		background-color: #698cc8;
+		cursor: pointer;
+		outline: none;
+		transition: .3s ease;
+		margin: 0;
+	}
+	#ucp-wrapper .text .stats .pages .main-page ul li form button:hover{
+		background-color: #86b5ff;
+	}
+	#ucp-wrapper .text .stats .pages .main-page ul li form button img{
+		width: 60%;
+		height: 60%;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
 	}
 
 	/* UCP Payments page */

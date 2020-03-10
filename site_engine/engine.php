@@ -347,279 +347,281 @@ class engine
 		}
 		// Чтобы пользователь намеренно не менял GET запрос, делаем его пустым, если он отличается от всех шаблонов
 		else $help = "";
-		// Если активирована сессия, то отрисовываем контент ЛК
-		if($session && $help == ""){
-		// Все переменные, которые нам будут нужны для ЛК
-		// Имя пользователя
-		$username = $_SESSION['username'];
-		$response_main = $this->get_ucp_main_response($username);
-		$response_payments = $this->complete_ucp_payments($username);
-		$response_leaders = $this->complete_ucp_leaders($username);
-		// Отрисовываем контент ЛК
-		// Для теста вставляем все остальное
-		$this->add_to_body('<div class="text">
-			<h1>Личный кабинет ' . $username . '</h1>
-			<div class="stats">
-			<h1>Статистика</h1>
-			<ul class="pages-nav">
-			<li class="active" onclick="PageSwitch(this);">Главное</li>
-			<li class="" onclick="PageSwitch(this);">Имущество</li>
-			<li class="" onclick="PageSwitch(this);">Платежи</li>
-			<li class="" onclick="PageSwitch(this);">Лидеры</li>
-			</ul>
-			<ul class="pages">
-			<li class="page main-page current">');
+			// Если активирована сессия, то отрисовываем контент ЛК
+			if($session && $help == ""){
+			// Проверяем на сброс места спавна
+			$this->spawn_reset();
+			// Все переменные, которые нам будут нужны для ЛК
+			// Имя пользователя
+			$username = $_SESSION['username'];
+			$response_main = $this->get_ucp_main_response($username);
+			$response_payments = $this->complete_ucp_payments($username);
+			$response_leaders = $this->complete_ucp_leaders($username);
+			// Отрисовываем контент ЛК
+			// Для теста вставляем все остальное
+			$this->add_to_body('<div class="text">
+				<h1>Личный кабинет ' . $username . '</h1>
+				<div class="stats">
+				<h1>Статистика</h1>
+				<ul class="pages-nav">
+				<li class="active" onclick="PageSwitch(this);">Главное</li>
+				<li class="" onclick="PageSwitch(this);">Имущество</li>
+				<li class="" onclick="PageSwitch(this);">Платежи</li>
+				<li class="" onclick="PageSwitch(this);">Лидеры</li>
+				</ul>
+				<ul class="pages">
+				<li class="page main-page current">');
 
-		$this->compile_ucp_ooc($response_main);
-		$this->compile_ucp_ic($response_main);
-		$this->add_to_body('<div class="help">
-			<button onclick="OpenPasswordChangeMenu();">Сменить пароль</button>
-			<button onclick="OpenEmailChangeMenu();">Сменить Email</button>
-			</div>
-			</li>
-			<li class="page property-page">
-			<ul class="houses">
-			<span>Список домов</span>
-			<div class="empty">Дома отсутствуют</div>
-			</ul>
-			<ul class="businesses">
-			<span>Список бизнесов</span>
-			<div class="empty">Бизнесы отсутствуют</div>
-			</ul>
-			<ul class="cars">
-			<span>Список автомобилей</span>
-			<div class="empty">Автомобили отсутствуют</div>
-			</ul>
-			</li>
-			<li class="page payments-page">
-			<div class="sort">
-			<p>Сортировать:<span class="enabled" onclick="ActivateFilter(this);">Сначала новые</span>/<span class="" onclick="ActivateFilter(this);">Сначала старые</span></p>
-			</div>');
-		$this->compile_ucp_payments($response_payments);
-		$this->compile_ucp_leaders($response_leaders);
-		$this->add_to_body('<li class="page leaders-page">
-			<div class="slider">
-			<ul class="slides">
-			<li class="slide" style="display: flex; opacity: 1;">
-			<div class="h">
-			<div class="nick">Nick_Name</div>
-			<div class="organization">Организация</div>
-			<div class="last-enter">Последний вход</div>
-			</div>
-			<ul>
-			<li>
-			<div class="nick online">Ruslan_Budagov</div>
-			<div class="organization">УМВД</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Roman_Samarin</div>
-			<div class="organization">УМВД</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Sergey_Snegirev</div>
-			<div class="organization">УМВД</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Denis_Bilkov</div>
-			<div class="organization">УМВД</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Sergey_Ivanov</div>
-			<div class="organization">УМВД</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Jon_Town</div>
-			<div class="organization">Пра-во</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick">Maxim_Perfilev</div>
-			<div class="organization">Пра-во</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Vadim_Roslin</div>
-			<div class="organization">ФСИН</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick">Gleb_Shapranov</div>
-			<div class="organization">Прокуратура</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Sergey_Snegirev</div>
-			<div class="organization">УМВД</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Denis_Bilkov</div>
-			<div class="organization">УМВД</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Sergey_Ivanov</div>
-			<div class="organization">УМВД</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Jon_Town</div>
-			<div class="organization">Пра-во</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick">Maxim_Perfilev</div>
-			<div class="organization">Пра-во</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Vadim_Roslin</div>
-			<div class="organization">ФСИН</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick">Gleb_Shapranov</div>
-			<div class="organization">Прокуратура</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Jon_Town</div>
-			<div class="organization">Пра-во</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			</ul>
-			</li>
-			<li class="slide" style="display: none; opacity: 0;">
-			<div class="h">
-			<div class="nick">Nick_Name</div>
-			<div class="organization">Организация</div>
-			<div class="last-enter">Последний вход</div>
-			</div>
-			<ul>
-			<li>
-			<div class="nick online">Ruslan_Budagov</div>
-			<div class="organization">УМВД</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Roman_Samarin</div>
-			<div class="organization">УМВД</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Sergey_Snegirev</div>
-			<div class="organization">УМВД</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Denis_Bilkov</div>
-			<div class="organization">УМВД</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Sergey_Ivanov</div>
-			<div class="organization">УМВД</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Jon_Town</div>
-			<div class="organization">Пра-во</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick">Maxim_Perfilev</div>
-			<div class="organization">Пра-во</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Vadim_Roslin</div>
-			<div class="organization">ФСИН</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick">Gleb_Shapranov</div>
-			<div class="organization">Прокуратура</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Sergey_Snegirev</div>
-			<div class="organization">УМВД</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Denis_Bilkov</div>
-			<div class="organization">УМВД</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Sergey_Ivanov</div>
-			<div class="organization">УМВД</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Jon_Town</div>
-			<div class="organization">Пра-во</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick">Maxim_Perfilev</div>
-			<div class="organization">Пра-во</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Vadim_Roslin</div>
-			<div class="organization">ФСИН</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick">Gleb_Shapranov</div>
-			<div class="organization">Прокуратура</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			<li>
-			<div class="nick online">Jon_Town</div>
-			<div class="organization">Пра-во</div>
-			<div class="last-enter">21.08.2019</div>
-			</li>
-			</ul>
-			</li>
-			</ul>
-			<div class="prev disabled" onclick="SliderPrev(this);"></div>
-			<div class="current">1</div>
-			<div class="next" onclick="SliderNext(this);"></div>
-			</div>
-			</li>
-			</ul>
-			</div>
-			<div class="skin">
-			<div class="slider">
-			<ul class="slides">
-			<li class="slide" style="display: none; opacity: 0;">
-			<h1>Скин (обычный)</h1>
-			<p>' . $response_main['Char'] . 'id</p>
-			<img src="../img/skins/default/skin' . $response_main['Char'] . '.png" alt="skin">
-			</li>
-			<li class="slide" style="display: block; opacity: 1;">
-			<h1>Скин (мод-пак)</h1>
-			<p>' . $response_main['Char'] . 'id</p>
-			<img src="../img/skins/pack/skin' . $response_main['Char'] . '.png" alt="skin">
-			</li>
-			</ul>
-			<div class="prev" onclick="SliderPrev(this);"></div>
-			<p class="current" style="display: none">2</p>
-			<div class="next disabled" onclick="SliderNext(this);"></div>
-			</div>
-			</div>
-			<div class="help">
-			<button onclick="OpenPasswordChangeMenu();">Сменить пароль</button>
-			<button onclick="OpenEmailChangeMenu();">Сменить Email</button>
-			<a href="./ucp.php?help=log_out">Выйти</a>
-			</div>');
+			$this->compile_ucp_ooc($response_main);
+			$this->compile_ucp_ic($response_main);
+			$this->add_to_body('<div class="help">
+				<button onclick="OpenPasswordChangeMenu();">Сменить пароль</button>
+				<button onclick="OpenEmailChangeMenu();">Сменить Email</button>
+				</div>
+				</li>
+				<li class="page property-page">
+				<ul class="houses">
+				<span>Список домов</span>
+				<div class="empty">Дома отсутствуют</div>
+				</ul>
+				<ul class="businesses">
+				<span>Список бизнесов</span>
+				<div class="empty">Бизнесы отсутствуют</div>
+				</ul>
+				<ul class="cars">
+				<span>Список автомобилей</span>
+				<div class="empty">Автомобили отсутствуют</div>
+				</ul>
+				</li>
+				<li class="page payments-page">
+				<div class="sort">
+				<p>Сортировать:<span class="enabled" onclick="ActivateFilter(this);">Сначала новые</span>/<span class="" onclick="ActivateFilter(this);">Сначала старые</span></p>
+				</div>');
+			$this->compile_ucp_payments($response_payments);
+			$this->compile_ucp_leaders($response_leaders);
+			$this->add_to_body('<li class="page leaders-page">
+				<div class="slider">
+				<ul class="slides">
+				<li class="slide" style="display: flex; opacity: 1;">
+				<div class="h">
+				<div class="nick">Nick_Name</div>
+				<div class="organization">Организация</div>
+				<div class="last-enter">Последний вход</div>
+				</div>
+				<ul>
+				<li>
+				<div class="nick online">Ruslan_Budagov</div>
+				<div class="organization">УМВД</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Roman_Samarin</div>
+				<div class="organization">УМВД</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Sergey_Snegirev</div>
+				<div class="organization">УМВД</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Denis_Bilkov</div>
+				<div class="organization">УМВД</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Sergey_Ivanov</div>
+				<div class="organization">УМВД</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Jon_Town</div>
+				<div class="organization">Пра-во</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick">Maxim_Perfilev</div>
+				<div class="organization">Пра-во</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Vadim_Roslin</div>
+				<div class="organization">ФСИН</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick">Gleb_Shapranov</div>
+				<div class="organization">Прокуратура</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Sergey_Snegirev</div>
+				<div class="organization">УМВД</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Denis_Bilkov</div>
+				<div class="organization">УМВД</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Sergey_Ivanov</div>
+				<div class="organization">УМВД</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Jon_Town</div>
+				<div class="organization">Пра-во</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick">Maxim_Perfilev</div>
+				<div class="organization">Пра-во</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Vadim_Roslin</div>
+				<div class="organization">ФСИН</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick">Gleb_Shapranov</div>
+				<div class="organization">Прокуратура</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Jon_Town</div>
+				<div class="organization">Пра-во</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				</ul>
+				</li>
+				<li class="slide" style="display: none; opacity: 0;">
+				<div class="h">
+				<div class="nick">Nick_Name</div>
+				<div class="organization">Организация</div>
+				<div class="last-enter">Последний вход</div>
+				</div>
+				<ul>
+				<li>
+				<div class="nick online">Ruslan_Budagov</div>
+				<div class="organization">УМВД</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Roman_Samarin</div>
+				<div class="organization">УМВД</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Sergey_Snegirev</div>
+				<div class="organization">УМВД</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Denis_Bilkov</div>
+				<div class="organization">УМВД</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Sergey_Ivanov</div>
+				<div class="organization">УМВД</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Jon_Town</div>
+				<div class="organization">Пра-во</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick">Maxim_Perfilev</div>
+				<div class="organization">Пра-во</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Vadim_Roslin</div>
+				<div class="organization">ФСИН</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick">Gleb_Shapranov</div>
+				<div class="organization">Прокуратура</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Sergey_Snegirev</div>
+				<div class="organization">УМВД</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Denis_Bilkov</div>
+				<div class="organization">УМВД</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Sergey_Ivanov</div>
+				<div class="organization">УМВД</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Jon_Town</div>
+				<div class="organization">Пра-во</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick">Maxim_Perfilev</div>
+				<div class="organization">Пра-во</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Vadim_Roslin</div>
+				<div class="organization">ФСИН</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick">Gleb_Shapranov</div>
+				<div class="organization">Прокуратура</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				<li>
+				<div class="nick online">Jon_Town</div>
+				<div class="organization">Пра-во</div>
+				<div class="last-enter">21.08.2019</div>
+				</li>
+				</ul>
+				</li>
+				</ul>
+				<div class="prev disabled" onclick="SliderPrev(this);"></div>
+				<div class="current">1</div>
+				<div class="next" onclick="SliderNext(this);"></div>
+				</div>
+				</li>
+				</ul>
+				</div>
+				<div class="skin">
+				<div class="slider">
+				<ul class="slides">
+				<li class="slide" style="display: none; opacity: 0;">
+				<h1>Скин (обычный)</h1>
+				<p>' . $response_main['Char'] . 'id</p>
+				<img src="../img/skins/default/skin' . $response_main['Char'] . '.png" alt="skin">
+				</li>
+				<li class="slide" style="display: block; opacity: 1;">
+				<h1>Скин (мод-пак)</h1>
+				<p>' . $response_main['Char'] . 'id</p>
+				<img src="../img/skins/pack/skin' . $response_main['Char'] . '.png" alt="skin">
+				</li>
+				</ul>
+				<div class="prev" onclick="SliderPrev(this);"></div>
+				<p class="current" style="display: none">2</p>
+				<div class="next disabled" onclick="SliderNext(this);"></div>
+				</div>
+				</div>
+				<div class="help">
+				<button onclick="OpenPasswordChangeMenu();">Сменить пароль</button>
+				<button onclick="OpenEmailChangeMenu();">Сменить Email</button>
+				<a href="./ucp.php?help=log_out">Выйти</a>
+				</div>');
 		}
 		$this->add_to_body('
 			</div>
@@ -717,8 +719,11 @@ class engine
 		foreach ($this->ucp_main_ooc as $key => $value){
 			if(substr($value, 0, 3) == "db_") $value = $response[substr($value, 3)];
 			if($value == "username") $value = $username;
-			$this->add_to_body('<li><div class="param">' . $key . '</div>');
-			$this->add_to_body('<div class="value">' . $value . '</div></li>');
+			$this->add_to_body('<li><div class="param">' . $key . ':</div>');
+			$this->add_to_body('<div class="value">' . $value . '</div>');
+			if($key == "Донат-очки") $this->add_to_body('<form action="./donate.php" method="GET"><button class="donate-btn"><img src="./img/plus.png" alt=""></button></form>');
+			if($key == "Место появления") $this->add_to_body('<form action="./ucp.php" method="POST"><button name="spawn_reset" class="spawn_reset"><img src="./img/reset.png" alt=""></button></form>');
+			$this->add_to_body('</li>');
 		}
 
 		$this->add_to_body('</ul>');
@@ -816,6 +821,14 @@ class engine
 			$result[] = $leader;
 		}
 		return $result;
+	}
+
+	// Сброс точки спавна
+	public function spawn_reset(){
+		if(isset($_POST['spawn_reset'])){
+			// Сбрасываем место спавна
+			$this->db_set('Spawn', '2', $_SESSION['username']);
+		}
 	}
 
 	// Составляем подвал
