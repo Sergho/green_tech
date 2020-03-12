@@ -2,6 +2,7 @@
 
 class engine
 {
+	public $page_engine;
 	// MySQL БД
 	public $db;
 	// Соддержимое тега body
@@ -60,10 +61,7 @@ class engine
 
 	// Составляем содержимое тега body
 	public function compile_body($page){
-		// Работает только при соответствующих запросах
-		$this->auth();
-		$this->change_password();
-		$this->change_email();
+
 		// Активация блокировки если это необходимо
 		if($this->block_site && !in_array($_SERVER['REMOTE_ADDR'], $this->block_whitelist)){
 			$this->add_to_body('
@@ -75,9 +73,26 @@ class engine
 			return $this->body;
 		}
 
+		// Обработка каждой из страниц
+		if($page == "MAIN"){
+			$this->page_engine = new Main();
+			$this->page_engine->catch_auth_error();
+			$this->page_engine->compile();
+			$this->add_to_body($this->page_engine->get_html());
+		}
+		if($page == "DONATE"){
+			$this->page_engine = new Donate();
+			$this->page_engine->catch_auth_error();
+			$this->page_engine->catch_donate_error();
+			$this->page_engine->compile();
+			$this->add_to_body($this->page_engine->get_html());
+		}
+		// Работает только при соответствующих запросах
+		$this->auth();
+		$this->change_password();
+		$this->change_email();
+
 		// Вставляем определенную страницу
-		if($page == "MAIN") $this->compile_main();
-		if($page == "DONATE") $this->compile_donate();
 		if($page == "UCP") $this->compile_ucp();
 
 
@@ -232,99 +247,6 @@ class engine
 		else $this->add_to_body('<a href="#" class="lc" onclick="Auth()">Личный кабинет</a>');
 
 		$this->add_to_body('</div></div>');
-	}
-
-	// Составляем главную страницу
-	public function compile_main(){
-		$this->compile_darkness("main");
-		$this->compile_logo();
-		$this->compile_nav("main");
-		$this->add_to_body('<div class="text">
-			<h1>Начни играть в CRMP на проекте GreenTech RolePlay прямо сейчас!</h1>
-			<p>Как легко получить из самых общих соображений, кампос-серрадос представляет собой холодный взрыв. Несмотря на внутренние противоречия, вещество мгновенно</p>
-			<a href="#" class="start">Как начать играть?</a>
-			<a href="crmp://' . $this->server_data["ip"] . '" class="connect">Подключиться к серверу</a>
-			</div>
-			</header>
-			<div id="online">
-			<div class="avatar">
-			<span class="point"></span>
-			</div>
-			<div class="people-online">
-			<h1>125 человек</h1>
-			<span>Онлайн</span>
-			</div>
-			</div>
-			<div id="about">
-			<div class="card">
-			<div class="image"></div>
-			<div class="text">
-			<h1>О нашем проекте</h1>
-			<p>Первый игровой мод был на основе Gamer, разработка длилась с 22 сентября 2012 года по июнь месяц 2014 года. Развитие сервера было очень стремительным, уже за 2 месяца после открытия сервер имел онлайн 50+, что не могло радовать основателей сервера. Над модом трудились 2 человека, это Юра Чемериский и Влад Мальцев. Влад Мальцев, второй разработчик игрового мода GreenTech RolePlay который присоеденился к проекту весной 2013 года.</p>
-			<p>После чего все 3 основателя добились онлайна в 110/110 человек. Сервер имел множество проблем, после чего потерял свой онлайн до 3-5 человек в день. Через некоторое время он снова открылся, с новым игровым модом, но долго на этой основе сервер не проработал из за лагов, и слетов аккаунтов.</p>
-			<p>Был передан в другие руки, после чего была опять смена мода на старый. И потом опять же на новый, после исправления всех лагов и багов, мод наконец то начал быть играбельным. Мод стремительно развивался, а сам проект помалу загибался. Сервер закрывался несколько раз, но недавно был восстановлен, и сейчас продолжает свою работу. Игровой мод сильно изменился, и стал более качественным</p>
-			</div>
-			</div>
-			</div>
-			<div id="start">
-			<ul class="actions">
-			<li class="game">
-			<span class="number">1</span>
-			<div class="text">
-			<h1>Скачать <u>игру</u></h1>
-			<p>Бессознательное, на первый взгляд, самопроизвольно. Субтехника, в том числе, вразнобой отталкивает стимул. Показательный пример – арпеджированная фактура сонорна. Код просветляет стресс</p>
-			</div>
-			<a href="">Скачать GTA Criminal Russia</a>
-			</li>
-			<li class="multiplayer">
-			<span class="number">2</span>
-			<div class="text">
-			<h1>Скачать <u>мультиплеер</u></h1>
-			<p>Бессознательное, на первый взгляд, самопроизвольно. Субтехника, в том числе, вразнобой отталкивает стимул. Показательный пример – арпеджированная фактура сонорна. Код просветляет стресс</p>
-			</div>
-			<a href="">Скачать CR-MP 0.3e</a>
-			</li>
-			<li class="modes">
-			<span class="number">3</span>
-			<div class="text">
-			<h1>Скачать <u>пакет модификаций</u></h1>
-			<p>Наши исследования позволяют сделать вывод о том, что сознание символизирует латентный онтогенез речи</p>
-			</div>
-			<a href="">Скачать мод-пак</a>
-			</li>
-			<li class="connect">
-			<span class="number">4</span>
-			<div class="text">
-			<h1>Скачать <u>пакет модификаций</u></h1>
-			<p>Запустите клиент CR-MP (с ярлыка или через Пуск). Введите никнейм в поле “Nick_Name” (Это будет имя вашего персонажа на сервере), Нажмите *оранжевая галочка* и вставьте наш IP-адрес: 194.61.44.20:8904 . Выберите сервер и нажмите *зелёная стрелочка*</p>
-			</div>
-			<a href="">Смотреть видео-урок</a>
-			</li>
-			</ul>
-			<div class="bg">
-			<img src="../img/start-background.png" alt="background">
-			</div>
-			</div>');
-
-			$this->compile_footer();
-	}
-
-	// Составляем страницу доната
-	public function compile_donate(){
-		$this->compile_darkness("donate");
-		$this->compile_logo();
-		$this->compile_nav("donate");
-		$this->add_to_body('<div class="text">
-			<div class="image-pig">
-			<img src="../img/pig.png" alt="pig_money">
-			</div>
-			<h1>Пополнение средств</h1>
-			<p>Основная идея социально–политических взглядов К.Маркса была в том, что созерцание традиционно понимает под собой либерализм. Александрийская школа экстремально иллюстрирует авторитаризм, изменяя привычную реальность</p>');
-
-		// Обработка доната
-		$this->donate();
-		// Подвал сайта
-		$this->compile_footer();
 	}
 
 	// Составляем страницу личного кабинета
@@ -984,210 +906,6 @@ class engine
 				header("Location: ../ucp.php");
 			}
 		}
-	}
-
-	// Функция осуществления доната
-	public function donate(){
-		// Проверяем форму доната при необходимости
-		if(isset($_POST['username']) && isset($_POST['sum'])){
-			// Записываем всё что нужно в переменные
-			$username = $_POST['username'];
-			$sum 			= $_POST['sum'];
-			$agree 		= false;
-			if(isset($_POST['agree'])) $agree = true;
-
-			// Шаг 1 - проверка валидации формы
-			if(!$agree) $this->donate_error[] = "Галочку не поставил";
-			if(strlen($username) < 3 || strlen($username) > 20) $this->donate_error[] = "Допустимая длина никнейма: 3-20 символов";
-			// Проверяем, сможет ли полученное значение суммы превратиться в число, если нет, то ошибка
-			if(!ctype_digit($sum)) $this->donate_error[] = "Сумма доната не является числом";
-			// Если да, то превращаем в число
-			else $sum = strval($sum);
-			if($sum < -1 || $sum > 10000) $this->donate_error[] = "Допустимая сумма платежа: от 1 до 10.000 рублей";
-
-			if(!$this->donate_error){
-				// Шаг 2 - Проверка логина на существование в БД
-
-				// Подклюяаемся к БД
-				$this->db_connect();
-
-				// Получаем ID из БД через логин, если что-то получим, значит такой логин сущетвует
-				$id_db = $this->db_get('players', "ID", $username);
-
-				// Проверка
-				if(!isset($id_db)) $this->donate_error[] = "Игрок с таким никнеймом не существует";
-			}
-			if(!$this->donate_error){
-				// 3 шаг - Вывод страницы подтверждения платежа
-				$this->add_to_body('
-					<form action="'.$this->server_data['unitpay_link'].'" method="post">
-					<p>
-					<b>Проверьте указанные данные</b><br/>
-					сервер: GreenTech RolePlay #1<br/>
-					никнейм: '.$username.'<br/>
-					к оплате: '.$sum.' RUB<br/>
-					будет зачислено: '.($sum * $this->donate_multiplier).' ДО '.(($this->donate_multiplier > 1) ? "<font color=\"red\">(акция \"x".$this->donate_multiplier." донат\")</font>" : "").'<br/>
-					<br/>
-					<b>Вы хотите перейти к оплате?</b>
-					</p>
-					<input type="hidden" name="desc" value="Покупка внутриигровой валюты на сервере GreenTech RolePlay #1 для аккаунта '.$username.'" />
-					<input type="hidden" name="account" value="'.$username.'" />
-					<input type="hidden" name="sum" value="'.$sum.'" />
-					<button type="submit">Оплатить</button>
-					</form>
-					</div>
-					</header>');
-			} else {
-				// Вывод ошибки
-
-				// Первая ошибка в массиве
-				$error_first = array_shift($this->donate_error);
-				// Ошибка непостановки галочки соглашения
-				$tick_error = ($error_first == "Галочку не поставил") ? true : false;
-
-				// Переменная, показывающая ошибку в поле с никнеймом
-				$username_error = ($error_first == "Допустимая длина никнейма: 3-20 символов" || $error_first == "Игрок с таким никнеймом не существует") ? true : false;
-
-				// Переменная, показывающая ошибку в поле с суммой
-				$sum_error = ($error_first == "Сумма доната не является числом" || $error_first == "Допустимая сумма платежа: от 1 до 10.000 рублей") ? true : false;
-
-				$this->add_to_body('
-					<form action="donate.php" method="POST">
-					<input type="text" name="username" ');
-				// Проверяем причину ошибки, если причина в никнейме, то добавляем полю с никнеймом класс с ошибкой
-				if($username_error) $this->add_to_body('class="error"');
-				$this->add_to_body('placeholder="');
-				// Добавляем в placeholder либо стандартный текст либо "Стандартный текст, раннее введенный текст"
-				if($username_error) $this->add_to_body("Ник? " . $username);
-				else $this->add_to_body("Ник");
-				$this->add_to_body('" value="');
-				// Изменяем value на текст ошибки или на раннее введенный текст
-				if($username_error) $this->add_to_body($error_first);
-				else $this->add_to_body($username);
-				$this->add_to_body('"
-					onclick="InputCloseError(this)" oninput="CheckInput(this);">
-					<input type="text" name="sum" ');
-				// Проверяем причину ошибки, если причина в сумме доната, то добавляем полю с суммой класс с ошибкой
-				if($sum_error) $this->add_to_body('class="error"');
-				$this->add_to_body(' placeholder="');
-				// Добавляем в placeholder либо стандартный текст либо "Стандартный текст, раннее введенную сумму"
-				if($sum_error) $this->add_to_body("Сумма, (Руб)? " . $sum);
-				else $this->add_to_body("Сумма, (Руб)");
-				$this->add_to_body('" value="');
-				// Изменяем value на текст ошибки или на раннее введенную сумму
-				if($sum_error) $this->add_to_body($error_first);
-				else $this->add_to_body($sum);
-				$this->add_to_body('" onclick="InputCloseError(this);" oninput="CheckInput(this);">
-					<div class="agreement">
-					<label class="confirm">
-					<input type="checkbox" name="agree" value="confirm">
-					<span class="visible ');
-				// Если не поставлена галочка, выделяем поле с ней
-				if($tick_error) $this->add_to_body("error");
-				$this->add_to_body('" onclick="Tick(this);">
-					<span class="tick"></span>
-					</span>
-					</label>
-					<p>Я изучил и принял <a href="#">пользовательское соглашение</a></p>
-					</div>
-					<button type="submit">Продолжить</button>
-					</form>
-					</div>
-					</header>');
-			}
-		} else {
-			// Просто выводим форму
-			$this->add_to_body('
-				<form action="donate.php" method="POST">
-				<input type="text" name="username" placeholder="Ник"
-				onclick="InputCloseError(this)" oninput="CheckInput(this);">
-				<input type="text" name="sum" placeholder="Сумма, (Руб)" onclick="InputCloseError(this);" oninput="CheckInput(this);">
-				<div class="agreement">
-				<label class="confirm">
-				<input type="checkbox" name="agree" value="confirm">
-				<span class="visible" onclick="Tick(this);">
-				<span class="tick"></span>
-				</span>
-				</label>
-				<p>Я изучил и принял <a href="#">пользовательское соглашение</a></p>
-				</div>
-				<button type="submit">Продолжить</button>
-				</form>
-				</div>
-				</header>');
-		}
-	}
-
-	// Функция обработки страницы статуса доната
-	public function donate_status(){
-		// Если успешная оплата или ошибка при оплате
-		if(isset($_GET['paymentId']) && isset($_GET['account']) && isset($_GET['type'])){
-			// Создаем переменные хранящие GET параметры
-			$type = $_GET['type'];
-
-			if($type == "SUCCESS"){
-				// Страница успешной оплаты
-
-				// Добавляем оставшееся от страницы доната, открываем модальное окно ошибки
-				$this->add_to_body('
-					<form>
-					<input type="text" class="" placeholder="Ник" onclick="InputCloseError(this);" oninput="CheckInput(this);">
-					<input type="text" class="" placeholder="Сумма (Руб)" onclick="InputCloseError(this);" oninput="CheckInput(this);">
-					<div class="agreement">
-					<label class="confirm">
-					<input type="checkbox">
-					<span class="visible" onclick="Tick(this);">
-					<span class="tick"></span>
-					</span>
-					</label>
-					<p>Я изучил и принял <a href="#">пользовательское соглашение</a></p>
-					</div>
-					<button type="submit">Продолжить</button>
-					</form>
-					</div>
-					</header>
-					<div id="success" style="display: block; opacity: 1;">
-					<div class="exit" onclick="CloseModal(this);">
-					<span></span>
-					<span></span>
-					</div>
-					<img src="../img/success.png" alt="success">
-					<h1>Всё прошло успешно!</h1>
-					<p>Структура политической науки, как бы это ни казалось парадоксальным, представляет собой гарант. Мажоритарная избирательная система противоречива</p>
-					</div>');
-				} else if($type == "ERROR"){
-					// Страница ошибки при оплате
-
-					// Добавляем оставшееся от страницы доната, открываем модальное окно ошибки
-					$this->add_to_body('
-						<form>
-						<input type="text" class="" placeholder="Ник" onclick="InputCloseError(this);" oninput="CheckInput(this);">
-						<input type="text" class="" placeholder="Сумма (Руб)" onclick="InputCloseError(this);" oninput="CheckInput(this);">
-						<div class="agreement">
-						<label class="confirm">
-						<input type="checkbox">
-						<span class="visible" onclick="Tick(this);">
-						<span class="tick"></span>
-						</span>
-						</label>
-						<p>Я изучил и принял <a href="#">пользовательское соглашение</a></p>
-						</div>
-						<button type="submit">Продолжить</button>
-						</form>
-						</div>
-						</header>
-						<div id="error" style="display: block; opacity: 1;">
-						<div class="exit" onclick="CloseModal(this);">
-						<span></span>
-						<span></span>
-						</div>
-						<img src="../img/error.png" alt="error">
-						<h1>Ошибка!</h1>
-						<p>Гений неоднозначен. Гипотеза, как бы это ни казалось парадоксальным, верифицирует гений. Оферта создает современный дедуктивный метод</p>
-						</div>
-						</div>');
-				}
-			}
 	}
 
 	public function add_to_body($data){

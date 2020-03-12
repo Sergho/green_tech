@@ -2,6 +2,7 @@
 
 session_start();
 require_once("site_engine/engine.php");
+require_once("site_engine/donate.php");
 
 $page = 'DONATE';
 
