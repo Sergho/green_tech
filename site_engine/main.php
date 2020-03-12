@@ -4,7 +4,7 @@ class Main{
 
 	public $db;
 	public $server_data;
-	public $auth_error;
+	public $auth_error = [];
 	public $account_system_salt = "MtIWebzsEjfXriFU";
 
 	public $html;
@@ -12,7 +12,7 @@ class Main{
 	// Конструктор
 	public function __construct(){
 		// Подключаем config файлы
-		require("./config/server_config.php");
+		require_once("./config/server_config.php");
 		// Применяем конфиги
 		$this->server_data = $server_config;
 		// Подключаемся к БД
@@ -131,7 +131,34 @@ class Main{
 			</div>
 			</div>');
 
-			$this->compile_footer();
+		$this->compile_footer();
+
+		$this->add_to_html('<div id="auth" ');
+		// если ошибка то оставляем модальное окно открытым
+		if($this->auth_error) $this->add_to_html('style="display: block; opacity: 1;"');
+		$this->add_to_html('>
+			<div class="exit" onclick="Auth();">
+			<span></span>
+			<span></span>
+			</div>
+			<h1>Авторизация</h1>
+			<form action="./" method="POST">');
+		// Выводим ошибку
+		if(!empty($this->auth_error)) $this->add_to_html('<input type="text" placeholder="Ник? ' . $_POST['login'] . '" class="error" name="login" oninput="CheckInput(this);" onclick="InputCloseError(this);" value="' . $this->auth_error[0] . '">');
+		else $this->add_to_html('<input type="text" placeholder="Ник" name="login" oninput="CheckInput(this);">');
+		$this->add_to_html('<input type="password" placeholder="Пароль" name="password" oninput="CheckInput(this);">
+			<img src="../img/eye.png" alt="show" onclick="ShowPassword(this, 1);" class="show">
+			<a href="#">Забыли пароль?</a>
+			<button type="submit">Войти</button>
+			</form>
+			</div>');
+
+		// Добавляем скрипты
+		$this->html .= '<script src="../js/jquery.js"></script>';
+		$this->html .= '<script src="../js/script.js"></script>';
+
+		// Делаем overflow hidden body при модальном окне
+		if(isset($_POST['email_change']) || $this->auth_error) $this->add_to_html('<style>body{overflow:hidden;}</style>');
 	}
 
 	// Показываем затемноение при необходимости

@@ -4,8 +4,8 @@ class Donate{
 
 	public $db;
 	public $server_data;
-	public $auth_error;
-	public $donate_error;
+	public $auth_error = [];
+	public $donate_error = [];
 	public $account_system_salt = "MtIWebzsEjfXriFU";
 	public $html;
 
@@ -14,7 +14,7 @@ class Donate{
 	// Конструктор
 	public function __construct(){
 		// Подключаем config файлы
-		require("./config/server_config.php");
+		require_once("./config/server_config.php");
 		// Применяем конфиги
 		$this->server_data = $server_config;
 		// Подключаемся к БД
@@ -23,7 +23,7 @@ class Donate{
 
 	// Составляем страницу доната
 	public function compile(){
-		$this->compile_darkness("donate");
+		$this->compile_darkness();
 		$this->compile_logo();
 		$this->compile_nav();
 		$this->add_to_html('<div class="text">
@@ -34,7 +34,7 @@ class Donate{
 			<p>Основная идея социально–политических взглядов К.Маркса была в том, что созерцание традиционно понимает под собой либерализм. Александрийская школа экстремально иллюстрирует авторитаризм, изменяя привычную реальность</p>');
 
 		// Вывод донат формы
-		if(isset($_POST['username']) && isset($_POST['sum'])){
+		if((isset($_POST['username']) && isset($_POST['sum']))){
 			if($this->donate_error) $this->compile_donate_error_form();
 			else $this->compile_payment_confirm_form();
 		} else $this->compile_donate_form_without_error();
@@ -42,6 +42,33 @@ class Donate{
 		$this->compile_payment_error_or_success();
 		// Подвал сайта
 		$this->compile_footer();
+
+		$this->add_to_html('<div id="auth" ');
+		// если ошибка то оставляем модальное окно открытым
+		if($this->auth_error) $this->add_to_html('style="display: block; opacity: 1;"');
+		$this->add_to_html('>
+			<div class="exit" onclick="Auth();">
+			<span></span>
+			<span></span>
+			</div>
+			<h1>Авторизация</h1>
+			<form action="./" method="POST">');
+		// Выводим ошибку
+		if(!empty($this->auth_error)) $this->add_to_html('<input type="text" placeholder="Ник? ' . $_POST['login'] . '" class="error" name="login" oninput="CheckInput(this);" onclick="InputCloseError(this);" value="' . $this->auth_error[0] . '">');
+		else $this->add_to_html('<input type="text" placeholder="Ник" name="login" oninput="CheckInput(this);">');
+		$this->add_to_html('<input type="password" placeholder="Пароль" name="password" oninput="CheckInput(this);">
+			<img src="../img/eye.png" alt="show" onclick="ShowPassword(this, 1);" class="show">
+			<a href="#">Забыли пароль?</a>
+			<button type="submit">Войти</button>
+			</form>
+			</div>');
+
+		// Добавляем скрипты
+		$this->html .= '<script src="../js/jquery.js"></script>';
+		$this->html .= '<script src="../js/script.js"></script>';
+
+		// Делаем overflow hidden body при модальном окне
+		if(isset($_POST['email_change']) || $this->auth_error || isset($_GET['type'])) $this->add_to_html('<style>body{overflow:hidden;}</style>');
 	}
 
 	// Функция проверки ошибки авторизации
@@ -387,6 +414,10 @@ class Donate{
 		$result = $salt_db = $this->db->query('SELECT `' . $get . '` FROM `' . $table . '` WHERE `Names` = ' . '"' . $username . '" ORDER BY `' . $order . '` DESC');
 		$result = mysqli_fetch_assoc($result)[$get];
 		return $result;
+	}
+	
+	public function get_password_hash($password, $account_salt){
+		return strtoupper(hash("sha256", $password."_".$account_salt."_".$this->account_system_salt));
 	}
 
 	// Добавить к общему шаблону
