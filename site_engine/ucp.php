@@ -15,6 +15,9 @@ class UCP{
 	public $password_change_error = [];
 	public $email_change_error = [];
 
+	public $session_flag;
+	public $help;
+
 	public $html;
 
 	// Конструктор
@@ -30,6 +33,8 @@ class UCP{
 		$this->sub_rang_names = $sub_rangs;
 		$this->ucp_main_ooc 	= $ucp_main_ooc_params;
 		$this->ucp_main_ic		= $ucp_main_ic_params;
+		// Подключаемся к БД
+		$this->db_connect();
 	}
 
 	// Функция смены пароля
@@ -67,6 +72,9 @@ class UCP{
 
 				// Хеш нового пароля
 				$hash = $this->get_password_hash($new, $db_salt);
+
+				// Записываем данные в логи
+				$this->ucp_log("password_changed", ["ID" => $_SESSION['ID'], "Username" => $_SESSION['username'], "Server_id" => 1]);
 
 				// Меняем пароль
 				$this->db_set('Pass', $hash, $username);
@@ -114,6 +122,9 @@ class UCP{
 				unset($_SESSION['new_email']);
 				unset($_SESSION['email_submit_key']);
 
+				// Записываем данные в логи
+				$this->ucp_log("email_changed", ["ID" => $_SESSION['ID'], "Username" => $_SESSION['username'], "Server_id" => 1]);
+
 				header("Location: ../ucp.php");
 			}
 		}
@@ -121,381 +132,43 @@ class UCP{
 
 	// Составляем страницу личного кабинета
 	public function compile(){
-		$this->compile_darkness("ucp");
+		$this->compile_darkness();
 		$this->compile_logo();
 		$this->compile_nav();
-		// Основная отрисовка
-		$session = isset($_SESSION['username']);
-		$help = isset($_GET['help']) ? $_GET['help'] : "";	// Тип операции с личным кабинетом
-		// Проверяем сессию на авторизованный аккаунт
-		$this->db_connect();
 
-		// Выйти из личного кабинета
-		if($session && $help == "log_out"){
-			// Стираем сессию авторизации
-			unset($_SESSION['username']);
-			// Перенаправляем на главную страницу
-			header("Location: ./main.php");
-		}
-		// Чтобы пользователь намеренно не менял GET запрос, делаем его пустым, если он отличается от всех шаблонов
-		else $help = "";
-			// Если активирована сессия, то отрисовываем контент ЛК
-			if($session && $help == ""){
+		$this->log_out_check();
+
+		// Если активирована сессия, то отрисовываем контент ЛК
+		if($this->session_flag && $this->help == ""){
 			// Проверяем на сброс места спавна
-			$this->spawn_reset();
-			// Все переменные, которые нам будут нужны для ЛК
-			// Имя пользователя
-			$username = $_SESSION['username'];
-			$response_main = $this->get_ucp_main_response($username);
-			$response_payments = $this->complete_ucp_payments($username);
-			$response_leaders = $this->complete_ucp_leaders($username);
-			// Отрисовываем контент ЛК
-			// Для теста вставляем все остальное
-			$this->add_to_html('<div class="text">
-				<h1>Личный кабинет ' . $username . '</h1>
-				<div class="stats">
-				<h1>Статистика</h1>
-				<ul class="pages-nav">
-				<li class="active" onclick="PageSwitch(this);">Главное</li>
-				<li class="" onclick="PageSwitch(this);">Имущество</li>
-				<li class="" onclick="PageSwitch(this);">Платежи</li>
-				<li class="" onclick="PageSwitch(this);">Лидеры</li>
-				</ul>
-				<ul class="pages">
-				<li class="page main-page current">');
+			$this->spawn_reset_check();
 
-			$this->compile_ucp_ooc($response_main);
-			$this->compile_ucp_ic($response_main);
-			$this->add_to_html('<div class="help">
-				<button onclick="OpenPasswordChangeMenu();">Сменить пароль</button>
-				<button onclick="OpenEmailChangeMenu();">Сменить Email</button>
-				</div>
-				</li>
-				<li class="page property-page">
-				<ul class="houses">
-				<span>Список домов</span>
-				<div class="empty">Дома отсутствуют</div>
-				</ul>
-				<ul class="businesses">
-				<span>Список бизнесов</span>
-				<div class="empty">Бизнесы отсутствуют</div>
-				</ul>
-				<ul class="cars">
-				<span>Список автомобилей</span>
-				<div class="empty">Автомобили отсутствуют</div>
-				</ul>
-				</li>
-				<li class="page payments-page">
-				<div class="sort">
-				<p>Сортировать:<span class="enabled" onclick="ActivateFilter(this);">Сначала новые</span>/<span class="" onclick="ActivateFilter(this);">Сначала старые</span></p>
-				</div>');
-			$this->compile_ucp_payments($response_payments);
-			$this->compile_ucp_leaders($response_leaders);
-			$this->add_to_html('<li class="page leaders-page">
-				<div class="slider">
-				<ul class="slides">
-				<li class="slide" style="display: flex; opacity: 1;">
-				<div class="h">
-				<div class="nick">Nick_Name</div>
-				<div class="organization">Организация</div>
-				<div class="last-enter">Последний вход</div>
-				</div>
-				<ul>
-				<li>
-				<div class="nick online">Ruslan_Budagov</div>
-				<div class="organization">УМВД</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Roman_Samarin</div>
-				<div class="organization">УМВД</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Sergey_Snegirev</div>
-				<div class="organization">УМВД</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Denis_Bilkov</div>
-				<div class="organization">УМВД</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Sergey_Ivanov</div>
-				<div class="organization">УМВД</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Jon_Town</div>
-				<div class="organization">Пра-во</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick">Maxim_Perfilev</div>
-				<div class="organization">Пра-во</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Vadim_Roslin</div>
-				<div class="organization">ФСИН</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick">Gleb_Shapranov</div>
-				<div class="organization">Прокуратура</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Sergey_Snegirev</div>
-				<div class="organization">УМВД</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Denis_Bilkov</div>
-				<div class="organization">УМВД</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Sergey_Ivanov</div>
-				<div class="organization">УМВД</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Jon_Town</div>
-				<div class="organization">Пра-во</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick">Maxim_Perfilev</div>
-				<div class="organization">Пра-во</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Vadim_Roslin</div>
-				<div class="organization">ФСИН</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick">Gleb_Shapranov</div>
-				<div class="organization">Прокуратура</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Jon_Town</div>
-				<div class="organization">Пра-во</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				</ul>
-				</li>
-				<li class="slide" style="display: none; opacity: 0;">
-				<div class="h">
-				<div class="nick">Nick_Name</div>
-				<div class="organization">Организация</div>
-				<div class="last-enter">Последний вход</div>
-				</div>
-				<ul>
-				<li>
-				<div class="nick online">Ruslan_Budagov</div>
-				<div class="organization">УМВД</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Roman_Samarin</div>
-				<div class="organization">УМВД</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Sergey_Snegirev</div>
-				<div class="organization">УМВД</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Denis_Bilkov</div>
-				<div class="organization">УМВД</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Sergey_Ivanov</div>
-				<div class="organization">УМВД</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Jon_Town</div>
-				<div class="organization">Пра-во</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick">Maxim_Perfilev</div>
-				<div class="organization">Пра-во</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Vadim_Roslin</div>
-				<div class="organization">ФСИН</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick">Gleb_Shapranov</div>
-				<div class="organization">Прокуратура</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Sergey_Snegirev</div>
-				<div class="organization">УМВД</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Denis_Bilkov</div>
-				<div class="organization">УМВД</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Sergey_Ivanov</div>
-				<div class="organization">УМВД</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Jon_Town</div>
-				<div class="organization">Пра-во</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick">Maxim_Perfilev</div>
-				<div class="organization">Пра-во</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Vadim_Roslin</div>
-				<div class="organization">ФСИН</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick">Gleb_Shapranov</div>
-				<div class="organization">Прокуратура</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				<li>
-				<div class="nick online">Jon_Town</div>
-				<div class="organization">Пра-во</div>
-				<div class="last-enter">21.08.2019</div>
-				</li>
-				</ul>
-				</li>
-				</ul>
-				<div class="prev disabled" onclick="SliderPrev(this);"></div>
-				<div class="current">1</div>
-				<div class="next" onclick="SliderNext(this);"></div>
-				</div>
-				</li>
-				</ul>
-				</div>
-				<div class="skin">
-				<div class="slider">
-				<ul class="slides">
-				<li class="slide" style="display: none; opacity: 0;">
-				<h1>Скин (обычный)</h1>
-				<p>' . $response_main['Char'] . 'id</p>
-				<img src="../img/skins/default/skin' . $response_main['Char'] . '.png" alt="skin">
-				</li>
-				<li class="slide" style="display: block; opacity: 1;">
-				<h1>Скин (мод-пак)</h1>
-				<p>' . $response_main['Char'] . 'id</p>
-				<img src="../img/skins/pack/skin' . $response_main['Char'] . '.png" alt="skin">
-				</li>
-				</ul>
-				<div class="prev" onclick="SliderPrev(this);"></div>
-				<p class="current" style="display: none">2</p>
-				<div class="next disabled" onclick="SliderNext(this);"></div>
-				</div>
-				</div>
-				<div class="help">
-				<button onclick="OpenPasswordChangeMenu();">Сменить пароль</button>
-				<button onclick="OpenEmailChangeMenu();">Сменить Email</button>
-				<a href="./ucp.php?help=log_out">Выйти</a>
-				</div>');
+			// Отрисовываем контент ЛК
+
+			$this->compile_main();
+			$this->compile_property();
+			$this->compile_payments();
+			$this->compile_leaders();
+			$this->compile_skins();
+			$this->compile_help();
 		}
 		$this->add_to_html('
 			</div>
 			</header>');
-		// Добавляем окно смены пароля при ошибке
-		if($this->password_change_error) $this->add_to_html('
-			<div id="password_change" style="display: block; opacity: 1;">');
-		else $this->add_to_html('<div id="password_change" style="display: none; opacity: 0;">');
-		$this->add_to_html('<div class="exit" onclick="CloseModal(this);">
-			<span></span>
-			<span></span>
-			</div>
-			<h1>Смена пароля</h1>
-			<p class="error">');
-		// Добавляем ошибку при ее наличии
-		if($this->password_change_error) $this->add_to_html($this->password_change_error[0]);
-		else $this->add_to_html("&nbsp;");
-		$this->add_to_html('</p>
-			<form action="./ucp.php" method="POST">
-			<input type="password" name="old_password" placeholder="Введите старый пароль">
-			<input type="password" name="new_password" placeholder="Введите новый пароль">
-			<input type="password" name="password_confirm" placeholder="Повторите новый пароль">
-			<img src="../img/eye.png" alt="eye" class="show" onclick="ShowPassword(this, 0);">
-			<img src="../img/eye.png" alt="eye" class="show" onclick="ShowPassword(this, 1);">
-			<img src="../img/eye.png" alt="eye" class="show" onclick="ShowPassword(this, 2);">
-			<button type="submit" name="password_change">Сменить пароль</button>
-			</form>
-			</div>');
-		// Окно успешной смены пароля
-		if(!$this->password_change_error && isset($_POST['old_password'])) $this->add_to_html('<div id="success" style="display: block; opacity: 1;">
-			<div class="exit" onclick="CloseModal(this);">
-			<span></span>
-			<span></span>
-			</div>
-			<img src="../img/success.png" alt="success">
-			<h1>Пароль сменён успешно</h1>
-			<p>Структура политической науки, как бы это ни казалось парадоксальным, представляет собой гарант. Мажоритарная избирательная система противоречива</p>
-			</div>');
-		// Добавляем окно смены мыла
-		if(!empty($this->email_change_error)) $this->add_to_html('<div id="email_change" style="display: block; opacity: 1;">');
-		else $this->add_to_html('<div id="email_change" style="display: none; opacity: 0;">');
-		$this->add_to_html('<div class="exit" onclick="CloseModal(this);">
-			<span></span>
-			<span></span>
-			</div>
-			<h1>Смена E-mail</h1>
-			<p class="error">');
-		if(!empty($this->email_change_error)) $this->add_to_html($this->email_change_error[0]);
-		else $this->add_to_html('&nbsp;');
-		$this->add_to_html('</p>
-			<form action="./ucp.php" method="POST">
-		<input type="text" name="new_email" placeholder="Введите вашу почту"');
-		if(!empty($this->email_change_error)) $this->add_to_html('value="' . $_POST['new_email'] . '"');
-		$this->add_to_html('>
-			<button type="submit" name="email_change">Отправить письмо</button>
-			</form>
-			</div>');
-		// Окно успешной отправки письма
-		if(isset($_POST['new_email']) && !$this->email_change_error) $this->add_to_html('<div id="success" style="display: block; opacity: 1;">
-			<div class="exit" onclick="CloseModal(this);">
-			<span></span>
-			<span></span>
-			</div>
-			<img src="../img/mail.png" alt="success">
-			<h1>Письмо с подтверждением отправлено</h1>
-			<p>Структура политической науки, как бы это ни казалось парадоксальным, представляет собой гарант. Мажоритарная избирательная система противоречива</p>
-			</div>');
-		// Подвал сайта
+
+		$this->compile_password_change_modal();
+		$this->compile_password_change_success_modal();
+		$this->compile_email_change_modal();
+		$this->compile_email_change_success_modal();
 		$this->compile_footer();
 
-		// Добавляем скрипты
-		$this->html .= '<script src="../js/jquery.js"></script>';
-		$this->html .= '<script src="../js/script.js"></script>';
-
-		// Делаем overflow hidden body при модальном окне
-		if(isset($_POST['email_change']) || $this->password_change_error || $this->email_change_error) $this->add_to_html('<style>body{overflow:hidden;}</style>');
+		$this->compile_scripts();
 	}
 
 	// Показываем затемноение при необходимости
-	public function compile_darkness($page){
+	public function compile_darkness(){
 		$this->add_to_html('
-			<div id="' . $page . '-wrapper">
+			<div id="ucp-wrapper">
 			<div class="darkness" onclick="DropdownToggle(this); CloseModals();" ');
 
 		if(isset($_POST['password_change']) || isset($_POST['email_change'])) $this->add_to_html('style="display: block; opacity: 1;"></div>');
@@ -565,8 +238,52 @@ class UCP{
 		$this->add_to_html('</div></div>');
 	}
 
+	// Главная вкладка
+	public function compile_main(){
+		$username = $_SESSION['username'];
+		$response = $this->get_main_response();
+		$this->add_to_html('<div class="text">
+			<h1>Личный кабинет ' . $username . '</h1>
+			<div class="stats">
+			<h1>Статистика</h1>
+			<ul class="pages-nav">
+			<li class="active" onclick="PageSwitch(this);">Главное</li>
+			<li class="" onclick="PageSwitch(this);">Имущество</li>
+			<li class="" onclick="PageSwitch(this);">Платежи</li>
+			<li class="" onclick="PageSwitch(this);">Лидеры</li>
+			</ul>
+			<ul class="pages">
+			<li class="page main-page current">');
+
+		$this->compile_ooc($response);
+		$this->compile_ic($response);
+		$this->add_to_html('<div class="help">
+			<button onclick="OpenPasswordChangeMenu();">Сменить пароль</button>
+			<button onclick="OpenEmailChangeMenu();">Сменить Email</button>
+			</div>
+			</li>');
+	}
+
+	// Вкладка Имущество
+	public function compile_property(){
+			$this->add_to_html('<li class="page property-page">
+				<ul class="houses">
+				<span>Список домов</span>
+				<div class="empty">Дома отсутствуют</div>
+				</ul>
+				<ul class="businesses">
+				<span>Список бизнесов</span>
+				<div class="empty">Бизнесы отсутствуют</div>
+				</ul>
+				<ul class="cars">
+				<span>Список автомобилей</span>
+				<div class="empty">Автомобили отсутствуют</div>
+				</ul>
+				</li>');
+	}
+
 	// Выводим данные ooc
-	public function compile_ucp_ooc($response){
+	public function compile_ooc($response){
 		$username = $_SESSION['username'];
 
 		$this->add_to_html('<ul class="ooc"><h2>OOC Информация</h2>');
@@ -585,7 +302,7 @@ class UCP{
 	}
 
 	// Выводим данные ic
-	public function compile_ucp_ic($response){
+	public function compile_ic($response){
 
 		$username = $_SESSION["username"];
 
@@ -602,8 +319,13 @@ class UCP{
 	}
 
 	// Выводим данные о платежах
-	public function compile_ucp_payments($response){
-		$this->add_to_html('<div class="slider">
+	public function compile_payments(){
+		$response = $this->get_payments();
+		$this->add_to_html('<li class="page payments-page">
+			<div class="sort">
+			<p>Сортировать:<span class="enabled" onclick="ActivateFilter(this);">Сначала новые</span>/<span class="" onclick="ActivateFilter(this);">Сначала старые</span></p>
+			</div>
+			<div class="slider">
 			<ul class="slides">
 			<li class="slide" style="display: block; opacity: 1;">
 			<ul>');
@@ -631,7 +353,8 @@ class UCP{
 	}
 
 	// выводим данные о лидерах организаций
-	public function compile_ucp_leaders($response){
+	public function compile_leaders(){
+		$response = $this->get_leaders();
 		$this->add_to_html('<li class="page leaders-page">
 			<div class="slider">
 			<ul class="slides">
@@ -655,7 +378,149 @@ class UCP{
 		if(count($response) <= 17) $this->add_to_html("disabled");
 		$this->add_to_html('" onclick="SliderNext(this);"></div>
 			</div>
-			</li>');
+			</li>
+			</ul>
+			</div>');
+	}
+
+	// Выводим скины
+	public function compile_skins(){
+		$response = $this->get_main_response();
+		$this->add_to_html('<div class="skin">
+			<div class="slider">
+			<ul class="slides">
+			<li class="slide" style="display: none; opacity: 0;">
+			<h1>Скин (обычный)</h1>
+			<p>' . $response['Char'] . 'id</p>
+			<img src="../img/skins/default/skin' . $response['Char'] . '.png" alt="skin">
+			</li>
+			<li class="slide" style="display: block; opacity: 1;">
+			<h1>Скин (мод-пак)</h1>
+			<p>' . $response['Char'] . 'id</p>
+			<img src="../img/skins/pack/skin' . $response['Char'] . '.png" alt="skin">
+			</li>
+			</ul>
+			<div class="prev" onclick="SliderPrev(this);"></div>
+			<p class="current" style="display: none">2</p>
+			<div class="next disabled" onclick="SliderNext(this);"></div>
+			</div>
+			</div>');
+	}
+
+	// Кнопки помощи
+	public function compile_help(){
+		$this->add_to_html('<div class="help">
+			<button onclick="OpenPasswordChangeMenu();">Сменить пароль</button>
+			<button onclick="OpenEmailChangeMenu();">Сменить Email</button>
+			<a href="./ucp.php?help=log_out">Выйти</a>
+			</div>');
+	}
+
+	// Окно смены пароля
+	public function compile_password_change_modal(){
+		if($this->password_change_error) $this->add_to_html('
+			<div id="password_change" style="display: block; opacity: 1;">');
+		else $this->add_to_html('<div id="password_change" style="display: none; opacity: 0;">');
+		$this->add_to_html('<div class="exit" onclick="CloseModal(this);">
+			<span></span>
+			<span></span>
+			</div>
+			<h1>Смена пароля</h1>
+			<p class="error">');
+		// Добавляем ошибку при ее наличии
+		if($this->password_change_error) $this->add_to_html($this->password_change_error[0]);
+		else $this->add_to_html("&nbsp;");
+		$this->add_to_html('</p>
+			<form action="./ucp.php" method="POST">
+			<input type="password" name="old_password" placeholder="Введите старый пароль">
+			<input type="password" name="new_password" placeholder="Введите новый пароль">
+			<input type="password" name="password_confirm" placeholder="Повторите новый пароль">
+			<img src="../img/eye.png" alt="eye" class="show" onclick="ShowPassword(this, 0);">
+			<img src="../img/eye.png" alt="eye" class="show" onclick="ShowPassword(this, 1);">
+			<img src="../img/eye.png" alt="eye" class="show" onclick="ShowPassword(this, 2);">
+			<button type="submit" name="password_change">Сменить пароль</button>
+			</form>
+			</div>');
+	}
+
+	// Окно смены пароля (Успех)
+	public function compile_password_change_success_modal(){
+		if(!$this->password_change_error && isset($_POST['old_password'])) $this->add_to_html('<div id="success" style="display: block; opacity: 1;">
+			<div class="exit" onclick="CloseModal(this);">
+			<span></span>
+			<span></span>
+			</div>
+			<img src="../img/success.png" alt="success">
+			<h1>Пароль сменён успешно</h1>
+			<p>Структура политической науки, как бы это ни казалось парадоксальным, представляет собой гарант. Мажоритарная избирательная система противоречива</p>
+			</div>');
+	}
+
+	// Окно смены мыла
+	public function compile_email_change_modal(){
+		if(!empty($this->email_change_error)) $this->add_to_html('<div id="email_change" style="display: block; opacity: 1;">');
+		else $this->add_to_html('<div id="email_change" style="display: none; opacity: 0;">');
+		$this->add_to_html('<div class="exit" onclick="CloseModal(this);">
+			<span></span>
+			<span></span>
+			</div>
+			<h1>Смена E-mail</h1>
+			<p class="error">');
+		if(!empty($this->email_change_error)) $this->add_to_html($this->email_change_error[0]);
+		else $this->add_to_html('&nbsp;');
+		$this->add_to_html('</p>
+			<form action="./ucp.php" method="POST">
+		<input type="text" name="new_email" placeholder="Введите вашу почту"');
+		if(!empty($this->email_change_error)) $this->add_to_html('value="' . $_POST['new_email'] . '"');
+		$this->add_to_html('>
+			<button type="submit" name="email_change">Отправить письмо</button>
+			</form>
+			</div>');
+	}
+
+	// Окно смены мыла (Успех)
+	public function compile_email_change_success_modal(){
+		if(isset($_POST['new_email']) && !$this->email_change_error) $this->add_to_html('<div id="success" style="display: block; opacity: 1;">
+			<div class="exit" onclick="CloseModal(this);">
+			<span></span>
+			<span></span>
+			</div>
+			<img src="../img/mail.png" alt="success">
+			<h1>Письмо с подтверждением отправлено</h1>
+			<p>Структура политической науки, как бы это ни казалось парадоксальным, представляет собой гарант. Мажоритарная избирательная система противоречива</p>
+			</div>');
+	}
+
+	// Скрипты
+	public function compile_scripts(){
+		$this->add_to_html('
+			<script src="../js/jquery.js"></script>
+			<script src="../js/script.js"></script>');
+	}
+
+	// Запрет прокрутки страницы при особых условиях
+	public function check_deny_body_overflow(){
+		if(isset($_POST['email_change']) || $this->password_change_error || $this->email_change_error) $this->add_to_html('<style>body{overflow:hidden;}</style>');
+	}
+
+	// Проверяем нужно ли выходить из аккаунта и если нужно, то выходим
+	public function log_out_check(){
+		$this->session_flag = isset($_SESSION['username']);
+		$this->help 				= isset($_GET['help']) ? $_GET['help'] : "";
+
+		// Выйти из личного кабинета
+		if($this->session_flag && $this->help == "log_out"){
+
+			// Записать данные в логи
+			$this->ucp_log("logout", ["ID" => $_SESSION['ID'], "Username" => $_SESSION['username'], "Server_id" => 1]);
+
+			// Стираем сессию авторизации
+			unset($_SESSION['username']);
+			unset($_SESSION['ID']);
+
+			// Перенаправляем на главную страницу
+			header("Location: ./main.php");
+		} else $this->help = "";
 	}
 
 	// Составляем подвал
@@ -721,8 +586,8 @@ class UCP{
 		$this->db->query('UPDATE `' . $this->server_data['db_database'] . '` SET `' . $set . '` = "' . $value . '" WHERE `Names` = "' . $username . '"');
 	}
 
-	// Сброс точки спавна
-	public function spawn_reset(){
+	// Сброс точки спавна при необходимости
+	public function spawn_reset_check(){
 		if(isset($_POST['spawn_reset'])){
 			// Сбрасываем место спавна
 			$this->db_set('Spawn', '2', $_SESSION['username']);
@@ -730,7 +595,8 @@ class UCP{
 	}
 
 	// Получаем и ПРЕОБРАЗУЕМ данные с БД на главную страницу
-	public function get_ucp_main_response($username){
+	public function get_main_response(){
+		$username = $_SESSION['username'];
 		$response = mysqli_fetch_assoc($this->db->query('SELECT * FROM `players` WHERE `Names` = "' . $username . '"'));
 
 		if($response['Sex'] == 1) $response['Sex'] = "Мужской";
@@ -747,7 +613,8 @@ class UCP{
 	}
 
 	// Получаем и преобразуем данные с БД на страницу платежей
-	public function complete_ucp_payments($username){
+	public function get_payments(){
+		$username = $_SESSION['username'];
 		$response = $this->db->query("SELECT * FROM unitpay_payments WHERE `account` = '" . $username . "' AND `status` = '1' ORDER BY `id` DESC");
 		$result = [];
 		while($test = mysqli_fetch_assoc($response)){
@@ -757,7 +624,7 @@ class UCP{
 	}
 
 	// Получаем и преобразуем данные с БД на страницу лидеров
-	public function complete_ucp_leaders(){
+	public function get_leaders(){
 		$response = $this->db->query("SELECT * FROM players WHERE Leader > 0 ORDER BY Leader");
 		$result = [];
 		while($leader = mysqli_fetch_assoc($response)){
@@ -793,6 +660,15 @@ class UCP{
 	
 	public function get_password_hash($password, $account_salt){
 		return strtoupper(hash("sha256", $password."_".$account_salt."_".$this->account_system_salt));
+	}
+
+	// Добавляем данные в лог
+	public function ucp_log($action, $params){
+		$params = json_encode($params);
+		$ip 		= $_SERVER['REMOTE_ADDR'];
+		$time 	= time();
+		$response = $this->db->query("INSERT INTO `ucp_log`(`ip`, `ts`, `action`, `params`) VALUES('" . $ip . "', $time, '" . $action . "', '" . $params . "')");
+		return 1;
 	}
 
 	// Добавить к общему шаблону

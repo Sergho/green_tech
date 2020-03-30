@@ -655,6 +655,8 @@
 		font-family: Proxima Nova Rg;
 		font-size: 0.9em;
 		line-height: 20px;
+		text-decoration: underline;
+		cursor: pointer;
 	}
 	header form button{
 		width: 194px;
@@ -708,6 +710,52 @@
 		margin-top: 20px;
 		color: #444b61;
 		text-align: center;
+	}
+
+	#agreement{
+		display: block;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		background-color: white;
+		width: 85vw;
+		height: 80vh;
+		box-sizing: border-box;
+		border-radius: 10px;
+		padding: 20px;
+		z-index: 3;
+		transition: .3s ease;
+	}
+	#agreement .content{
+		overflow: auto;
+		height: 100%;
+	}
+	#agreement h1{
+		font-size: 18px;
+		font-family: Proxima Nova Th;
+		font-weight: bold;
+		text-align: center;
+		width: 70%;
+		margin: auto;
+		color: #444b61;
+	}
+	#agreement h2{
+		text-align: left;
+		font-size: 16px;
+		font-family: Proxima Nova Lt;
+		font-weight: 600;
+		margin-top: 5px;
+		color: #444b61;
+	}
+	#agreement ul{
+		margin-top: 5px;
+	}
+	#agreement ul li{
+		list-style: none;
+		font-size: 14px;
+		font-family: Proxima Nova Rg;
+		color: #444b61;
 	}
 
 	/* --------------------------- UCP ------------------------------ */
@@ -1354,6 +1402,16 @@
 		margin-top: 30px;
 	}
 
+	#agreement{
+		height: 90vh;
+	}
+	#agreement h1{
+		width: 85%;
+		margin-left: 0;
+		text-align: left;
+		margin-top: 5px;
+	}
+
 	/* --------------------------- UCP ------------------------------ */
 
 	#ucp-wrapper .text .stats{
@@ -1635,6 +1693,21 @@
 	}
 	#success p, #error p{
 		margin-top: 20px;
+	}
+
+	#agreement{
+		width: 600px;
+		height: 85vh;
+		border-radius: 25px;
+	}
+	#agreement h1{
+		font-size: 22px;
+	}
+	#agreement h2{
+		font-size: 18px;
+	}
+	#agreement ul li{
+		font-size: 16px;
 	}
 
 	/* --------------------------- UCP ------------------------------ */
@@ -2029,6 +2102,15 @@
 		margin-right: 45px;
 	}
 
+	#agreement{
+		width: 950px;
+		height: 570px;
+		padding: 70px;
+	}
+	#agreement h1{
+		font-size: 30px;
+	}
+
 	/* -------------------------- DONATE ---------------------- */
 
 	#donate-wrapper header .text{
@@ -2270,6 +2352,24 @@
 	#donate-wrapper header .text{
 		margin-top: 210px;
 		margin-bottom: 210px;
+	}
+
+	#agreement{
+		width: 1320px;
+		height: 870px;
+		padding: 100px;
+	}
+	
+	#agreement h1{
+		font-size: 30px;
+		margin-top: 0;
+	}
+	#agreement h2{
+		margin-top: 35px;
+		font-size: 24px;
+	}
+	#agreement ul li{
+		font-size: 18px;
 	}
 
 	/* --------------------------- UCP ------------------------------ */

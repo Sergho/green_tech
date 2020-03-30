@@ -342,6 +342,7 @@ function CloseModals(){
 	const email_change = document.querySelector("#email_change");
 	const error = document.querySelector("#error");
 	const success = document.querySelector("#success");
+	const agreement = document.querySelector("#agreement");
 
 	const darkness = document.querySelector(".darkness");
 
@@ -366,6 +367,11 @@ function CloseModals(){
 		error.style.opacity = "0";
 		setTimeout(() => {error.style.display = "none"}, 300);
 	}
+	if(agreement != undefined){
+		agreement.style.opacity = "0";
+		setTimeout(() => {agreement.style.display = "none"}, 300);
+	}
+
 
 	// Скрываем темноту
 
@@ -410,4 +416,15 @@ function OpenEmailChangeMenu(){
 	// запрещаем прокрутку
 
 	document.body.style.overflow = "hidden";
+}
+
+// Открываем окно пользовательского соглашения
+function OpenAgreement(){
+	const modal			= document.querySelector("#agreement");
+	const darkness	= document.querySelector(".darkness");
+
+	darkness.style.display = "block";
+	setTimeout(() => {darkness.style.opacity = "1"}, 50);
+	modal.style.display = "block";
+	setTimeout(() => {modal.style.opacity = "1"}, 50);
 }

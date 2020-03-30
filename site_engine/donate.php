@@ -26,12 +26,7 @@ class Donate{
 		$this->compile_darkness();
 		$this->compile_logo();
 		$this->compile_nav();
-		$this->add_to_html('<div class="text">
-			<div class="image-pig">
-			<img src="../img/pig.png" alt="pig_money">
-			</div>
-			<h1>Пополнение средств</h1>
-			<p>Основная идея социально–политических взглядов К.Маркса была в том, что созерцание традиционно понимает под собой либерализм. Александрийская школа экстремально иллюстрирует авторитаризм, изменяя привычную реальность</p>');
+		$this->compile_headings();
 
 		// Вывод донат формы
 		if((isset($_POST['username']) && isset($_POST['sum']))){
@@ -42,33 +37,11 @@ class Donate{
 		$this->compile_payment_error_or_success();
 		// Подвал сайта
 		$this->compile_footer();
-
-		$this->add_to_html('<div id="auth" ');
-		// если ошибка то оставляем модальное окно открытым
-		if($this->auth_error) $this->add_to_html('style="display: block; opacity: 1;"');
-		$this->add_to_html('>
-			<div class="exit" onclick="Auth();">
-			<span></span>
-			<span></span>
-			</div>
-			<h1>Авторизация</h1>
-			<form action="./" method="POST">');
-		// Выводим ошибку
-		if(!empty($this->auth_error)) $this->add_to_html('<input type="text" placeholder="Ник? ' . $_POST['login'] . '" class="error" name="login" oninput="CheckInput(this);" onclick="InputCloseError(this);" value="' . $this->auth_error[0] . '">');
-		else $this->add_to_html('<input type="text" placeholder="Ник" name="login" oninput="CheckInput(this);">');
-		$this->add_to_html('<input type="password" placeholder="Пароль" name="password" oninput="CheckInput(this);">
-			<img src="../img/eye.png" alt="show" onclick="ShowPassword(this, 1);" class="show">
-			<a href="#">Забыли пароль?</a>
-			<button type="submit">Войти</button>
-			</form>
-			</div>');
-
-		// Добавляем скрипты
-		$this->html .= '<script src="../js/jquery.js"></script>';
-		$this->html .= '<script src="../js/script.js"></script>';
-
-		// Делаем overflow hidden body при модальном окне
-		if(isset($_POST['email_change']) || $this->auth_error || isset($_GET['type'])) $this->add_to_html('<style>body{overflow:hidden;}</style>');
+		$this->compile_auth_modal();
+		$this->compile_agreement();
+		$this->compile_scripts();
+		// Запрещаем прокрутку при особых событиях
+		$this->check_deny_body_overflow();
 	}
 
 	// Функция проверки ошибки авторизации
@@ -104,7 +77,11 @@ class Donate{
 			if(!$this->auth_error){
 				// 4 шаг - сама авторизация
 
+				// Записываем в логи информацию о входе
+				$this->ucp_log("success_auth", ["ID" => $id_db, "Username" => $login, "Server_id" => 1]);
+
 				// Переводим пользователя на страницу ЛК
+				$_SESSION['ID'] 			= $id_db;
 				$_SESSION['username'] = $login;
 				header('Location: ./ucp.php');
 			}
@@ -213,6 +190,86 @@ class Donate{
 		else $this->add_to_html('<a href="#" class="lc" onclick="Auth()">Личный кабинет</a>');
 
 		$this->add_to_html('</div></div>');
+	}
+
+	// Заголовки перед формой
+	public function compile_headings(){
+		$this->add_to_html('<div class="text">
+			<div class="image-pig">
+			<img src="../img/pig.png" alt="pig_money">
+			</div>
+			<h1>Пополнение средств</h1>
+			<p>Основная идея социально–политических взглядов К.Маркса была в том, что созерцание традиционно понимает под собой либерализм. Александрийская школа экстремально иллюстрирует авторитаризм, изменяя привычную реальность</p>');
+	}
+
+	// Модальное окно авторизации
+	public function compile_auth_modal(){
+		$this->add_to_html('<div id="auth" ');
+		// если ошибка то оставляем модальное окно открытым
+		if($this->auth_error) $this->add_to_html('style="display: block; opacity: 1;"');
+		$this->add_to_html('>
+			<div class="exit" onclick="Auth();">
+			<span></span>
+			<span></span>
+			</div>
+			<h1>Авторизация</h1>
+			<form action="./" method="POST">');
+		// Выводим ошибку
+		if(!empty($this->auth_error)) $this->add_to_html('<input type="text" placeholder="Ник? ' . $_POST['login'] . '" class="error" name="login" oninput="CheckInput(this);" onclick="InputCloseError(this);" value="' . $this->auth_error[0] . '">');
+		else $this->add_to_html('<input type="text" placeholder="Ник" name="login" oninput="CheckInput(this);">');
+		$this->add_to_html('<input type="password" placeholder="Пароль" name="password" oninput="CheckInput(this);">
+			<img src="../img/eye.png" alt="show" onclick="ShowPassword(this, 1);" class="show">
+			<a href="#">Забыли пароль?</a>
+			<button type="submit">Войти</button>
+			</form>
+			</div>');
+	}
+
+	// модальное окно пользовательского соглашения
+	public function compile_agreement(){
+		$this->add_to_html('
+			<div id="agreement" style="opacity: 0; display: none;">
+			<div class="exit" onclick="CloseModals();">
+			<span></span>
+			<span></span>
+			</div>
+			<div class="content">
+			<h1>Пользовательское соглашение</h1>
+			<h2>Принятие условий</h2>
+			<ul>
+			<li>- Настоящие правила являются документом, обязательным к ознакомлению каждому пользователю, обратившегося к донат услугам.</li>
+			<li>- Если пользователь не согласен с каким-либо положением настоящих правил или ощущает вероятность негативных для себя последствий, ему рекомендуется отказаться от использования донат услуг.</li>
+			<li>- Факт обращения инициации пользователем процесса использования донат услуг считается подтверждением того, что он ознакомлен и согласен с каждым пунктом настоящих правил.</li>
+			</ul>
+			<h2>Общие положения</h2>
+			<ul>
+			<li>- Администрация проекта не несет никакой ответственности за ущерб морального либо материального характера, который может нанести прямо либо опосредованно предлагаемый игровой сервер, а также за любые неточности, ошибки, дефекты и сбои работы игрового сервера, вне зависимости от причин их вызвавших.</li>
+			<li>- Инициируя процесс использования донат услуг, пользователь подтверждает свое согласие не возлагать ответственность, возможные убытки и ущерб, связанные с пользованием игровым сервером, на его владельцев и администрацию.</li>
+			<li>- В случае нанесение пользователем ущерба проекту, администрация проекта имеют право на удаление аккаунта нарушителя.</li>
+			<li>- В случае несоответствия какого-либо положения настоящих правил требованиям действующего законодательства, оно считается замененным близким по содержанию положением действующего законодательства. При этом все остальные положения настоящих правил сохраняют свою силу.</li>
+			<li>- В случае просьбы вернуть средства, администрация имеет право на блокировку аккаунта.</li>
+			<li>- Администрация может сделать возврат средств, если со дня платежа прошло не более 7 дней.</li>
+			</ul>
+			<h2>Исключение гарантий</h2>
+			<ul>
+			<li>- Администрация проекта имеет право на блокирование или удаление аккаунта без предупреждения пользователя.</li>
+			<li>- Администрация проекта имеет право на удаление предоставленных Вам донат-услуг и/или на запрет их использования.</li>
+			</ul>
+			</div>
+			</div>');
+	}
+
+	// Скрипты
+	public function compile_scripts(){
+		// Добавляем скрипты
+		$this->add_to_html('
+			<script src="../js/jquery.js"></script>
+			<script src="../js/script.js"></script>');
+	}
+
+	// Запрет прокрутки страницы при особых условиях
+	public function check_deny_body_overflow(){
+		if(isset($_POST['email_change']) || $this->auth_error || isset($_GET['type'])) $this->add_to_html('<style>body{overflow:hidden;}</style>');
 	}
 
 	// Составляем подвал
@@ -340,7 +397,7 @@ class Donate{
 			<span class="tick"></span>
 			</span>
 			</label>
-			<p>Я изучил и принял <a href="#">пользовательское соглашение</a></p>
+			<p>Я изучил и принял <a onclick="OpenAgreement();">пользовательское соглашение</a></p>
 			</div>
 			<button type="submit">Продолжить</button>
 			</form>
@@ -418,6 +475,15 @@ class Donate{
 	
 	public function get_password_hash($password, $account_salt){
 		return strtoupper(hash("sha256", $password."_".$account_salt."_".$this->account_system_salt));
+	}
+	
+	// Добавляем данные в лог
+	public function ucp_log($action, $params){
+		$params = json_encode($params);
+		$ip 		= $_SERVER['REMOTE_ADDR'];
+		$time 	= time();
+		$response = $this->db->query("INSERT INTO `ucp_log`(`ip`, `ts`, `action`, `params`) VALUES('" . $ip . "', $time, '" . $action . "', '" . $params . "')");
+		return 1;
 	}
 
 	// Добавить к общему шаблону

@@ -52,7 +52,11 @@ class Main{
 			if(!$this->auth_error){
 				// 4 шаг - сама авторизация
 
+				// Записываем в логи информацию о входе
+				$this->ucp_log("success_auth", ["ID" => $id_db, "Username" => $login, "Server_id" => 1]);
+
 				// Переводим пользователя на страницу ЛК
+				$_SESSION['ID'] 			= $id_db;
 				$_SESSION['username'] = $login;
 				header('Location: ./ucp.php');
 			}
@@ -61,104 +65,20 @@ class Main{
 
 	// Составляем главное соддержимое
 	public function compile(){
-		$this->compile_darkness("main");
+		$this->compile_darkness();
 		$this->compile_logo();
 		$this->compile_nav();
-		$this->add_to_html('<div class="text">
-			<h1>Начни играть в CRMP на проекте GreenTech RolePlay прямо сейчас!</h1>
-			<p>Как легко получить из самых общих соображений, кампос-серрадос представляет собой холодный взрыв. Несмотря на внутренние противоречия, вещество мгновенно</p>
-			<a href="#" class="start">Как начать играть?</a>
-			<a href="crmp://' . $this->server_data["ip"] . '" class="connect">Подключиться к серверу</a>
-			</div>
-			</header>
-			<div id="online">
-			<div class="avatar">
-			<span class="point"></span>
-			</div>
-			<div class="people-online">
-			<h1>125 человек</h1>
-			<span>Онлайн</span>
-			</div>
-			</div>
-			<div id="about">
-			<div class="card">
-			<div class="image"></div>
-			<div class="text">
-			<h1>О нашем проекте</h1>
-			<p>Первый игровой мод был на основе Gamer, разработка длилась с 22 сентября 2012 года по июнь месяц 2014 года. Развитие сервера было очень стремительным, уже за 2 месяца после открытия сервер имел онлайн 50+, что не могло радовать основателей сервера. Над модом трудились 2 человека, это Юра Чемериский и Влад Мальцев. Влад Мальцев, второй разработчик игрового мода GreenTech RolePlay который присоеденился к проекту весной 2013 года.</p>
-			<p>После чего все 3 основателя добились онлайна в 110/110 человек. Сервер имел множество проблем, после чего потерял свой онлайн до 3-5 человек в день. Через некоторое время он снова открылся, с новым игровым модом, но долго на этой основе сервер не проработал из за лагов, и слетов аккаунтов.</p>
-			<p>Был передан в другие руки, после чего была опять смена мода на старый. И потом опять же на новый, после исправления всех лагов и багов, мод наконец то начал быть играбельным. Мод стремительно развивался, а сам проект помалу загибался. Сервер закрывался несколько раз, но недавно был восстановлен, и сейчас продолжает свою работу. Игровой мод сильно изменился, и стал более качественным</p>
-			</div>
-			</div>
-			</div>
-			<div id="start">
-			<ul class="actions">
-			<li class="game">
-			<span class="number">1</span>
-			<div class="text">
-			<h1>Скачать <u>игру</u></h1>
-			<p>Бессознательное, на первый взгляд, самопроизвольно. Субтехника, в том числе, вразнобой отталкивает стимул. Показательный пример – арпеджированная фактура сонорна. Код просветляет стресс</p>
-			</div>
-			<a href="">Скачать GTA Criminal Russia</a>
-			</li>
-			<li class="multiplayer">
-			<span class="number">2</span>
-			<div class="text">
-			<h1>Скачать <u>мультиплеер</u></h1>
-			<p>Бессознательное, на первый взгляд, самопроизвольно. Субтехника, в том числе, вразнобой отталкивает стимул. Показательный пример – арпеджированная фактура сонорна. Код просветляет стресс</p>
-			</div>
-			<a href="">Скачать CR-MP 0.3e</a>
-			</li>
-			<li class="modes">
-			<span class="number">3</span>
-			<div class="text">
-			<h1>Скачать <u>пакет модификаций</u></h1>
-			<p>Наши исследования позволяют сделать вывод о том, что сознание символизирует латентный онтогенез речи</p>
-			</div>
-			<a href="">Скачать мод-пак</a>
-			</li>
-			<li class="connect">
-			<span class="number">4</span>
-			<div class="text">
-			<h1>Скачать <u>пакет модификаций</u></h1>
-			<p>Запустите клиент CR-MP (с ярлыка или через Пуск). Введите никнейм в поле “Nick_Name” (Это будет имя вашего персонажа на сервере), Нажмите *оранжевая галочка* и вставьте наш IP-адрес: 194.61.44.20:8904 . Выберите сервер и нажмите *зелёная стрелочка*</p>
-			</div>
-			<a href="">Смотреть видео-урок</a>
-			</li>
-			</ul>
-			<div class="bg">
-			<img src="../img/start-background.png" alt="background">
-			</div>
-			</div>');
+		$this->compile_headings();
+		$this->compile_online();
+		$this->compile_about();
+		$this->compile_start();
 
 		$this->compile_footer();
 
-		$this->add_to_html('<div id="auth" ');
-		// если ошибка то оставляем модальное окно открытым
-		if($this->auth_error) $this->add_to_html('style="display: block; opacity: 1;"');
-		$this->add_to_html('>
-			<div class="exit" onclick="Auth();">
-			<span></span>
-			<span></span>
-			</div>
-			<h1>Авторизация</h1>
-			<form action="./" method="POST">');
-		// Выводим ошибку
-		if(!empty($this->auth_error)) $this->add_to_html('<input type="text" placeholder="Ник? ' . $_POST['login'] . '" class="error" name="login" oninput="CheckInput(this);" onclick="InputCloseError(this);" value="' . $this->auth_error[0] . '">');
-		else $this->add_to_html('<input type="text" placeholder="Ник" name="login" oninput="CheckInput(this);">');
-		$this->add_to_html('<input type="password" placeholder="Пароль" name="password" oninput="CheckInput(this);">
-			<img src="../img/eye.png" alt="show" onclick="ShowPassword(this, 1);" class="show">
-			<a href="#">Забыли пароль?</a>
-			<button type="submit">Войти</button>
-			</form>
-			</div>');
+		$this->compile_auth_modal();
+		$this->compile_scripts();
 
-		// Добавляем скрипты
-		$this->html .= '<script src="../js/jquery.js"></script>';
-		$this->html .= '<script src="../js/script.js"></script>';
-
-		// Делаем overflow hidden body при модальном окне
-		if(isset($_POST['email_change']) || $this->auth_error) $this->add_to_html('<style>body{overflow:hidden;}</style>');
+		$this->check_deny_body_overflow();
 	}
 
 	// Показываем затемноение при необходимости
@@ -234,6 +154,144 @@ class Main{
 		$this->add_to_html('</div></div>');
 	}
 
+	// Заголовки
+	public function compile_headings(){
+		$this->add_to_html('<div class="text">
+			<h1>Начни играть в CRMP на проекте GreenTech RolePlay прямо сейчас!</h1>
+			<p>Как легко получить из самых общих соображений, кампос-серрадос представляет собой холодный взрыв. Несмотря на внутренние противоречия, вещество мгновенно</p>
+			<a href="#" class="start">Как начать играть?</a>
+			<a href="crmp://' . $this->server_data["ip"] . '" class="connect">Подключиться к серверу</a>
+			</div>
+			</header>');
+	}
+
+	// Выводим сколько человек онлайн
+	public function compile_online(){
+		// В строку превращаем, чтобы дальше было удобнее(следующий комментарий)
+		$online = (string)$this->get_online_count();
+
+		// Нужно написать человека если число заканчивается на цифру 2, 3 или 4 и цифра перед последней либо отсутствует, либо не равна 1
+		$a = '';
+		// Последняя цифра числа
+		$last = substr($online, strlen($online) - 1);
+		// Предпоследняя цифра числа
+		$pre_last = 0;
+		if($online > 9) $pre_last = substr($online, strlen($online) - 2, 1);
+		if($last >= 2 && $last <= 4 && $pre_last != 1) $a = 'а';
+
+		$this->add_to_html('<div id="online">
+			<div class="avatar">
+			<span class="point"></span>
+			</div>
+			<div class="people-online">
+			<h1>' . $online . ' человек' . $a . '</h1>
+			<span>Онлайн</span>
+			</div>
+			</div>');
+	}
+	
+	// Раздел о нас
+	public function compile_about(){
+		$this->add_to_html('<div id="about">
+			<div class="card">
+			<div class="image"></div>
+			<div class="text">
+			<h1>О нашем проекте</h1>
+			<p>Первый игровой мод был на основе Gamer, разработка длилась с 22 сентября 2012 года по июнь месяц 2014 года. Развитие сервера было очень стремительным, уже за 2 месяца после открытия сервер имел онлайн 50+, что не могло радовать основателей сервера. Над модом трудились 2 человека, это Юра Чемериский и Влад Мальцев. Влад Мальцев, второй разработчик игрового мода GreenTech RolePlay который присоеденился к проекту весной 2013 года.</p>
+			<p>После чего все 3 основателя добились онлайна в 110/110 человек. Сервер имел множество проблем, после чего потерял свой онлайн до 3-5 человек в день. Через некоторое время он снова открылся, с новым игровым модом, но долго на этой основе сервер не проработал из за лагов, и слетов аккаунтов.</p>
+			<p>Был передан в другие руки, после чего была опять смена мода на старый. И потом опять же на новый, после исправления всех лагов и багов, мод наконец то начал быть играбельным. Мод стремительно развивался, а сам проект помалу загибался. Сервер закрывался несколько раз, но недавно был восстановлен, и сейчас продолжает свою работу. Игровой мод сильно изменился, и стал более качественным</p>
+			</div>
+			</div>
+			</div>');
+	}
+
+	// Раздел Как начать играть
+	public function compile_start(){
+		$this->add_to_html('<div id="start">
+			<ul class="actions">
+			<li class="game">
+			<span class="number">1</span>
+			<div class="text">
+			<h1>Скачать <u>игру</u></h1>
+			<p>Бессознательное, на первый взгляд, самопроизвольно. Субтехника, в том числе, вразнобой отталкивает стимул. Показательный пример – арпеджированная фактура сонорна. Код просветляет стресс</p>
+			</div>
+			<a href="">Скачать GTA Criminal Russia</a>
+			</li>
+			<li class="multiplayer">
+			<span class="number">2</span>
+			<div class="text">
+			<h1>Скачать <u>мультиплеер</u></h1>
+			<p>Бессознательное, на первый взгляд, самопроизвольно. Субтехника, в том числе, вразнобой отталкивает стимул. Показательный пример – арпеджированная фактура сонорна. Код просветляет стресс</p>
+			</div>
+			<a href="">Скачать CR-MP 0.3e</a>
+			</li>
+			<li class="modes">
+			<span class="number">3</span>
+			<div class="text">
+			<h1>Скачать <u>пакет модификаций</u></h1>
+			<p>Наши исследования позволяют сделать вывод о том, что сознание символизирует латентный онтогенез речи</p>
+			</div>
+			<a href="">Скачать мод-пак</a>
+			</li>
+			<li class="connect">
+			<span class="number">4</span>
+			<div class="text">
+			<h1>Скачать <u>пакет модификаций</u></h1>
+			<p>Запустите клиент CR-MP (с ярлыка или через Пуск). Введите никнейм в поле “Nick_Name” (Это будет имя вашего персонажа на сервере), Нажмите *оранжевая галочка* и вставьте наш IP-адрес: 194.61.44.20:8904 . Выберите сервер и нажмите *зелёная стрелочка*</p>
+			</div>
+			<a href="">Смотреть видео-урок</a>
+			</li>
+			</ul>
+			<div class="bg">
+			<img src="../img/start-background.png" alt="background">
+			</div>
+			</div>');
+	}
+
+	// Окно авторизации
+	public function compile_auth_modal(){
+		$this->add_to_html('<div id="auth" ');
+		// если ошибка то оставляем модальное окно открытым
+		if($this->auth_error) $this->add_to_html('style="display: block; opacity: 1;"');
+		$this->add_to_html('>
+			<div class="exit" onclick="Auth();">
+			<span></span>
+			<span></span>
+			</div>
+			<h1>Авторизация</h1>
+			<form action="./" method="POST">');
+		// Выводим ошибку
+		if(!empty($this->auth_error)) $this->add_to_html('<input type="text" placeholder="Ник? ' . $_POST['login'] . '" class="error" name="login" oninput="CheckInput(this);" onclick="InputCloseError(this);" value="' . $this->auth_error[0] . '">');
+		else $this->add_to_html('<input type="text" placeholder="Ник" name="login" oninput="CheckInput(this);">');
+		$this->add_to_html('<input type="password" placeholder="Пароль" name="password" oninput="CheckInput(this);">
+			<img src="../img/eye.png" alt="show" onclick="ShowPassword(this, 1);" class="show">
+			<a href="#">Забыли пароль?</a>
+			<button type="submit">Войти</button>
+			</form>
+			</div>');
+	}
+
+	// Скрипты
+	public function compile_scripts(){
+		// Добавляем скрипты
+		$this->add_to_html('
+			<script src="../js/jquery.js"></script>
+			<script src="../js/script.js"></script>');
+	}
+
+	// Запрет прокрутки страницы при особых условиях
+	public function check_deny_body_overflow(){
+		if(isset($_POST['email_change']) || $this->auth_error) $this->add_to_html('<style>body{overflow:hidden;}</style>');
+	}
+
+	// Получаем сколько человек онлайн
+	public function get_online_count(){
+		$result = 0;
+		$result = $this->db->query("SELECT COUNT(*) FROM `players` WHERE `online` = 1");
+		$result = mysqli_fetch_assoc($result);
+		return $result['COUNT(*)'];
+	}
+
 	// Составляем подвал
 	public function compile_footer(){
 		$this->add_to_html('<footer>
@@ -290,6 +348,15 @@ class Main{
 	// Преобразование пароля при авторизации
 	public function get_password_hash($password, $account_salt){
 		return strtoupper(hash("sha256", $password."_".$account_salt."_".$this->account_system_salt));
+	}
+
+	// Добавляем данные в лог
+	public function ucp_log($action, $params){
+		$params = json_encode($params);
+		$ip 		= $_SERVER['REMOTE_ADDR'];
+		$time 	= time();
+		$response = $this->db->query("INSERT INTO `ucp_log`(`ip`, `ts`, `action`, `params`) VALUES('" . $ip . "', $time, '" . $action . "', '" . $params . "')");
+		return 1;
 	}
 
 	// Добавить к общему шаблону
