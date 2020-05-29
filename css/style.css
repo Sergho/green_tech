@@ -153,16 +153,17 @@
 		margin-left: 50%;
 		transform: translate(-50%, 0);
 		border-radius: 25px;
-		border: 2px solid #568DCB;
+		border: 2px solid #698CC8;
 		color: #F6F6F6;
 		font-size: 0.8em;
 		font-family: Proxima Nova Rg;
 		font-weight: bold;
 		text-decoration: none;
 		transition: background-color .3s ease;
+		cursor: pointer;
 	}
 	header .text a.start:hover, header .text a.connect:hover{
-		background-color: #568DCB;
+		background-color: #698CC8;
 	}
 	
 
@@ -322,7 +323,7 @@
 		margin-bottom: 20px;
 	}
 	#start .actions a:hover{
-		background-color: #698cc8;
+		background-color: #698CC8;
 		color: white;
 	}
 
@@ -423,7 +424,7 @@
 		transition: .3s ease;
 	}
 	#auth form a{
-		margin-top: 10px;
+		margin-top: 20px;
 		color: #444b61;
 		font-family: "Proxima Nova Rg";
 		font-size: 1.1em;
@@ -435,8 +436,8 @@
 	#auth form button{
 		width: 150px;
 		background-color: rgba(0, 0, 0, 0.0);
-		border: 2px solid #698cc8;
-		color: #698cc8;
+		border: 2px solid #698CC8;
+		color: #698CC8;
 		border-radius: 15px;
 		height: 50px;
 		margin-top: 10px;
@@ -447,7 +448,7 @@
 		transition: .3s ease;
 	}
 	#auth form button:hover{
-		background-color: #698cc8;
+		background-color: #698CC8;
 		color: white;
 		box-shadow: 0 0 7px rgba(0, 1, 5, 0.2);
 	}
@@ -536,6 +537,12 @@
 		font-size: 1em;
 		font-family: Proxima Nova Rg;
 		color: #d5d5d5;
+	}
+	footer .bottom span a{
+		color: #d5d5d5;
+		font-size: 1em;
+		font-family: Proxima Nova Rg;
+		text-decoration: none;
 	}
 
 	/* -------------------------- DONATE ---------------------- */
@@ -662,7 +669,7 @@
 		width: 194px;
 		height: 50px;
 		border-radius: 15px;
-		border: 2px solid #698cc8;
+		border: 2px solid #698CC8;
 		background-color: rgba(0, 0, 0, 0.0);
 		color: #698cc8;
 		font-family: Proxima Nova Rg;
@@ -671,7 +678,7 @@
 		cursor: pointer;
 	}
 	header form button:hover{
-		background-color: #698cc8;
+		background-color: #698CC8;
 		color: white;
 	}
 
@@ -770,7 +777,7 @@
 		background-image: url(../img/UCP-background.png);
 		background-position: center bottom;
 		background-size: cover;
-		max-height: 2000px;
+		max-height: none;
 	}
 	#ucp-wrapper header .dropdown-burger span{
 		background-color: #363c4d;
@@ -783,6 +790,7 @@
 		color: #363c4d;
 		font-size: 2em;
 		font-family: Proxima Nova Th;
+		letter-spacing: 2px;
 	}
 	#ucp-wrapper .text .stats{
 		background-color: white;
@@ -796,6 +804,7 @@
 		padding: 20px;
 		overflow: hidden;
 		position: relative;
+		box-shadow: 0 0 5px lightgrey;
 	}
 	#ucp-wrapper .text .stats h1{
 		font-size: 1.8em;
@@ -849,6 +858,9 @@
 		display: flex;
 		justify-content: space-between;
 		position: relative;
+	}
+	#ucp-wrapper .text .stats .pages .main-page ul li form{
+		display: none;
 	}
 	#ucp-wrapper .text .stats .pages .main-page ul li button{
 		display: none;
@@ -1068,6 +1080,7 @@
 		margin-top: 70px;
 		box-sizing: border-box;
 		padding: 20px;
+		box-shadow: 0 0 5px lightgrey;
 	}
 	#ucp-wrapper .text .skin .slide{
 		transition: .3s ease;
@@ -1080,6 +1093,7 @@
 		font-family: Proxima Nova Th;
 		font-size: 2em;
 		width: 100%;
+		letter-spacing: 1px;
 	}
 	#ucp-wrapper .text .skin p{
 		font-family: Proxima Nova Rg;
@@ -1142,8 +1156,8 @@
 	#ucp-wrapper .help button, #ucp-wrapper .help a{
 		display: block;
 		background-color: rgba(0, 0, 0, 0.0);
-		border: 2px solid #558DCB;
-		color: #558DCB;
+		border: 2px solid #698CC8;
+		color: #698CC8;
 		width: 222px;
 		height: 50px;
 		font-family: Proxima Nova Rg;
@@ -1158,7 +1172,7 @@
 		font-size: 1em;
 	}
 	#ucp-wrapper .help button:hover{
-		background-color: #558DCB;
+		background-color: #698CC8;
 		color: white;
 	}
 	#ucp-wrapper .help a:nth-child(3){
@@ -1328,9 +1342,9 @@
 		width: 183px;
 		height: 43px;
 		background-color: rgba(0, 0, 0, 0.0);
-		border: 2px solid #558DCB;
+		border: 2px solid #698CC8;
 		border-radius: 10px;
-		color: #558DCB;
+		color: #698CC8;
 		font-size: 16px;
 		font-family: Proxima Nova Rg;
 		font-weight: bold;
@@ -1340,7 +1354,362 @@
 	}
 	#email_change form button:hover{
 		color: white;
+		background-color: #698CC8;
+	}
+
+	/* Leader tool */
+
+	#ucp-wrapper .leader{
+		width: 300px;
+		background-color: white;
+		position: relative;
+		border-radius: 15px;
+		margin: auto;
+		margin-top: 80px;
+		box-sizing: border-box;
+		padding: 30px;
+		box-shadow: 0 0 5px lightgrey;
+	}
+	#ucp-wrapper .leader h1{
+		font-size: 20px;
+		font-family: Proxima Nova Rg;
+		color: #363C4D;
+	}
+	#ucp-wrapper .leader h1 b{
+		width: 100px;
+		color: #698CC8;
+	}
+	#ucp-wrapper .leader p{
+		margin-top: 15px;
+		font-size: 14px;
+		font-family: Proxima Nova Rg;
+		color: #444B61;
+		text-align: left;
+		margin-bottom: 5px;
+	}
+
+	#ucp-wrapper .leader .leaders{
+		margin-top: 15px;
+	}
+	#ucp-wrapper .leader .leaders .h{
+		display: none;
+	}
+	#ucp-wrapper .leader .leaders ul li{
+		list-style: none;
+		cursor: pointer;
+		transition: .7s ease;
+	}
+	#ucp-wrapper .leader .leaders ul li .select input{
+		display: none;
+	}
+
+	#ucp-wrapper .leader .leaders ul li .info{
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		margin-top: 25px;
+	}
+
+	#ucp-wrapper .leader .leaders ul li .info .nick{
+		font-size: 16px;
+		font-family: Proxima Nova Rg;
+		color: #444B61;
+	}
+	#ucp-wrapper .leader .leaders ul li .info .nick.online{
+		color: #2BB673;
+	}
+
+	#ucp-wrapper .leader .leaders ul li .info .last-seen{
+		font-size: 14px;
+		font-family: Proxima Nova Rg;
+		color: #444B61;
+	}
+
+	#ucp-wrapper .leader .leaders ul li .info .rank{
+		margin-top: 5px;
+		font-size: 16px;
+		font-family: Proxima Nova Rg;
+		color: #444B61;
+	}
+
+	#ucp-wrapper #leader_actions{
+		width: 280px;
+		background-color: white;
+		position: absolute;
+		top: 0;
+		left: 0;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		z-index: 3;
+		box-shadow: 0 0 5px lightgrey;
+		border-radius: 15px;
+		box-sizing: border-box;
+		padding: 15px;
+		transition: .3s ease;
+		z-index: 5;
+	}
+	#ucp-wrapper #leader_actions .close{
+		display: block;
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 30px;
+		height: 30px;
+		cursor: pointer;
+	}
+	#ucp-wrapper #leader_actions .close span{
+		display: block;
+		width: 15px;
+		height: 1px;
+		background-color: #ACB3C4;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+	}
+	#ucp-wrapper #leader_actions .close span:nth-child(1){
+		transform: translate(-50%, -50%) rotate(45deg);
+	}
+	#ucp-wrapper #leader_actions .close span:nth-child(2){
+		transform: translate(-50%, -50%) rotate(-45deg);
+	}
+
+	#ucp-wrapper #leader_actions h1{
+		font-size: 24px;
+	}
+
+	#ucp-wrapper #leader_actions .rang{
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+	}
+	#ucp-wrapper #leader_actions .rang p{
+		width: 100%;
+		font-size: 14px;
+		font-family: Proxima Nova Rg;
+		color: #81889C;
+		line-height: 28px;
+		margin-top: 15px;
+	}
+	#ucp-wrapper #leader_actions .rang button{
+		height: 45px;
+		width: 45%;
+		border: none;
+		border-radius: 5px;
+		background-color: #698CC8;
+		cursor: pointer;
+		color: white;
+		font-size: 14px;
+		font-family: Proxima Nova Rg;
+		font-weight: bold;
+		transition: .3s ease;
+		outline: none;
+	}
+	#ucp-wrapper #leader_actions .rang button:hover{
+		background-color: #6BB3FF;
+	}
+	#ucp-wrapper #leader_actions .rang button:active{
+		background-color: #6AC6FF;
+	}
+
+	#ucp-wrapper #leader_actions .doprang{
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+	}
+	#ucp-wrapper #leader_actions .doprang p{
+		width: 100%;
+		font-size: 14px;
+		font-family: Proxima Nova Rg;
+		color: #81889C;
+		line-height: 28px;
+		margin-top: 15px;
+	}
+	#ucp-wrapper #leader_actions .doprang .select{
+		width: 100%;
+		height: 40px;
+		background-color: rgba(0, 0, 0, 0.0);
+		border: 1px solid #E8E9F0;
+		border-radius: 5px;
+		cursor: pointer;
+		background: url("../img/chevron.png") no-repeat 96%;
+		position: relative;
+	}
+	#ucp-wrapper #leader_actions .doprang .select .current{
+		display: block;
+		width: 100%;
+		height: 40px;
+		color: black;
+		text-align: left;
+		line-height: 40px;
+		box-sizing: border-box;
+		padding-left: 10px;
+		font-family: Proxima Nova Lt;
+		font-weight: bold;
+		color: #474761;
+		font-size: 16px;
+	}
+	#ucp-wrapper #leader_actions .doprang .select .others{
+		display: none;
+		width: 100%;
+		position: absolute;
+		left: -1px;
+		top: 40px;
+		border-radius: 0 0 5px 5px;
+		overflow: hidden;
+		transition: .5s ease;
+		border: 1px solid #E8E9F0;
+		border-top: none;
+		background-color: white;
+	}
+	#ucp-wrapper #leader_actions .doprang .select .others li{
+		width: 85%;
+		list-style: none;
+		height: 40px;
+		line-height: 40px;
+		color: #474761;
+		box-sizing: border-box;
+		padding-left: 10px;
+		font-family: Proxima Nova Lt;
+		font-weight: bold;
+		background-color: white;
+		text-align: left;
+		cursor: pointer;
+		transition: .3s ease;
+	}
+	#ucp-wrapper #leader_actions .doprang .select .others li:hover{
+		background-color: #697CC8;
+		color: white;
+	}
+	#ucp-wrapper #leader_actions .doprang .select .others li:last-child{
+		border-radius: 0 0 5px 5px;
+	}
+
+	#ucp-wrapper #leader_actions .other{
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+	}
+	#ucp-wrapper #leader_actions .other p{
+		width: 100%;
+		font-size: 14px;
+		font-family: Proxima Nova Rg;
+		color: #81889C;
+		line-height: 28px;
+		margin-top: 15px;
+	}
+	#ucp-wrapper #leader_actions .other button{
+		height: 45px;
+		width: 100%;
+		border: none;
+		border-radius: 5px;
+		background-color: #698CC8;
+		cursor: pointer;
+		color: white;
+		font-size: 14px;
+		font-family: Proxima Nova Rg;
+		font-weight: bold;
+		margin-bottom: 10px;
+		transition: .3s ease;
+		outline: none;
+	}
+	#ucp-wrapper #leader_actions .other button:hover{
+		background-color: #6BB3FF;
+	}
+	#ucp-wrapper #leader_actions .other button:active{
+		background-color: #6AC6FF;
+	}
+
+}
+
+@media screen and (min-width: 375px){
+
+	#ucp-wrapper .leader{
+		width: 350px;
+	}
+	#ucp-wrapper .leader .leaders ul li{
+		display: flex;
+	}
+	#ucp-wrapper .leader .leaders ul li .select{
+		display: block;
+		position: relative;
+		width: 25px;
+		cursor: pointer;
+		transition: 3s ease;
+	}
+	#ucp-wrapper .leader .leaders ul li .select .visible{
+		display: block;
+		position: absolute;
+		top: 65%;
+		transform: translate(0, -50%);
+		width: 15px;
+		height: 15px;
+		transition: 3s ease;
+	}
+	#ucp-wrapper .leader .leaders ul li .select .visible .outer{
+		display: block;
+		width: 15px;
+		height: 15px;
+		border-radius: 50%;
+		background-color: rgba(0, 0, 0, 0.0);
+		border: 1px solid #ECECEC;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+	#ucp-wrapper .leader .leaders ul li .select.disabled .visible .outer{
+		border: none;
+	}
+	#ucp-wrapper .leader .leaders ul li .select.active .visible .outer{
+		border: 1.5px solid #558DCB;
+	}
+	#ucp-wrapper .leader .leaders ul li .select .visible .inner{
+		display: none;
+		position: absolute;
+		width: 9px;
+		height: 9px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		transition: 3s ease;
+	}
+	#ucp-wrapper .leader .leaders ul li .select.active .visible .inner{
+		display: block;
 		background-color: #558DCB;
+		border-radius: 50%;
+	}
+
+	#ucp-wrapper .leader .leaders ul li .info{
+		width: 265px;
+	}
+
+	#ucp-wrapper #leader_actions{
+		width: 360px;
+		padding: 40px 30px;
+	}
+	#ucp-wrapper #leader_actions .close{
+		width: 45px;
+		height: 45px;
+	}
+	#ucp-wrapper #leader_actions .close span{
+		width: 15px;
+		height: 2px;
+	}
+	#ucp-wrapper #leader_actions .rang p{
+		font-size: 16px;
+	}
+	#ucp-wrapper #leader_actions .rang button{
+		font-size: 16px;
+	}
+	#ucp-wrapper #leader_actions .doprang p{
+		font-size: 16px;
+	}
+	#ucp-wrapper #leader_actions .other p{
+		font-size: 16px;
+	}
+	#ucp-wrapper #leader_actions .other button{
+		font-size: 16px;
 	}
 
 }
@@ -1563,6 +1932,51 @@
 		margin-top: 30px;
 	}
 
+	/* Leader tool */
+
+	#ucp-wrapper .leader{
+		width: 400px;
+		border-radius: 20px;
+	}
+	#ucp-wrapper .leader h1{
+		font-size: 26px;
+	}
+	#ucp-wrapper .leader p{
+		font-size: 16px;
+	}
+
+	#ucp-wrapper .leader .leaders{
+		margin-top: 20px;
+	}
+	#ucp-wrapper .leader .leaders ul li .select{
+		width: 30px;
+	}
+	#ucp-wrapper .leader .leaders ul li .select .visible .outer{
+		width: 20px;
+		height: 20px;
+	}
+	#ucp-wrapper .leader .leaders ul li .select .visible .inner{
+		width: 15px;
+		height: 15px;
+		background-color: red;
+	}
+
+	#ucp-wrapper .leader .leaders ul li .info{
+		margin-top: 20px;
+		width: 310px;
+	}
+	#ucp-wrapper .leader .leaders ul li .info .nick{
+		font-size: 18px;
+	}
+	#ucp-wrapper .leader .leaders ul li .info .last-seen{
+		font-size: 18px;
+	}
+	#ucp-wrapper .leader .leaders ul li .info .rank{
+		font-size: 18px;
+		width: 400px;
+		text-align: left;
+	}
+
 }
 
 @media screen and (min-width: 768px){
@@ -1745,7 +2159,7 @@
 		height: 18px;
 		border-radius: 5px;
 		border: none;
-		background-color: #698cc8;
+		background-color: #698CC8;
 		cursor: pointer;
 		outline: none;
 		transition: .3s ease;
@@ -1755,12 +2169,25 @@
 		background-color: #86b5ff;
 	}
 	#ucp-wrapper .text .stats .pages .main-page ul li form button img{
-		width: 60%;
-		height: 60%;
+		width: 90%;
+		height: 90%;
 		position: absolute;
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
+	}
+	#ucp-wrapper .text .stats .pages .main-page ul li form button span{
+		display: block;
+		width: 12px;
+		height: 2px;
+		background-color: white;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+	#ucp-wrapper .text .stats .pages .main-page ul li form button span:nth-child(2){
+		transform: translate(-50%, -50%) rotate(90deg);
 	}
 
 	/* UCP Payments page */
@@ -1826,6 +2253,27 @@
 	#email_change form input{
 		height: 50px;
 		width: 400px;
+	}
+
+	/* Leader tool */
+
+	#ucp-wrapper .leader{
+		width: 500px;
+	}
+
+	#ucp-wrapper .leader .leaders ul li .select{
+		width: 40px;
+	}
+	#ucp-wrapper .leader .leaders ul li .select .visible{
+		padding-left: 5px;
+	}
+
+	#ucp-wrapper .leader .leaders ul li .info{
+		width: 400px;
+	}
+
+	#ucp-wrapper #leader_actions{
+		left: 45vw;
 	}
 
 }
@@ -2255,7 +2703,7 @@
 		width: 253px;
 		height: 66px;
 		border-radius: 15px;
-		border: 3px solid #558DCB;
+		border: 3px solid #698CC8;
 		font-size: 18px;
 	}
 	#password_change form img.show{
@@ -2299,6 +2747,118 @@
 		margin-top: 50px;
 	}
 
+	/* Leader tool */
+
+	#ucp-wrapper .leader{
+		width: 940px;
+		padding: 60px;
+	}
+
+	#ucp-wrapper .leader h1{
+		font-size: 36px;
+		text-align: left;
+		letter-spacing: 1px;
+	}
+
+	#ucp-wrapper .leader p{
+		font-size: 18px;
+	}
+
+	#ucp-wrapper .leader .leaders{
+		margin-top: 35px;
+	}
+	#ucp-wrapper .leader .leaders .h{
+		display: flex;
+		flex-wrap: nowrap;
+		font-size: 16px;
+		font-family: Proxima Nova Lt;
+		color: #444B61;
+		text-align: left;
+	}
+
+	#ucp-wrapper .leader .leaders .h .nick{
+		padding-left: 30px;
+		width: 260px;
+	}
+
+	#ucp-wrapper .leader .leaders .h .last-seen{
+		width: 180px;
+	}
+
+	#ucp-wrapper .leader .leaders .h .rank{
+		width: 350px;
+	}
+
+	#ucp-wrapper .leader .leaders ul{
+		margin-top: 15px;
+	}
+
+	#ucp-wrapper .leader .leaders ul li .select{
+		width: 30px;
+		height: 22px;
+	}
+	#ucp-wrapper .leader .leaders ul li .select .visible{
+		padding: 0;
+	}
+	#ucp-wrapper .leader .leaders ul li .select .visible .outer{
+		width: 15px;
+		height: 15px;
+	}
+	#ucp-wrapper .leader .leaders ul li .select.active .visible .outer{
+		border-width: 1.5px;
+	}
+	#ucp-wrapper .leader .leaders ul li .select .visible .inner{
+		width: 8px;
+		height: 8px;
+	}
+
+	#ucp-wrapper .leader .leaders ul li .info{
+		flex-wrap: nowrap;
+		margin-top: 3px;
+		margin-bottom: 3px;
+		width: 790px;
+		text-align: left;
+	}
+
+	#ucp-wrapper .leader .leaders ul li .info .nick{
+		width: 290px;
+	}
+
+	#ucp-wrapper .leader .leaders ul li .info .last-seen{
+		width: 180px;
+	}
+
+	#ucp-wrapper .leader .leaders ul li .info .rank{
+		width: 350px;
+		margin-top: 0;
+	}
+
+	#ucp-wrapper #leader_actions{
+		left: 65vw;
+		top: 70%;
+	}
+	#ucp-wrapper #leader_actions h1{
+		letter-spacing: 1px;
+	}
+	#ucp-wrapper #leader_actions .doprang .select{
+		height: 50px;
+	}
+	#ucp-wrapper #leader_actions .doprang .select .current{
+		height: 50px;
+		line-height: 50px;
+		font-size: 18px;
+		padding-left: 15px;
+	}
+	#ucp-wrapper #leader_actions .doprang .select .others{
+		margin: 0;
+		top: 50px;
+		font-size: 18px;
+	}
+	#ucp-wrapper #leader_actions .doprang .select .others li{
+		height: 50px;
+		line-height: 50px;
+		padding-left: 15px;
+	}
 }
 
 @media screen and (min-width: 1440px){
@@ -2402,6 +2962,7 @@
 	}
 	#ucp-wrapper .text .stats h1{
 		font-size: 36px;
+		letter-spacing: 1px;
 	}
 	#ucp-wrapper .text .stats .pages-nav{
 		margin-top: 45px;
@@ -2508,6 +3069,45 @@
 		margin-top: 40px;
 	}
 
+	/* Leader tool */
+
+	#ucp-wrapper .leader{
+		width: 1048px;
+		padding: 60px;
+	}
+
+	#ucp-wrapper .leader .leaders .h .nick{
+		width: 260px;
+	}
+
+	#ucp-wrapper .leader .leaders .h .last-seen{
+		width: 200px;
+	}
+
+	#ucp-wrapper .leader .leaders .h .rank{
+		width: 340px;
+	}
+
+	#ucp-wrapper .leader .leaders ul li .select{
+
+	}
+
+	#ucp-wrapper .leader .leaders ul li .info .nick{
+		width: 260px;
+	}
+
+	#ucp-wrapper .leader .leaders ul li .info .last-seen{
+		width: 200px;
+	}
+
+	#ucp-wrapper .leader .leaders ul li .info .rank{
+		width: 340px;
+	}
+
+	#ucp-wrapper #leader_actions{
+		left: 65vw;
+	}
+
 }
 
 @media screen and (min-width: 2000px){
@@ -2518,6 +3118,10 @@
 	}
 	header .nav .navbar .navbar-personal a{
 		margin-left: 50px;
+	}
+
+	#ucp-wrapper #leader_actions{
+		left: 125%;
 	}
 
 }

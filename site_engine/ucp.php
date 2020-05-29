@@ -151,6 +151,7 @@ class UCP{
 			$this->compile_leaders();
 			$this->compile_skins();
 			$this->compile_help();
+			$this->compile_leader();
 		}
 		$this->add_to_html('
 			</div>
@@ -180,7 +181,7 @@ class UCP{
 		$this->add_to_html('
 			<header>
 			<div class="logo">
-			<a href="main.html">
+			<a href="main.php">
 			<img src="../img/logo.png" alt="logotype">
 			</a>
 			</div>');
@@ -266,20 +267,20 @@ class UCP{
 
 	// Вкладка Имущество
 	public function compile_property(){
-			$this->add_to_html('<li class="page property-page">
-				<ul class="houses">
-				<span>Список домов</span>
-				<div class="empty">Дома отсутствуют</div>
-				</ul>
-				<ul class="businesses">
-				<span>Список бизнесов</span>
-				<div class="empty">Бизнесы отсутствуют</div>
-				</ul>
-				<ul class="cars">
-				<span>Список автомобилей</span>
-				<div class="empty">Автомобили отсутствуют</div>
-				</ul>
-				</li>');
+		$this->add_to_html('<li class="page property-page">
+			<ul class="houses">
+			<span>Список домов</span>
+			<div class="empty">Дома отсутствуют</div>
+			</ul>
+			<ul class="businesses">
+			<span>Список бизнесов</span>
+			<div class="empty">Бизнесы отсутствуют</div>
+			</ul>
+			<ul class="cars">
+			<span>Список автомобилей</span>
+			<div class="empty">Автомобили отсутствуют</div>
+			</ul>
+			</li>');
 	}
 
 	// Выводим данные ooc
@@ -293,8 +294,8 @@ class UCP{
 			if($value == "username") $value = $username;
 			$this->add_to_html('<li><div class="param">' . $key . ':</div>');
 			$this->add_to_html('<div class="value">' . $value . '</div>');
-			if($key == "Донат-очки") $this->add_to_html('<form action="./donate.php" method="GET"><button class="donate-btn"><img src="./img/plus.png" alt=""></button></form>');
-			if($key == "Место появления") $this->add_to_html('<form action="./ucp.php" method="POST"><button name="spawn_reset" class="spawn_reset"><img src="./img/reset.png" alt=""></button></form>');
+			if($key == "Донат-очки") $this->add_to_html('<form action="./donate.php" method="GET"><button class="donate-btn"><span></span><span></span></button></form>');
+			if($key == "Место появления") $this->add_to_html('<form action="./ucp.php" method="POST"><button name="spawn_reset" class="spawn_reset"><img src="./img/reset.svg" alt=""></button></form>');
 			$this->add_to_html('</li>');
 		}
 
@@ -416,6 +417,67 @@ class UCP{
 			</div>');
 	}
 
+	// Инструменты лидера организации
+	public function compile_leader(){
+
+		$username 	= $_SESSION['username'];
+		$db_leader 	= $this->db_get("players", "Leader", $username);
+
+		if($db_leader > 0){
+			$this->add_to_html('<div class="leader">
+				<h1>Управление фракцией <br>"<b>');
+			$this->add_to_html($this->fraction_names[$db_leader]);
+			$this->add_to_html('</b>"</h1>
+				<p>Данная панель предназначена для руководителей фракций и их заместителей. Она создана для облегчённого взаимодействия с персоналом. В ней доступно повышение и понидение звания (ранга), изменение должности и увольнение сотрудников.</p>
+				<div class="leaders">
+				<div class="h">
+				<div class="nick">Игровой ник</div>
+				<div class="last-seen">Последний вход</div>
+				<div class="rank">Звание[Подразделение]</div>
+				</div>');
+
+			// Участники фракции
+			$participants = $this->get_participants($db_leader);
+
+			$this->add_to_html('<ul>');
+
+			foreach($participants as $participant){
+				$this->add_to_html("<li onclick='OpenTools(this);'>");
+				// Select
+				if($participant['Leader'] == $db_leader) $this->add_to_html('<div class="select disabled">');
+				else $this->add_to_html('<div class="select">');
+				$this->add_to_html('<span class="visible">
+					<span class="outer"></span>
+					<span class="inner"></span>
+					</span>
+					</div>');
+				$this->add_to_html('<div class="info">');
+				// Nickname
+				$this->add_to_html('<div class="nick ');
+				if($participant['Online'] == 1) $this->add_to_html("online");
+				$this->add_to_html('">');
+				$this->add_to_html($participant['Names']);
+				$this->add_to_html("</div>");
+				// Last seen
+				$this->add_to_html('<div class="last-seen">');
+				$this->add_to_html($participant['pDay']);
+				$this->add_to_html('</div>');
+				// Rang & SubRang
+				$fraction_index = $participant['Member'];
+				$rang_index 		= $participant['Rank'];
+				$sub_rang_index = $participant['DopRank'];
+				$rang = $this->rang_names[$fraction_index][$rang_index];
+				$sub_rang = $this->sub_rang_names[$fraction_index][$sub_rang_index];
+				$this->add_to_html('<div class="rank">');
+				$this->add_to_html($rang . '[' . $sub_rang . ']');
+				$this->add_to_html('</div>');
+				$this->add_to_html("</li>");
+			}
+			$this->add_to_html('</div>');
+			$this->add_to_html('</ul>');
+		}
+	}
+
 	// Окно смены пароля
 	public function compile_password_change_modal(){
 		if($this->password_change_error) $this->add_to_html('
@@ -470,7 +532,7 @@ class UCP{
 		else $this->add_to_html('&nbsp;');
 		$this->add_to_html('</p>
 			<form action="./ucp.php" method="POST">
-		<input type="text" name="new_email" placeholder="Введите вашу почту"');
+			<input type="text" name="new_email" placeholder="Введите вашу почту"');
 		if(!empty($this->email_change_error)) $this->add_to_html('value="' . $_POST['new_email'] . '"');
 		$this->add_to_html('>
 			<button type="submit" name="email_change">Отправить письмо</button>
@@ -542,8 +604,8 @@ class UCP{
 			</div>
 			</div>
 			<div class="bottom">
-			<h1>GreenTech RolePlay © 2012-2019</h1>
-			<span>Made by Kipper Studio</span>
+			<h1>GreenTech RolePlay © 2012-2020</h1>
+			<span>Made by <a href="https://vk.com/s4rgh0">Sergey Chernyshov</a></span>
 			</div>
 			</footer>');
 	}
@@ -633,6 +695,16 @@ class UCP{
 		return $result;
 	}
 
+	// Получаем всех участников фракции
+	public function get_participants($fraction_id){
+		$response = $this->db->query("SELECT * FROM players WHERE `Member` = $fraction_id");
+		$result = [];
+		while($participant = mysqli_fetch_assoc($response)){
+			$result[] = $participant;
+		}
+		return $result;
+	}
+
 	// Генерация случайного ключа
 	public function generate_key($len){
 		$chars = array(
@@ -657,7 +729,7 @@ class UCP{
 
 		return $key;
 	}
-	
+
 	public function get_password_hash($password, $account_salt){
 		return strtoupper(hash("sha256", $password."_".$account_salt."_".$this->account_system_salt));
 	}

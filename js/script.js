@@ -29,6 +29,10 @@ function ScrollTop(){
 	$('html, body').animate({scrollTop: 0}, 1000);
 }
 
+function ScrollHTP(){
+	$('html, body').animate({scrollTop: $("#start").offset().top}, 1000);
+}
+
 /*	---- Открытие и закрытие модального окна авторизации ----	*/
 
 function Auth(){		// login
@@ -279,7 +283,7 @@ function ActivateFilter(filter){
 
 	// Внедряем платежи в слайды
 	for(let i = 0; i < slides.length; i++){
-			slides[i].querySelector("ul").innerHTML = "";
+		slides[i].querySelector("ul").innerHTML = "";
 			// 17 платежей может быть максимально на одном слайде
 			for(let j = 0; j < 17; j++){
 				if(i * 17 + j >= payments.length) break;
@@ -343,6 +347,8 @@ function CloseModals(){
 	const error = document.querySelector("#error");
 	const success = document.querySelector("#success");
 	const agreement = document.querySelector("#agreement");
+	const leader_tools = document.querySelector("#leader_actions");
+	let ticks		= document.querySelectorAll(".leader .leaders .select");
 
 	const darkness = document.querySelector(".darkness");
 
@@ -370,6 +376,15 @@ function CloseModals(){
 	if(agreement != undefined){
 		agreement.style.opacity = "0";
 		setTimeout(() => {agreement.style.display = "none"}, 300);
+	}
+	if(leader_tools != undefined){
+		leader_tools.style.opacity = "0";
+		setTimeout(() => {leader_tools.parentNode.removeChild(leader_tools);}, 300);
+	}
+	if(ticks.length > 0){
+		ticks.forEach((tick) => {
+			tick.classList.remove("active");
+		});
 	}
 
 
@@ -423,8 +438,224 @@ function OpenAgreement(){
 	const modal			= document.querySelector("#agreement");
 	const darkness	= document.querySelector(".darkness");
 
+	ScrollTop();
 	darkness.style.display = "block";
 	setTimeout(() => {darkness.style.opacity = "1"}, 50);
 	modal.style.display = "block";
 	setTimeout(() => {modal.style.opacity = "1"}, 50);
+
+	document.body.overflow = "hidden";
+}
+
+function OpenTools(obj){
+	const username = obj.querySelector(".info .nick").innerHTML;
+	const data = {
+		type: "get_tools",
+		username: username
+	};
+
+	$.ajax({
+		type: "POST",
+		url: "../site_engine/ajax_handler.php",
+		data: data,
+		success: (callback) => {
+			if(callback != "error"){
+
+				// Close all other modals
+				const modals = document.querySelectorAll("#leader_actions");
+				modals.forEach((modal) => {
+					modal.parentNode.removeChild(modal);
+				});
+
+				// Unselect all ticks
+				let ticks	= document.querySelectorAll(".leader .leaders .select");
+				ticks.forEach((tick) => {
+					tick.classList.remove("active");
+				});
+
+				const root = document.querySelector(".leader .leaders");
+				let modal = document.createElement("div");
+				modal.id = "leader_actions";
+				modal.innerHTML = callback;
+				modal.style.opacity = "0";
+
+				Select(obj);
+				root.appendChild(modal);
+				setTimeout(() => {modal.style.opacity = "1"}, 50);
+				if(window.innerWidth < 1024){
+					darkness = document.querySelector(".darkness");
+					darkness.style.display = "block";
+					setTimeout(() => {darkness.style.opacity = "1";}, 50);
+				}
+			}
+		}
+	});
+}
+
+function Select(obj){
+	let visible = obj.querySelector(".select");
+	visible.classList.add("active");
+}
+
+function OpenCloseDopRang(obj){
+	const others = obj.querySelector(".others");
+	const opened = others.style.opacity == "0" ? false : true;
+
+	if(!opened){
+		obj.style.borderRadius = "5px 5px 0 0";
+		obj.style.borderBottom = "1px solid rgba(0, 0, 0, 0.0)";
+		others.style.display = "block";
+		setTimeout(() => {others.style.opacity = "1";}, 50);
+	} else {
+		obj.style.borderRadius = "5px";
+		obj.style.border = "1px solid #E8E9F0";
+		others.style.opacity = "0";
+		setTimeout(() => {others.style.display = "none";}, 550);
+	}
+}
+
+function SelectDopRang(obj){
+	const root 			= obj.parentNode.parentNode.parentNode.parentNode;
+	const username 	= root.querySelector("h1 b").innerHTML;
+	const new_value = obj.innerHTML;
+	const data = {
+		type: "doprangchange",
+		username: username,
+		value: new_value
+	}
+	$.ajax({
+		url: "../site_engine/ajax_handler.php",
+		type: "POST",
+		data: data,
+		success: (response) => {
+			if(response != "error"){
+				// Change text in main window
+				let nicks = root.parentNode.querySelectorAll("li .nick");
+
+				nicks.forEach((nick, key) => {
+					if(nick.innerHTML == username){
+						let rang_elem = nick.parentNode.querySelector(".rank");
+						const rang = rang_elem.innerHTML.split("[")[0];
+						rang_elem.innerHTML = rang + "[" + new_value + "]";
+					}
+				});
+				// Change text in #leader_actions select
+				let current = root.querySelector(".doprang .current");
+				let others	= root.querySelectorAll(".doprang .others li");
+
+				others.forEach((other) => {
+					if(other.innerHTML == new_value) other.innerHTML = current.innerHTML;
+				});
+				current.innerHTML = new_value;
+			}
+		}
+	});
+}
+
+// AJAX
+
+function Raise(btn){
+
+	let modal = btn.parentNode.parentNode;
+	const username = modal.querySelector("h1 b").innerHTML;
+	const data = {
+		type: "raise",
+		username: username
+	}
+	$.ajax({
+		type: "POST",
+		url: "../site_engine/ajax_handler.php",
+		data: data,
+		success: (response) => {
+			const nicks = modal.parentNode.querySelectorAll("li .nick");
+			let current_index;
+
+			nicks.forEach((nick, index) => {
+				if(nick.innerHTML == username) current_index = index;
+			});
+
+			let rang = modal.parentNode.querySelectorAll("li .rank")[current_index];
+
+			rang.innerHTML = response;
+
+		}
+	});
+}
+
+function Lower(btn){
+
+	let modal = btn.parentNode.parentNode;
+	const username = modal.querySelector("h1 b").innerHTML;
+	const data = {
+		type: "lower",
+		username: username
+	}
+	$.ajax({
+		type: "POST",
+		url: "../site_engine/ajax_handler.php",
+		data: data,
+		success: (response) => {
+			const nicks = modal.parentNode.querySelectorAll("li .nick");
+			let current_index;
+
+			nicks.forEach((nick, index) => {
+				if(nick.innerHTML == username) current_index = index;
+			});
+
+			let rang = modal.parentNode.querySelectorAll("li .rank")[current_index];
+
+			rang.innerHTML = response;
+
+		}
+	});
+}
+
+function Fire(btn){
+	let modal 			= btn.parentNode.parentNode;
+	const username 	= modal.querySelector("h1 b").innerHTML;
+	const data = {
+		type: "fire",
+		username: username
+	}
+	$.ajax({
+		type: "POST",
+		url: "../site_engine/ajax_handler.php",
+		data: data,
+		success: (response) => {
+			if(response != "error"){
+				const nicks = modal.parentNode.querySelectorAll("li .nick");
+				let current_index;
+				nicks.forEach((nick, index) => {
+					if(nick.innerHTML == username) current_index = index;
+				});
+				const line = modal.parentNode.querySelectorAll("ul li")[current_index];
+				line.style.opacity = "0";
+				setTimeout(() => {
+					line.style.display = "none";
+				}, 800);
+				CloseModals();
+			}
+		}
+	});
+}
+
+function BlackList(btn){
+	let modal 			= btn.parentNode.parentNode;
+	const username 	= modal.querySelector("h1 b").innerHTML;
+
+	const data = {
+		type: "blacklist",
+		username: username
+	}
+	console.log(data);
+
+	$.ajax({
+		type: "POST",
+		url: "../site_engine/ajax_handler.php",
+		data: data,
+		success: (response) => {
+			console.log(response);
+		}
+	});
+
 }

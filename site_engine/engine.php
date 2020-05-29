@@ -32,7 +32,7 @@ class engine
 		$this->add_to_head('
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="stylesheet" href="../fonts/fonts.css">
+		<link rel="preload" href="../fonts/fonts.css">
 		<link rel="stylesheet" href="../css/style.css">
 		<title>GreenTech Roleplay</title>
 		');

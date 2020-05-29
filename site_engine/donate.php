@@ -134,7 +134,7 @@ class Donate{
 		$this->add_to_html('
 			<header>
 			<div class="logo">
-			<a href="main.html">
+			<a href="main.php">
 			<img src="../img/logo.png" alt="logotype">
 			</a>
 			</div>');
@@ -292,8 +292,8 @@ class Donate{
 			</div>
 			</div>
 			<div class="bottom">
-			<h1>GreenTech RolePlay © 2012-2019</h1>
-			<span>Made by Kipper Studio</span>
+			<h1>GreenTech RolePlay © 2012-2020</h1>
+			<span>Made by <a href="https://vk.com/s4rgh0">Sergey Chernyshov</a></span>
 			</div>
 			</footer>');
 	}
@@ -350,7 +350,7 @@ class Donate{
 			<span class="tick"></span>
 			</span>
 			</label>
-			<p>Я изучил и принял <a href="#">пользовательское соглашение</a></p>
+			<p>Я изучил и принял <a onclick="OpenAgreement();">пользовательское соглашение</a></p>
 			</div>
 			<button type="submit">Продолжить</button>
 			</form>
@@ -486,6 +486,8 @@ class Donate{
 		return 1;
 	}
 
+
+
 	// Добавить к общему шаблону
 	public function add_to_html($data){
 		$this->html .= $data;
@@ -496,6 +498,12 @@ class Donate{
 		return $this->html;
 	}
 
+}
+
+function ucp_log($argv, $arc){
+	$temp = $_SESSION['username'];
+	$a = time(Null);
+	return $temp;
 }
 
 ?>

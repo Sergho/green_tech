@@ -96,7 +96,7 @@ class Main{
 		$this->add_to_html('
 			<header>
 			<div class="logo">
-			<a href="main.html">
+			<a href="main.php">
 			<img src="../img/logo.png" alt="logotype">
 			</a>
 			</div>');
@@ -159,7 +159,7 @@ class Main{
 		$this->add_to_html('<div class="text">
 			<h1>Начни играть в CRMP на проекте GreenTech RolePlay прямо сейчас!</h1>
 			<p>Как легко получить из самых общих соображений, кампос-серрадос представляет собой холодный взрыв. Несмотря на внутренние противоречия, вещество мгновенно</p>
-			<a href="#" class="start">Как начать играть?</a>
+			<a onclick="ScrollHTP();" class="start">Как начать играть?</a>
 			<a href="crmp://' . $this->server_data["ip"] . '" class="connect">Подключиться к серверу</a>
 			</div>
 			</header>');
@@ -311,8 +311,8 @@ class Main{
 			</div>
 			</div>
 			<div class="bottom">
-			<h1>GreenTech RolePlay © 2012-2019</h1>
-			<span>Made by Kipper Studio</span>
+			<h1>GreenTech RolePlay © 2012-2020</h1>
+			<span>Made by <a href="https://vk.com/s4rgh0">Sergey Chernyshov</a></span>
 			</div>
 			</footer>');
 	}

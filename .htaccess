@@ -42,3 +42,6 @@ RewriteRule ^/?$ "https\:\/\/greentech-rp\.ru\/ucp" [R=301,L]
 		Header unset Cache-Control
 	</FilesMatch>
 </IfModule>
+
+php_value session.gc_maxlifetime 172800
+php_value session.cookie_lifetime 172800
