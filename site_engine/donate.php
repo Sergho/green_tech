@@ -6,7 +6,7 @@ class Donate{
 	public $server_data;
 	public $auth_error = [];
 	public $donate_error = [];
-	public $account_system_salt = "MtIWebzsEjfXriFU";
+	public $account_system_salt;
 	public $html;
 
 	public $donate_multiplier = 1;
@@ -17,6 +17,7 @@ class Donate{
 		require_once("./config/server_config.php");
 		// Применяем конфиги
 		$this->server_data = $server_config;
+		$this->account_system_salt = $account_system_salt;
 		// Подключаемся к БД
 		$this->db_connect();
 	}

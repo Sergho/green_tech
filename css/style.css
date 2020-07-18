@@ -869,27 +869,6 @@
 		display: none;
 	}
 
-	/* UCP Property page */
-
-	#ucp-wrapper .text .stats .pages .property-page ul{
-		display: flex;
-		flex-wrap: wrap;
-		width: 100%;
-		color: #444b61;
-		font-family: Proxima Nova Rg;
-		margin-top: 25px;
-	}
-	#ucp-wrapper .text .stats .pages .property-page ul span{
-		display: block;
-		width: 100%;
-		text-align: left;
-		font-size: 0.8em;
-		margin-bottom: 5px;
-	}
-	#ucp-wrapper .text .stats .pages .property-page ul .empty{
-		font-size: 0.9em;
-	}
-
 	/* UCP Payments page */
 
 	#ucp-wrapper .text .stats .pages .payments-page .sort p{
@@ -1182,6 +1161,99 @@
 	#ucp-wrapper .help a:nth-child(3):hover{
 		background-color: #30394C;
 		color: white;
+	}
+
+	/* UCP Property */
+
+	#ucp-wrapper .property{
+		width: 100%;
+		grid-area: property;
+	}
+	#ucp-wrapper .property{
+		margin-top: 50px;
+		width: 100%;
+		box-sizing: border-box;
+		padding: 10px;
+		max-width: 1041px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	#ucp-wrapper .property h1{
+		font-size: 36px;
+		text-align: left;
+		font-family: Proxima Nova;
+		color: #363C4D;
+	}
+	#ucp-wrapper .property .cards{
+		margin-top: 5px;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		padding: 0;
+	}
+	#ucp-wrapper .property .cards .card{
+		width: 100%;
+		list-style: none;
+		background-color: white;
+		margin-top: 15px;
+		display: flex;
+		box-sizing: border-box;
+		padding: 5px;
+		border-radius: 15px;
+	}
+	#ucp-wrapper .property .cards .card .image{
+		width: 40%;
+		background-color: #F6F9FE;
+		border-radius: 15px;
+		position: relative;
+		overflow: hidden;
+	}
+	#ucp-wrapper .property .cards .card .image img{
+		width: 90%;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+	#ucp-wrapper .property .cards .card .text{
+		width: 60%;
+		box-sizing: border-box;
+		padding: 5px;
+		margin: 0;
+		display: block;
+	}
+	#ucp-wrapper .property .cards .card .text h2{
+		font-family: Proxima Nova;
+		font-size: 26px;
+		margin: 0;
+		color: #363c4d;
+		text-align: left;
+	}
+	#ucp-wrapper .property .cards .card .text .data{
+		display: flex;
+		width: 100%;
+		box-sizing: border-box;
+	}
+	#ucp-wrapper .property .cards .card .text .data .param{
+		margin-right: 15px;
+		font-size: 14px;
+		font-family: Proxima Nova Lt;
+		color: #444B61;
+		font-size: 16px;
+	}
+	#ucp-wrapper .property .cards .card .text .data .value{
+		font-size: 16px;
+		font-family: Proxima Nova;
+		color: #444B61;
+	}
+	#ucp-wrapper .property .cards .card .text .cost{
+		margin-top: 15px;
+		width: 100%;
+		box-sizing: border-box;
+		text-align: right;
+		font-family: Proxima Nova;
+		font-weight: bold;
+		color: #698CC8;
 	}
 
 	/* UCP Modals */
@@ -1812,18 +1884,6 @@
 		font-size: 1.1em;
 	}
 
-	/* UCP Property page */
-
-	#ucp-wrapper .text .stats .pages .property-page ul{
-		margin-top: 35px;
-	}
-	#ucp-wrapper .text .stats .pages .property-page ul span{
-		font-size: 0.9em;
-	}
-	#ucp-wrapper .text .stats .pages .property-page ul .empty{
-		font-size: 1.1em;
-	}
-
 	/* UCP Payments page */
 
 	#ucp-wrapper .text .stats .pages .payments-page .sort p{
@@ -1890,6 +1950,15 @@
 		width: 400px;
 		height: 600px;
 		padding: 40px;
+	}
+
+	/* UCP Property */
+
+	#ucp-wrapper .property .cards .card .text .data:nth-child(2){
+		margin-top: 15px;
+	}
+	#ucp-wrapper .property .cards .card .text .data{
+		margin-top: 0;
 	}
 
 	/* UCP Modals */
@@ -2222,6 +2291,41 @@
 	}
 	#ucp-wrapper .text .stats .pages .leaders-page .next{
 		left: 270px;
+	}
+
+	/* UCP Property */
+
+	#ucp-wrapper .property h1{
+		font-size: 36px;
+	}
+	#ucp-wrapper .property .cards{
+		margin-top: 10px;
+	}
+	#ucp-wrapper .property .cards .card{
+		margin-top: 20px;
+		padding: 20px;
+	}
+	#ucp-wrapper .property .cards .card .image{
+		width: 35%;
+	}
+	#ucp-wrapper .property .cards .card .image img{
+		width: 90%;
+	}
+	#ucp-wrapper .property .cards .card .text{
+		padding: 10px 40px;
+		width: 65%;
+	}
+	#ucp-wrapper .property .cards .card .text h2{
+		font-size: 30px;
+	}
+	#ucp-wrapper .property .cards .card .text .data .param{
+		line-height: 18px;
+	}
+	#ucp-wrapper .property .cards .card .text .data .value{
+		font-size: 18px;
+	}
+	#ucp-wrapper .property .cards .card .text .cost{
+		font-size: 30px;
 	}
 
 	/* UCP Modals */
@@ -2635,6 +2739,8 @@
 		"heading heading"
 		"stats skin"
 		"stats help"
+		"property property"
+		"leader leader"
 		;
 	}
 	#ucp-wrapper .text > h1{
@@ -2682,6 +2788,12 @@
 		display: none;
 	}
 
+	/* UCP Property */
+
+	#ucp-wrapper .property .cards .card .image{
+		width: 40%;
+	}
+
 	/* UCP Modals */
 
 	#password_change{
@@ -2722,7 +2834,7 @@
 		top: 330px;
 		left: 560px;
 	}
-		
+
 	#email_change{
 		width: 703px;
 		height: 415px;
@@ -2752,6 +2864,7 @@
 	#ucp-wrapper .leader{
 		width: 940px;
 		padding: 60px;
+		grid-area: leader;
 	}
 
 	#ucp-wrapper .leader h1{
@@ -2942,6 +3055,8 @@
 		"heading heading"
 		"stats skin"
 		"stats help"
+		"property property"
+		"leader leader"
 		;
 	}
 	#ucp-wrapper .text .stats{
@@ -2979,13 +3094,6 @@
 		font-size: 14px;
 	}
 	#ucp-wrapper .text .stats .pages .main-page ul li{
-		font-size: 18px;
-	}
-
-	#ucp-wrapper .text .stats .pages .property-page ul span{
-		font-size: 14px;
-	}
-	#ucp-wrapper .text .stats .pages .property-page ul .empty{
 		font-size: 18px;
 	}
 

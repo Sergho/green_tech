@@ -12,7 +12,6 @@ class engine
 	public $block_site = false; // блокировка сайта
 	public $block_whitelist = array(); // список разрешенных ip при заблокированном сайте
 	
-	public $account_system_salt = "MtIWebzsEjfXriFU";
 	public $rcon_password = "rcon";
 	
 	public $fraction_name;

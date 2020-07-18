@@ -10,7 +10,7 @@ class UCP{
 	public $sub_rang_names;
 	public $ucp_main_ooc;
 	public $ucp_main_ic;
-	public $account_system_salt = "MtIWebzsEjfXriFU";
+	public $account_system_salt;
 
 	public $password_change_error = [];
 	public $email_change_error = [];
@@ -33,6 +33,7 @@ class UCP{
 		$this->sub_rang_names = $sub_rangs;
 		$this->ucp_main_ooc 	= $ucp_main_ooc_params;
 		$this->ucp_main_ic		= $ucp_main_ic_params;
+		$this->account_system_salt = $account_system_salt;
 		// Подключаемся к БД
 		$this->db_connect();
 	}
@@ -146,11 +147,11 @@ class UCP{
 			// Отрисовываем контент ЛК
 
 			$this->compile_main();
-			$this->compile_property();
 			$this->compile_payments();
 			$this->compile_leaders();
 			$this->compile_skins();
 			$this->compile_help();
+			$this->compile_property();
 			$this->compile_leader();
 		}
 		$this->add_to_html('
@@ -249,7 +250,6 @@ class UCP{
 			<h1>Статистика</h1>
 			<ul class="pages-nav">
 			<li class="active" onclick="PageSwitch(this);">Главное</li>
-			<li class="" onclick="PageSwitch(this);">Имущество</li>
 			<li class="" onclick="PageSwitch(this);">Платежи</li>
 			<li class="" onclick="PageSwitch(this);">Лидеры</li>
 			</ul>
@@ -262,24 +262,6 @@ class UCP{
 			<button onclick="OpenPasswordChangeMenu();">Сменить пароль</button>
 			<button onclick="OpenEmailChangeMenu();">Сменить Email</button>
 			</div>
-			</li>');
-	}
-
-	// Вкладка Имущество
-	public function compile_property(){
-		$this->add_to_html('<li class="page property-page">
-			<ul class="houses">
-			<span>Список домов</span>
-			<div class="empty">Дома отсутствуют</div>
-			</ul>
-			<ul class="businesses">
-			<span>Список бизнесов</span>
-			<div class="empty">Бизнесы отсутствуют</div>
-			</ul>
-			<ul class="cars">
-			<span>Список автомобилей</span>
-			<div class="empty">Автомобили отсутствуют</div>
-			</ul>
 			</li>');
 	}
 
@@ -415,6 +397,57 @@ class UCP{
 			<button onclick="OpenEmailChangeMenu();">Сменить Email</button>
 			<a href="./ucp.php?help=log_out">Выйти</a>
 			</div>');
+	}
+
+	// Блок имущество
+	public function compile_property(){
+		$this->add_to_html('<div class="property">
+			<h1>Имущество</h1>');
+
+		$username = $_SESSION['username'];
+
+		// Все данные по имуществу
+		$cars_data = $this->db_get_cars($username);
+		$houses_data = $this->db_get_houses($username);
+
+		if($cars_data || $houses_data){
+			
+			$this->add_to_html('<ul class="cards">');
+			foreach($cars_data as $key => $card){
+				$id = $card['ID'];
+				$model = $card['Model'];
+				$number_1 = $card['Nomer1'] . $card['Nomer2'] . $card['Nomer3'] . $card['Nomer4'] . $card['Nomer5'] . $card['Nomer6'];
+				$number_2 = $card['Nomer0'];
+				$cost = $card['Cost'];
+				$cost = strrev(implode(".", str_split(strrev($cost), 3)));
+				$this->add_to_html('<li class="card">
+					<div class="image">
+					<img src="img/cars/' . $model . '.png" alt="car1">
+					</div>');
+				$this->add_to_html('<div class="text">
+					<h2>Автомобиль</h2>
+					<div class="data">
+					<div class="param">Марка, модель:</div>
+					<div class="value">' . $model . '</div>
+					</div>
+					<div class="data">
+					<div class="param">ID Автомобиля:</div>
+					<div class="value">' . $id . '</div>
+					</div>
+					<div class="data">
+					<div class="param">Регистр. номер:</div>
+					<div class="value">' . $number_1 . " | " . $number_2 . '</div>
+					</div>
+					<div class="cost">' . $cost . ' руб</div>
+					</div>');
+				$this->add_to_html('</li>');
+			}
+			$this->add_to_html('</ul>');
+
+		} else {
+			$this->add_to_html("Нет имущества");
+		}
+		$this->add_to_html('</div>');
 	}
 
 	// Инструменты лидера организации
@@ -633,9 +666,35 @@ class UCP{
 		$get = $this->db->real_escape_string($get);
 		$username = $this->db->real_escape_string($username);
 		// Получаем данные
-		$result = $salt_db = $this->db->query('SELECT `' . $get . '` FROM `' . $table . '` WHERE `Names` = ' . '"' . $username . '" ORDER BY `' . $order . '` DESC');
+		$result = $this->db->query('SELECT `' . $get . '` FROM `' . $table . '` WHERE `Names` = ' . '"' . $username . '" ORDER BY `' . $order . '` DESC');
 		$result = mysqli_fetch_assoc($result)[$get];
 		return $result;
+	}
+
+	// Получаем все машины пользователя из БД
+	public function db_get_cars($owner){
+		$owner = $this->db->real_escape_string($owner);
+		$got = $this->db->query('SELECT * FROM `cars` WHERE `Owner` = "' . $owner . '" OR `2Owner` = "' . $owner . '" AND "' . $owner . '" != "No-Body"');
+		$result = [];
+		if($got){
+			while($t = mysqli_fetch_assoc($got)){
+				$result[] = $t;
+			}
+			return $result;
+		} else return false;
+	}
+
+	// Получаем все дома пользователя из БД
+	public function db_get_houses($owner){
+		$owner = $this->db->real_escape_string($owner);
+		$got = $this->db->query('SELECT * FROM `houses` WHERE `hOwner` = "' . $owner . '" AND "' . $owner . '" != "No-Body"');
+		$result = [];
+		if($got){
+			while($t = mysqli_fetch_assoc($got)){
+				$result[] = $t;
+			}
+			return $result;
+		} else return false;
 	}
 
 	// Сменить данные из БД $set - поле у $username, в котором нужно установить значение $value

@@ -13,4 +13,6 @@ $server_config = array(
 	"unitpay_secret_key" => "key"
 );
 
+$account_system_salt = "MtIWebzsEjfXriFU";
+
 ?>
